@@ -1,0 +1,51 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# builds
+dist
+build
+.next
+.turbo
+storybook-static
+out
+
+# env
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor / OS
+.DS_Store
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# sanity
+apps/studio/dist
+apps/studio/.sanity
+apps/studio/schema.json
+
+# coverage reports (case-sensitive to avoid matching src/components/sections/Coverage)
+/coverage
+apps/*/coverage
+
+# Claude Design raw exports (reference only — see landing-page-design-brief.md)
+*.html.bundle
+_design-export.html
+/RoadReady Landing Page.html
+.vercel
+.env*

@@ -1,0 +1,1 @@
+export { TrustMarker } from './TrustMarker';

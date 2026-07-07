@@ -1,0 +1,33 @@
+{
+  "name": "sanity-marketing-starter",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Webstacks marketing site starter: Next.js 15 + Sanity Studio v5 + Storybook, with live preview, structure builder, and SEO foundations wired up.",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web",
+    "dev:studio": "turbo run dev --filter=studio",
+    "storybook": "pnpm --filter web storybook",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "check-types": "turbo run check-types",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "turbo": "^2.5.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}

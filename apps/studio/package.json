@@ -1,0 +1,28 @@
+{
+  "name": "studio",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "check-types": "tsc --noEmit",
+    "lint": "echo '(no lint configured for studio)'",
+    "extract-schema": "sanity schema extract --path schema.json --enforce-required-fields",
+    "typegen": "sanity typegen generate",
+    "typegen:all": "pnpm extract-schema && pnpm typegen"
+  },
+  "dependencies": {
+    "@sanity/icons": "^3.7.4",
+    "@sanity/vision": "^5.31.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sanity": "^5.31.1",
+    "styled-components": "^6.1.18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.2"
+  }
+}
