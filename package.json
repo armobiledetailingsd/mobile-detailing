@@ -1,8 +1,8 @@
 {
-  "name": "sanity-marketing-starter",
+  "name": "mobile-detailing",
   "version": "0.0.0",
   "private": true,
-  "description": "Webstacks marketing site starter: Next.js 15 + Sanity Studio v5 + Storybook, with live preview, structure builder, and SEO foundations wired up.",
+  "description": "Mobile detailing shop marketing site: Next.js 15 + Sanity Studio v5.",
   "scripts": {
     "dev": "turbo run dev",
     "dev:web": "turbo run dev --filter=web",
