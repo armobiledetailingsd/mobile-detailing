@@ -13,7 +13,7 @@ type SectionEdgeProps = {
 export function SectionEdge({
   children,
   cut = 'top',
-  background = 'var(--bg-section)',
+  background = 'var(--color-paper)',
   slope = 40,
   style,
   ...rest

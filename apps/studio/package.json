@@ -14,6 +14,7 @@
     "typegen:all": "pnpm extract-schema && pnpm typegen"
   },
   "dependencies": {
+    "@oclif/core": "4.11.14",
     "@sanity/icons": "^3.7.4",
     "@sanity/vision": "^5.31.1",
     "react": "^19.2.0",

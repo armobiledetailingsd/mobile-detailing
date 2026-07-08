@@ -1,9 +1,6 @@
 import type { CSSProperties, HTMLAttributes } from 'react';
 import { Icon, type IconName } from '@/components/atoms/Icon';
 
-/* Badge — attention/status marker. Yellow is the default badge color
-   ("Same-day", "24/7"); green for success; graphite for neutral.
-   Never orange (orange is reserved for actions). */
 export type BadgeTone = 'caution' | 'success' | 'neutral' | 'solid';
 
 type BadgeProps = {
@@ -13,33 +10,29 @@ type BadgeProps = {
 } & HTMLAttributes<HTMLSpanElement>;
 
 const TONES: Record<BadgeTone, { background: string; color: string; border: string }> = {
-  caution: { background: 'var(--caution-yellow)', color: 'var(--graphite-950)', border: 'transparent' },
-  success: {
-    background: 'rgba(55, 214, 122, 0.16)',
-    color: 'var(--signal-green)',
-    border: 'rgba(55, 214, 122, 0.4)',
-  },
-  neutral: { background: 'var(--graphite-800)', color: 'var(--steel-300)', border: 'var(--border-default)' },
-  solid: { background: 'var(--graphite-800)', color: 'var(--off-white)', border: 'var(--border-strong)' },
+  caution: { background: 'rgba(247,144,9,0.14)', color: 'var(--color-warning)', border: 'rgba(247,144,9,0.3)' },
+  success: { background: 'rgba(18,183,106,0.12)', color: 'var(--color-success)', border: 'rgba(18,183,106,0.3)' },
+  neutral: { background: 'var(--color-paper)', color: 'var(--color-ink2)', border: 'var(--color-line)' },
+  solid: { background: 'var(--color-elev-d)', color: 'var(--color-platinum)', border: 'rgba(255,255,255,0.1)' },
 };
 
-export function Badge({ children, tone = 'caution', icon, style, ...rest }: BadgeProps) {
-  const t = TONES[tone] ?? TONES.caution;
+export function Badge({ children, tone = 'neutral', icon, style, ...rest }: BadgeProps) {
+  const t = TONES[tone] ?? TONES.neutral;
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 6,
-        height: 26,
+        gap: 5,
+        height: 24,
         padding: '0 10px',
-        fontFamily: 'var(--font-condensed)',
-        fontWeight: 700,
-        fontSize: 13,
+        fontFamily: 'var(--font-sans)',
+        fontWeight: 600,
+        fontSize: 11,
         textTransform: 'uppercase',
-        letterSpacing: '0.06em',
+        letterSpacing: '0.08em',
         lineHeight: 1,
-        borderRadius: 'var(--radius-pill)',
+        borderRadius: 100,
         border: `1px solid ${t.border}`,
         background: t.background,
         color: t.color,
@@ -48,7 +41,7 @@ export function Badge({ children, tone = 'caution', icon, style, ...rest }: Badg
       }}
       {...rest}
     >
-      {icon && <Icon name={icon} size={14} strokeWidth={2.5} />}
+      {icon && <Icon name={icon} size={12} strokeWidth={2.5} />}
       {children}
     </span>
   );

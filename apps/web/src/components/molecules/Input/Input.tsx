@@ -4,7 +4,6 @@ import { useState } from 'react';
 import type { CSSProperties, InputHTMLAttributes } from 'react';
 import { Icon, type IconName } from '@/components/atoms/Icon';
 
-/* Input — dark field, big touch target, orange focus ring. Optional leading icon. */
 type InputProps = {
   icon?: IconName;
   invalid?: boolean;
@@ -14,7 +13,7 @@ type InputProps = {
 
 export function Input({ icon, invalid = false, numeric = false, style, onFocus, onBlur, ...rest }: InputProps) {
   const [focused, setFocused] = useState(false);
-  const borderColor = invalid ? 'var(--signal-red)' : focused ? 'var(--signal-orange)' : 'var(--border-default)';
+  const borderColor = invalid ? 'var(--color-error)' : focused ? 'var(--color-accent)' : 'var(--color-line)';
 
   return (
     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -24,7 +23,7 @@ export function Input({ icon, invalid = false, numeric = false, style, onFocus, 
             position: 'absolute',
             left: 14,
             display: 'flex',
-            color: focused ? 'var(--signal-orange)' : 'var(--steel-300)',
+            color: focused ? 'var(--color-accent)' : 'var(--color-steel)',
             pointerEvents: 'none',
           }}
         >
@@ -33,29 +32,22 @@ export function Input({ icon, invalid = false, numeric = false, style, onFocus, 
       )}
       <input
         aria-invalid={invalid || undefined}
-        onFocus={(e) => {
-          setFocused(true);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          setFocused(false);
-          onBlur?.(e);
-        }}
+        onFocus={(e) => { setFocused(true); onFocus?.(e); }}
+        onBlur={(e) => { setFocused(false); onBlur?.(e); }}
         style={{
           width: '100%',
-          height: 'var(--control-h)',
+          height: 48,
           padding: icon ? '0 16px 0 44px' : '0 16px',
-          background: 'var(--bg-input)',
-          color: 'var(--off-white)',
-          fontFamily: numeric ? 'var(--font-numeric)' : 'var(--font-body)',
+          background: 'var(--color-paper)',
+          color: 'var(--color-ink1)',
+          fontFamily: 'var(--font-sans)',
           fontVariantNumeric: numeric ? 'tabular-nums lining-nums' : 'normal',
-          fontSize: numeric ? 18 : 16,
+          fontSize: numeric ? 18 : 15,
           fontWeight: 500,
           border: `2px solid ${borderColor}`,
-          borderRadius: 'var(--radius-md)',
+          borderRadius: 'var(--radius-input)',
           outline: 'none',
-          boxShadow: focused ? 'var(--focus-ring)' : 'none',
-          transition: 'border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)',
+          transition: 'border-color 120ms ease',
           ...style,
         }}
         {...rest}

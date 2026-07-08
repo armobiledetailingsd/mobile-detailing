@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Archivo_Black, Barlow, Barlow_Condensed } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import { draftMode } from 'next/headers';
 import { VisualEditing } from 'next-sanity/visual-editing';
 import { SanityLive } from '@/lib/sanity/live';
@@ -12,25 +12,10 @@ import { SiteHeader } from '@/components/organisms/SiteHeader';
 import { SiteFooter } from '@/components/organisms/SiteFooter';
 import './globals.css';
 
-// RoadReady brand type: heavy grotesk display, condensed headlines/eyebrows,
-// clean sans body. Exposed as CSS variables consumed throughout
-// components/{atoms,molecules,organisms,sections} as var(--font-*).
-const fontDisplay = Archivo_Black({
+const outfit = Outfit({
   subsets: ['latin'],
-  weight: '400',
-  variable: '--font-display',
-  display: 'swap',
-});
-const fontBody = Barlow({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-body',
-  display: 'swap',
-});
-const fontCondensed = Barlow_Condensed({
-  subsets: ['latin'],
-  weight: ['500', '600', '700', '800'],
-  variable: '--font-condensed',
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-sans',
   display: 'swap',
 });
 
@@ -53,12 +38,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   ]);
 
   return (
-    <html
-      lang="en"
-      className={`${fontDisplay.variable} ${fontBody.variable} ${fontCondensed.variable}`}
-    >
+    <html lang="en" className={outfit.variable}>
       <body>
-        <a href="#main-content" className="rr-skip-link">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-white focus:text-[var(--color-ink1)] focus:rounded focus:shadow-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+        >
           Skip to main content
         </a>
         <SiteHeader navigation={headerNavigation} />

@@ -1,7 +1,5 @@
 import type { CSSProperties, LabelHTMLAttributes } from 'react';
 
-/* FieldLabel — uppercase condensed label with optional "(optional)" hint.
-   Pairs above every form control. */
 type FieldLabelProps = {
   optional?: boolean;
   hint?: string;
@@ -17,19 +15,19 @@ export function FieldLabel({ children, htmlFor, optional = false, hint, style, .
         alignItems: 'baseline',
         gap: 8,
         marginBottom: 8,
-        fontFamily: 'var(--font-condensed)',
+        fontFamily: 'var(--font-sans)',
         fontWeight: 600,
-        fontSize: 14,
+        fontSize: 13,
         textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        color: 'var(--off-white)',
+        letterSpacing: '0.07em',
+        color: 'var(--color-ink2)',
         ...style,
       }}
       {...rest}
     >
       {children}
       {optional && (
-        <span style={{ fontSize: 12, letterSpacing: '0.04em', color: 'var(--steel-500)', fontWeight: 500 }}>
+        <span style={{ fontSize: 12, letterSpacing: '0.04em', color: 'var(--color-muted)', fontWeight: 500 }}>
           Optional
         </span>
       )}
@@ -38,7 +36,7 @@ export function FieldLabel({ children, htmlFor, optional = false, hint, style, .
           style={{
             fontSize: 12,
             letterSpacing: '0.04em',
-            color: 'var(--steel-300)',
+            color: 'var(--color-muted)',
             fontWeight: 500,
             textTransform: 'none',
           }}

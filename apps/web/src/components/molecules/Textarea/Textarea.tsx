@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import type { CSSProperties, TextareaHTMLAttributes } from 'react';
 
-/* Textarea — multiline notes field matching Input styling. */
 type TextareaProps = {
   invalid?: boolean;
   style?: CSSProperties;
@@ -11,7 +10,7 @@ type TextareaProps = {
 
 export function Textarea({ invalid = false, rows = 3, style, onFocus, onBlur, ...rest }: TextareaProps) {
   const [focused, setFocused] = useState(false);
-  const borderColor = invalid ? 'var(--signal-red)' : focused ? 'var(--signal-orange)' : 'var(--border-default)';
+  const borderColor = invalid ? 'var(--color-error)' : focused ? 'var(--color-accent)' : 'var(--color-line)';
 
   return (
     <textarea
@@ -27,18 +26,17 @@ export function Textarea({ invalid = false, rows = 3, style, onFocus, onBlur, ..
       style={{
         width: '100%',
         padding: '14px 16px',
-        background: 'var(--bg-input)',
-        color: 'var(--off-white)',
-        fontFamily: 'var(--font-body)',
-        fontSize: 16,
-        fontWeight: 500,
+        background: 'var(--color-paper)',
+        color: 'var(--color-ink1)',
+        fontFamily: 'var(--font-sans)',
+        fontSize: 15,
+        fontWeight: 400,
         lineHeight: 1.5,
         border: `2px solid ${borderColor}`,
-        borderRadius: 'var(--radius-md)',
+        borderRadius: 'var(--radius-input)',
         outline: 'none',
         resize: 'vertical',
-        boxShadow: focused ? 'var(--focus-ring)' : 'none',
-        transition: 'border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)',
+        transition: 'border-color 120ms ease',
         ...style,
       }}
       {...rest}

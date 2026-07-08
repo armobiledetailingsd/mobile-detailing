@@ -20,6 +20,9 @@ importers:
 
   apps/studio:
     dependencies:
+      '@oclif/core':
+        specifier: 4.11.14
+        version: 4.11.14
       '@sanity/icons':
         specifier: ^3.7.4
         version: 3.7.4(react@19.2.6)
@@ -9607,7 +9610,7 @@ snapshots:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       read-package-up: 12.0.0
-      semver: 7.8.0
+      semver: 7.8.5
       vite: 7.3.3(@types/node@22.19.19)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.0)(yaml@2.9.0)
       zod: 4.4.3
     optionalDependencies:
@@ -9893,7 +9896,7 @@ snapshots:
       gunzip-maybe: 1.4.2
       p-map: 7.0.4
       tar-fs: 3.1.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     transitivePeerDependencies:
       - '@types/react'
       - bare-abort-controller
@@ -12269,7 +12272,7 @@ snapshots:
       get-it: 8.7.2
       registry-auth-token: 5.1.1
       registry-url: 7.2.0
-      semver: 7.8.0
+      semver: 7.8.5
 
   get-package-type@0.1.0: {}
 
@@ -13202,7 +13205,7 @@ snapshots:
   normalize-package-data@8.0.0:
     dependencies:
       hosted-git-info: 9.0.3
-      semver: 7.8.0
+      semver: 7.8.5
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -14805,7 +14808,7 @@ snapshots:
       picomatch: 4.0.4
       postcss: 8.5.14
       rollup: 4.60.4
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 22.19.19
       fsevents: 2.3.3

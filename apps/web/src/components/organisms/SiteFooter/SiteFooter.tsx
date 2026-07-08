@@ -1,8 +1,6 @@
-import { Badge } from '@/components/atoms/Badge';
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { resolveNavHref } from '@/lib/nav';
 import type { FooterNavigationQueryResult } from '@/sanity.types';
-import Image from 'next/image';
 
 type SiteFooterProps = {
   navigation: FooterNavigationQueryResult;
@@ -13,33 +11,40 @@ const FALLBACK_COLUMNS = [
     _key: 'contact',
     heading: 'Contact',
     links: [
-      { label: '(626) 588-7122', href: 'tel:+16265887122', openInNewTab: false },
-      { label: 'Text us', href: 'sms:+16265887122', openInNewTab: false },
-      { label: 'medinasmobiletireservice.com', href: 'https://medinasmobiletireservice.com/', openInNewTab: true },
+      { label: '(512) 456-7890', href: 'tel:+15124567890', openInNewTab: false },
+      { label: 'Text us', href: 'sms:+15124567890', openInNewTab: false },
     ],
   },
   {
     _key: 'hours',
     heading: 'Hours',
     links: [
-      { label: 'Mon–Sun 7am–9pm', href: null, openInNewTab: false },
-      { label: 'After-hours: on call', href: null, openInNewTab: false },
-      { label: 'Holidays: 24/7', href: null, openInNewTab: false },
+      { label: 'Mon–Sat  8am–7pm', href: null, openInNewTab: false },
+      { label: 'Sunday  10am–5pm', href: null, openInNewTab: false },
+    ],
+  },
+  {
+    _key: 'services',
+    heading: 'Services',
+    links: [
+      { label: 'Express Refresh', href: '/#services', openInNewTab: false },
+      { label: 'Signature Detail', href: '/#services', openInNewTab: false },
+      { label: 'Ceramic Coating', href: '/#services', openInNewTab: false },
+      { label: 'Paint Correction', href: '/#services', openInNewTab: false },
     ],
   },
   {
     _key: 'company',
     heading: 'Company',
     links: [
-      { label: 'Services', href: '/#services', openInNewTab: false },
-      { label: 'Coverage', href: '/#coverage', openInNewTab: false },
-      { label: 'Fleet accounts', href: null, openInNewTab: false },
-      { label: 'Careers', href: null, openInNewTab: false },
+      { label: 'How it works', href: '/#how-it-works', openInNewTab: false },
+      { label: 'Coverage area', href: '/#coverage', openInNewTab: false },
+      { label: 'Reviews', href: '/#reviews', openInNewTab: false },
     ],
   },
 ];
 
-const FALLBACK_COPYRIGHT = `© ${new Date().getFullYear()} Medina's Mobile Tire Service. All rights reserved.`;
+const FALLBACK_COPYRIGHT = `© ${new Date().getFullYear()} Alex Detailing. All rights reserved.`;
 
 export function SiteFooter({ navigation }: SiteFooterProps) {
   const sanityColumns = navigation?.columns ?? [];
@@ -52,44 +57,38 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
     <footer
       data-component="site-footer"
       data-sanity={navigation ? createDocDataAttribute(navigation).toString() : undefined}
-      style={{ background: 'var(--graphite-950)', borderTop: '1px solid var(--border-default)' }}
+      style={{ background: 'var(--color-ink1)', borderTop: '1px solid rgba(255,255,255,0.08)' }}
     >
-      <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '48px 20px 32px' }}>
-        <div className="rr-footer-grid">
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '56px 24px 36px' }}>
+        {/* Brand + columns grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8" style={{ marginBottom: 48 }}>
+          {/* Brand column */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-              <Image src="/medinas/logo.png" alt="Medina's Mobile Tire Service" width={52} height={52} />
-              <span style={{ fontFamily: 'var(--font-condensed)', fontSize: 17, lineHeight: 1.1, color: 'var(--off-white)' }}>
-                Medina&apos;s Mobile
-                <br />
-                Tire Service
+            <div style={{ marginBottom: 16 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 16, color: 'var(--color-platinum)', letterSpacing: '0.06em' }}>
+                ALEX·DETAILING
               </span>
             </div>
-            <p style={{ margin: 0, fontSize: 15, color: 'var(--steel-300)', maxWidth: 280 }}>
-              Mobile tire &amp; roadside service across Los Angeles and Orange County. We come to you.
+            <p style={{ margin: 0, fontSize: 14, color: 'var(--color-steel)', lineHeight: 1.6, maxWidth: 200 }}>
+              Premium mobile detailing in Austin, TX. We come to you — no shop, no wait.
             </p>
-            <div style={{ marginTop: 16 }}>
-              <Badge tone="caution" icon="shield">
-                Licensed &amp; insured
-              </Badge>
-            </div>
           </div>
+
+          {/* Nav columns */}
           {columns.map((col) => (
             <div key={col._key}>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-condensed)',
-                  fontWeight: 700,
-                  fontSize: 13,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  color: 'var(--steel-500)',
-                  margin: '0 0 12px',
-                }}
-              >
+              <h3 style={{
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 600,
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'var(--color-muted)',
+                margin: '0 0 14px',
+              }}>
                 {col.heading}
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {(col.links ?? []).map((link) =>
                   link.href ? (
                     <a
@@ -97,12 +96,12 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
                       href={resolveNavHref(link.href)}
                       target={link.openInNewTab ? '_blank' : undefined}
                       rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
-                      style={{ fontSize: 15, color: 'var(--steel-300)', textDecoration: 'none' }}
+                      style={{ fontSize: 14, color: 'var(--color-silver)', textDecoration: 'none' }}
                     >
                       {link.label}
                     </a>
                   ) : (
-                    <span key={link.label} style={{ fontSize: 15, color: 'var(--steel-300)' }}>
+                    <span key={link.label} style={{ fontSize: 14, color: 'var(--color-silver)' }}>
                       {link.label}
                     </span>
                   )
@@ -111,21 +110,21 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
             </div>
           ))}
         </div>
-        <div
-          style={{
-            marginTop: 36,
-            paddingTop: 20,
-            borderTop: '1px solid var(--border-default)',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 12,
-            justifyContent: 'space-between',
-          }}
-        >
-          <span style={{ fontSize: 13, color: 'var(--steel-500)' }}>{copyright}</span>
+
+        {/* Bottom bar */}
+        <div style={{
+          paddingTop: 20,
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 12,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <span style={{ fontSize: 13, color: 'var(--color-muted)' }}>{copyright}</span>
           <div style={{ display: 'flex', gap: 20 }}>
-            {['Privacy', 'Terms', 'Deposit policy'].map((l) => (
-              <a key={l} href="#" style={{ fontSize: 13, color: 'var(--steel-500)', textDecoration: 'none' }}>
+            {['Privacy', 'Terms'].map((l) => (
+              <a key={l} href="#" style={{ fontSize: 13, color: 'var(--color-muted)', textDecoration: 'none' }}>
                 {l}
               </a>
             ))}

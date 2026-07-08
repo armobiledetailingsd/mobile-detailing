@@ -1,1 +1,0 @@
-export { LocationButton } from './LocationButton';

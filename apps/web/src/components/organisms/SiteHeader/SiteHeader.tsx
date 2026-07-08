@@ -1,14 +1,15 @@
-import { Badge } from '@/components/atoms/Badge';
+'use client';
+
+import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { resolveNavHref } from '@/lib/nav';
 import type { HeaderNavigationQueryResult } from '@/sanity.types';
-import Image from 'next/image';
 import Link from 'next/link';
-import { MobileMenu } from './MobileMenu';
+import { useState, useEffect, useRef } from 'react';
 
-const DISPATCH_PHONE_HREF = 'tel:+16265887122';
-const DISPATCH_PHONE_LABEL = '(626) 588-7122';
+const PHONE_HREF = 'tel:+15124567890';
+const PHONE_LABEL = '(512) 456-7890';
 
 const FALLBACK_LINKS = [
   { label: 'Services', href: '/#services', openInNewTab: false },
@@ -17,105 +18,252 @@ const FALLBACK_LINKS = [
   { label: 'Reviews', href: '/#reviews', openInNewTab: false },
 ];
 
-type SiteHeaderProps = {
-  navigation: HeaderNavigationQueryResult;
-};
+type SiteHeaderProps = { navigation: HeaderNavigationQueryResult };
 
 export function SiteHeader({ navigation }: SiteHeaderProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const sanityLinks = navigation?.links ?? [];
   const navLinks = sanityLinks.length > 0 ? sanityLinks : FALLBACK_LINKS;
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    closeButtonRef.current?.focus();
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMenuOpen(false);
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [menuOpen]);
+
   return (
-    <header
-      data-component="site-header"
-      data-sanity={navigation ? createDocDataAttribute(navigation).toString() : undefined}
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 20,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        padding: '14px 20px',
-        background: 'rgba(18,19,22,0.86)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--border-default)',
-      }}
-    >
-      <Link href="/" aria-label="Medina's Mobile Tire Service" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-        <Image src="/medinas/logo.png" alt="" width={52} height={52} priority />
-        <span style={{ fontFamily: 'var(--font-condensed)', fontSize: 17, lineHeight: 1.1, color: 'var(--off-white)' }}>
-          Medina&apos;s Mobile
-          <br />
-          Tire Service
-        </span>
-      </Link>
-
-      <nav
-        className="rr-desktop-nav"
-        aria-label="Main navigation"
-        style={{ display: 'flex', gap: 22, marginLeft: 20 }}
+    <>
+      <header
+        data-component="site-header"
+        data-sanity={navigation ? createDocDataAttribute(navigation).toString() : undefined}
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 50,
+          height: 72,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 24px',
+          background: 'rgba(12,14,16,.86)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          borderBottom: '1px solid rgba(255,255,255,0.09)',
+        }}
       >
-        {navLinks.map((link) =>
-          link.href ? (
-            <a
-              key={link.href}
-              href={resolveNavHref(link.href)}
-              target={link.openInNewTab ? '_blank' : undefined}
-              rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
-              style={{ fontFamily: 'var(--font-body)', fontSize: 15, fontWeight: 500, color: 'var(--steel-300)' }}
-            >
-              {link.label}
-            </a>
-          ) : (
-            <span
-              key={link.label}
-              style={{ fontFamily: 'var(--font-body)', fontSize: 15, fontWeight: 500, color: 'var(--steel-500)' }}
-            >
-              {link.label}
-            </span>
-          ),
-        )}
-      </nav>
-
-      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <a
-          href={DISPATCH_PHONE_HREF}
-          className="rr-desktop-phone"
-          style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}
-        >
-          <Badge tone="caution">24/7</Badge>
-          <span
-            className="rr-numeric"
-            style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--off-white)' }}
-          >
-            {DISPATCH_PHONE_LABEL}
-          </span>
-        </a>
-
-        {/* Mobile-only phone link rendered as icon button */}
-        <a
-          href={DISPATCH_PHONE_HREF}
-          aria-label="Call dispatch"
-          className="rr-mobile-phone"
+        {/* Brand mark */}
+        <Link
+          href="/"
+          aria-label="Alex Detailing"
           style={{
-            display: 'none',
+            display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            width: 44,
-            height: 44,
-            borderRadius: 'var(--radius-sm)',
-            background: 'var(--signal-orange)',
-            color: 'var(--off-white)',
+            gap: 10,
+            textDecoration: 'none',
+            flexShrink: 0,
           }}
         >
-          <Icon name="phone" size={20} />
-        </a>
+          <span
+            style={{
+              width: 34,
+              height: 34,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'linear-gradient(135deg, #F1F3F5 0%, #CFD4DA 46%, #A7ADB6 100%)',
+              borderRadius: 9,
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 700,
+              fontSize: 16,
+              color: '#16181b',
+              flexShrink: 0,
+            }}
+          >
+            A
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 600,
+              fontSize: 15,
+              color: 'var(--color-platinum)',
+              letterSpacing: '0.06em',
+            }}
+          >
+            ALEX·MOBILE·DETAILING
+          </span>
+        </Link>
 
-        <div className="rr-mobile-menu-wrapper" style={{ display: 'none' }}>
-          <MobileMenu links={navLinks} />
+        {/* Desktop nav — centered */}
+        <nav
+          aria-label="Main navigation"
+          className="hidden lg:flex"
+          style={{
+            gap: 28,
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          {navLinks.map((link) =>
+            link.href ? (
+              <a
+                key={link.href}
+                href={resolveNavHref(link.href)}
+                target={link.openInNewTab ? '_blank' : undefined}
+                rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: 'var(--color-silver)',
+                  textDecoration: 'none',
+                }}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <span key={link.label} style={{ fontSize: 14, color: 'var(--color-steel)' }}>
+                {link.label}
+              </span>
+            ),
+          )}
+        </nav>
+
+        {/* Right side */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 'auto' }}>
+          <a
+            href={PHONE_HREF}
+            className="hidden lg:block"
+            style={{
+              fontSize: 13,
+              color: 'var(--color-silver)',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-sans)',
+            }}
+          >
+            {PHONE_LABEL}
+          </a>
+          <div className="hidden lg:block">
+            <Button variant="metal" size="sm">
+              Book now
+            </Button>
+          </div>
+          {/* Mobile hamburger */}
+          <button
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+            className="flex lg:hidden"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--color-silver)',
+              padding: 4,
+            }}
+          >
+            <Icon name="menu" size={22} />
+          </button>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Mobile drawer */}
+      {menuOpen && (
+        <div
+          role="dialog"
+          aria-modal={true}
+          aria-label="Navigation menu"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            background: 'rgba(12,14,16,.95)',
+            backdropFilter: 'blur(16px)',
+            display: 'flex',
+            flexDirection: 'column',
+            padding: 24,
+          }}
+          onClick={() => setMenuOpen(false)}
+        >
+          <div
+            style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 40 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 600,
+                fontSize: 15,
+                color: 'var(--color-platinum)',
+                letterSpacing: '0.06em',
+              }}
+            >
+              ALEX·DETAILING
+            </span>
+            <button
+              ref={closeButtonRef}
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--color-silver)',
+              }}
+            >
+              <Icon name="x" size={22} />
+            </button>
+          </div>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {navLinks.map((link) =>
+              link.href ? (
+                <a
+                  key={link.href}
+                  href={resolveNavHref(link.href)}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 500,
+                    color: 'var(--color-platinum)',
+                    textDecoration: 'none',
+                    padding: '8px 0',
+                  }}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <span
+                  key={link.label}
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 500,
+                    color: 'var(--color-steel)',
+                    padding: '8px 0',
+                  }}
+                >
+                  {link.label}
+                </span>
+              ),
+            )}
+          </nav>
+          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <a
+              href={PHONE_HREF}
+              style={{ fontSize: 16, color: 'var(--color-silver)', textDecoration: 'none' }}
+            >
+              {PHONE_LABEL}
+            </a>
+            <Button variant="metal" size="lg" fullWidth>
+              Book now
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

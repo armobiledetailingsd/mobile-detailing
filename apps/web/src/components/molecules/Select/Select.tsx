@@ -6,7 +6,6 @@ import { Icon } from '@/components/atoms/Icon';
 
 export type SelectOption = string | { value: string; label: string };
 
-/* Select — native dropdown styled to match Input, with chevron affordance. */
 type SelectProps = {
   options?: SelectOption[];
   placeholder?: string;
@@ -24,7 +23,7 @@ export function Select({
   ...rest
 }: SelectProps) {
   const [focused, setFocused] = useState(false);
-  const borderColor = invalid ? 'var(--signal-red)' : focused ? 'var(--signal-orange)' : 'var(--border-default)';
+  const borderColor = invalid ? 'var(--color-error)' : focused ? 'var(--color-accent)' : 'var(--color-line)';
 
   return (
     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -41,21 +40,20 @@ export function Select({
         defaultValue={placeholder ? '' : undefined}
         style={{
           width: '100%',
-          height: 'var(--control-h)',
+          height: 48,
           padding: '0 44px 0 16px',
-          background: 'var(--bg-input)',
-          color: 'var(--off-white)',
-          fontFamily: 'var(--font-body)',
-          fontSize: 16,
+          background: 'var(--color-paper)',
+          color: 'var(--color-ink1)',
+          fontFamily: 'var(--font-sans)',
+          fontSize: 15,
           fontWeight: 500,
           border: `2px solid ${borderColor}`,
-          borderRadius: 'var(--radius-md)',
+          borderRadius: 'var(--radius-input)',
           outline: 'none',
-          boxShadow: focused ? 'var(--focus-ring)' : 'none',
           appearance: 'none',
           WebkitAppearance: 'none',
           cursor: 'pointer',
-          transition: 'border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)',
+          transition: 'border-color 120ms ease',
           ...style,
         }}
         {...rest}
@@ -75,7 +73,7 @@ export function Select({
           );
         })}
       </select>
-      <span style={{ position: 'absolute', right: 14, display: 'flex', color: 'var(--steel-300)', pointerEvents: 'none' }}>
+      <span style={{ position: 'absolute', right: 14, display: 'flex', color: 'var(--color-steel)', pointerEvents: 'none' }}>
         <Icon name="chevron-down" size={20} />
       </span>
     </div>

@@ -3,7 +3,6 @@
 import type { ButtonHTMLAttributes, CSSProperties } from 'react';
 import { Icon, type IconName } from '@/components/atoms/Icon';
 
-/* Square icon-only button. Same weight language as Button but compact. */
 export type IconButtonVariant = 'primary' | 'secondary' | 'ghost';
 export type IconButtonSize = 'sm' | 'md' | 'lg';
 
@@ -15,12 +14,12 @@ type IconButtonProps = {
   style?: CSSProperties;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
-const DIMS: Record<IconButtonSize, number> = { sm: 40, md: 48, lg: 56 };
+const DIMS: Record<IconButtonSize, number> = { sm: 36, md: 44, lg: 52 };
 
 const VARIANTS: Record<IconButtonVariant, CSSProperties> = {
-  primary: { background: 'var(--signal-orange)', color: 'var(--text-on-accent)', border: '2px solid var(--signal-orange)' },
-  secondary: { background: 'var(--bg-input)', color: 'var(--off-white)', border: '2px solid var(--border-default)' },
-  ghost: { background: 'transparent', color: 'var(--off-white)', border: '2px solid transparent' },
+  primary: { background: 'linear-gradient(135deg, #F1F3F5 0%, #CFD4DA 46%, #A7ADB6 100%)', color: '#16181b', border: 'none' },
+  secondary: { background: 'var(--color-paper)', color: 'var(--color-ink2)', border: '1px solid var(--color-line)' },
+  ghost: { background: 'transparent', color: 'var(--color-ink2)', border: '1px solid transparent' },
 };
 
 export function IconButton({
@@ -33,7 +32,7 @@ export function IconButton({
   ...rest
 }: IconButtonProps) {
   const d = DIMS[size] ?? DIMS.md;
-  const iconSize = size === 'lg' ? 24 : size === 'sm' ? 18 : 20;
+  const iconSize = size === 'lg' ? 22 : size === 'sm' ? 16 : 18;
   const v = VARIANTS[variant] ?? VARIANTS.secondary;
   return (
     <button
@@ -46,22 +45,13 @@ export function IconButton({
         justifyContent: 'center',
         width: d,
         height: d,
-        borderRadius: 'var(--radius-md)',
+        borderRadius: 'var(--radius-btn)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.45 : 1,
-        transition: 'transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out)',
+        transition: 'opacity 120ms ease',
         WebkitTapHighlightColor: 'transparent',
         ...v,
         ...style,
-      }}
-      onMouseDown={(e) => {
-        if (!disabled) e.currentTarget.style.transform = 'scale(0.96)';
-      }}
-      onMouseUp={(e) => {
-        e.currentTarget.style.transform = 'scale(1)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'scale(1)';
       }}
       {...rest}
     >

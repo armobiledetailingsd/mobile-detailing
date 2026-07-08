@@ -1,6 +1,6 @@
 import type { CSSProperties, SVGProps } from 'react';
 
-/* RoadReady line-icon set — 24px grid, 2px stroke, round caps/joins.
+/* Alex Detailing line-icon set — 24px grid, 2px stroke, round caps/joins.
    Industrial, functional glyphs. Add new icons to PATHS as needed. */
 export type IconName =
   | 'phone'

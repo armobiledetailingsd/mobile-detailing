@@ -1,383 +1,44 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-/* ============================================================
-   RoadReady Tire Co. — design tokens
-   Rule: orange = action, yellow = attention/badge. Never both on
-   one element. Large surfaces stay graphite; accents stay accents.
-   Ported from the Claude Design export — see
-   /landing-page-design-brief.md for the full brief.
-   ============================================================ */
-:root {
-  /* ---- Base palette ---- */
-  --graphite-950: #121316; /* page background */
-  --graphite-900: #1b1d22; /* section / card background */
-  --graphite-800: #232630; /* raised card / input background */
-  --graphite-700: #2c2f36; /* borders, dividers */
-  --graphite-600: #3a3e47; /* hover borders, subtle strokes */
-
-  --signal-orange: #ff5a1f; /* primary CTA, links, active states */
-  --signal-orange-600: #e64a12; /* pressed / darker orange */
-  --signal-orange-300: #ff8354; /* hover / lighter orange */
-
-  --caution-yellow: #ffc627; /* secondary accent, badges, highlights */
-  --caution-yellow-600: #e0a800; /* darker yellow when needed on light */
-
-  --signal-green: #37d67a; /* success: deposit received, en route */
-  --signal-red: #f0563f; /* errors / danger (derived, used sparingly) */
-
-  --off-white: #f4f3ef; /* primary text on dark */
-  --steel-300: #9ca3af; /* secondary / muted text */
-  --steel-500: #6b7079; /* disabled text, faint labels */
-
-  /* ---- Semantic aliases ---- */
-  --bg-page: var(--graphite-950);
-  --bg-section: var(--graphite-900);
-  --bg-card: var(--graphite-900);
-  --bg-input: var(--graphite-800);
-  --bg-raised: var(--graphite-800);
-
-  --border-default: var(--graphite-700);
-  --border-strong: var(--graphite-600);
-  --border-accent: var(--signal-orange);
-
-  --text-primary: var(--off-white);
-  --text-muted: var(--steel-300);
-  --text-disabled: var(--steel-500);
-  --text-on-accent: var(--graphite-950); /* dark text sits on orange/yellow */
-
-  --action: var(--signal-orange);
-  --action-hover: var(--signal-orange-300);
-  --action-press: var(--signal-orange-600);
-  --link: var(--signal-orange);
-
-  --accent-badge: var(--caution-yellow);
-  --status-success: var(--signal-green);
-  --status-danger: var(--signal-red);
-
-  /* Focus ring — orange, high-contrast for roadside brightness */
-  --focus-ring: 0 0 0 3px rgba(255, 90, 31, 0.45);
-
-  /* ---- Typography families ----
-     Actual font-face loading happens via next/font/google in layout.tsx,
-     which defines --font-display / --font-body / --font-condensed as CSS
-     variables on <html>. --font-numeric aliases the body family. */
-  --font-numeric: var(--font-body);
-
-  /* ---- Weights ---- (never lighter than 400 on dark) */
-  --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
-  --fw-bold: 700;
-  --fw-black: 800;
-
-  /* ---- Type scale (mobile-first, px) ---- */
-  --fs-eyebrow: 13px;
-  --fs-caption: 13px;
-  --fs-body-sm: 15px;
-  --fs-body: 17px;
-  --fs-body-lg: 19px;
-  --fs-h4: 22px;
-  --fs-h3: 28px;
-  --fs-h2: 36px;
-  --fs-h1: 46px;
-  --fs-display: 64px;
-  --fs-numeral: 34px;
-
-  /* ---- Line heights ---- */
-  --lh-tight: 1.02;
-  --lh-snug: 1.15;
-  --lh-normal: 1.5;
-  --lh-relaxed: 1.6;
-
-  /* ---- Letter spacing ---- */
-  --ls-eyebrow: 0.14em;
-  --ls-display: -0.02em;
-  --ls-heading: -0.01em;
-  --ls-normal: 0;
-
-  /* ---- Numeric emphasis ---- */
-  --numeric-features: 'tnum' 1, 'lnum' 1;
-
-  /* ---- Spacing scale (4px base) ---- */
-  --space-0: 0;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
-  --space-24: 96px;
-  --space-32: 128px;
-
-  /* ---- Radii ---- (industrial = mostly hard corners) */
-  --radius-none: 0;
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
-  --radius-pill: 999px;
-
-  /* ---- Touch targets ---- (roadside minimum) */
-  --touch-min: 48px;
-  --control-h: 52px;
-  --control-h-lg: 60px;
-
-  /* ---- Layout ---- */
-  --container-max: 1120px;
-  --container-pad: 20px;
-  --section-pad-y: 72px;
-  --section-pad-y-mobile: 48px;
-
-  /* ---- Corner-bracket motif ---- */
-  --bracket-size: 18px;
-  --bracket-weight: 2px;
-  --bracket-color: var(--caution-yellow);
-
-  /* ---- Diagonal-cut edge ---- */
-  --diagonal-slope: 40px;
-
-  /* ---- Shadows ---- (subtle on dark; lift cards, not glow) */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-raised: 0 16px 40px rgba(0, 0, 0, 0.55);
-  --shadow-cta: 0 6px 20px rgba(255, 90, 31, 0.35);
-
-  /* ---- Motion ---- (mechanical, quick, no bounce) */
-  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --dur-fast: 120ms;
-  --dur-base: 180ms;
-  --dur-slow: 280ms;
-
-  /* ---- Interaction states ---- */
-  --press-scale: 0.98;
-  --hover-lift: -1px;
-
-  /* ---- Tire-tread texture (low-opacity repeating SVG) ---- */
-  --tread-color: rgba(244, 243, 239, 0.05);
-  --tread: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='28' viewBox='0 0 48 28'%3E%3Cg fill='none' stroke='%23F4F3EF' stroke-opacity='0.05' stroke-width='3'%3E%3Cpath d='M6 0v28M18 0v28M30 0v28M42 0v28'/%3E%3Cpath d='M0 8h48M0 20h48' stroke-opacity='0.03'/%3E%3C/g%3E%3C/svg%3E");
-
-  /* Diagonal hazard stripe (caution accents, sparingly) */
-  --hazard: repeating-linear-gradient(-45deg, var(--caution-yellow) 0 12px, var(--graphite-950) 12px 24px);
-}
-
-/* Mirror the brand colors into Tailwind's theme so utility classes
-   (bg-signal-orange, text-caution-yellow, etc.) are available too —
-   this repo's convention keeps tokens in @theme, not tailwind.config.js. */
 @theme {
-  --color-graphite-950: #121316;
-  --color-graphite-900: #1b1d22;
-  --color-graphite-800: #232630;
-  --color-graphite-700: #2c2f36;
-  --color-graphite-600: #3a3e47;
-  --color-signal-orange: #ff5a1f;
-  --color-signal-orange-600: #e64a12;
-  --color-signal-orange-300: #ff8354;
-  --color-caution-yellow: #ffc627;
-  --color-caution-yellow-600: #e0a800;
-  --color-signal-green: #37d67a;
-  --color-signal-red: #f0563f;
-  --color-off-white: #f4f3ef;
-  --color-steel-300: #9ca3af;
-  --color-steel-500: #6b7079;
+  --color-ink:       #0C0E10;
+  --color-charcoal:  #141619;
+  --color-surf-d:    #1B1E22;
+  --color-elev-d:    #23272C;
+  --color-platinum:  #EDEFF1;
+  --color-silver:    #C4C9D0;
+  --color-steel:     #828A94;
+  --color-paper:     #F4F5F6;
+  --color-surface:   #FFFFFF;
+  --color-ink1:      #14171A;
+  --color-ink2:      #4A525C;
+  --color-muted:     #727B85;
+  --color-line:      #E6E8EB;
+  --color-accent:    #3F4E62;
+  --color-accent-d:  #AEBAC8;
+  --color-success:   #12B76A;
+  --color-warning:   #F79009;
+  --color-error:     #F04438;
+  --color-info:      #0BA5EC;
+  --radius-input:  6px;
+  --radius-btn:    10px;
+  --radius-card:   16px;
+  --radius-panel:  22px;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* ============================================================
-   Base resets + motif utilities.
-   Keeps the brand's structural motifs (tread, corner brackets,
-   diagonal cut) as reusable classes shared by cards and sections.
-   ============================================================ */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@utility bg-metal {
+  background: linear-gradient(135deg, #F1F3F5 0%, #CFD4DA 46%, #A7ADB6 100%);
 }
 
-html,
-body {
-  background: var(--bg-page);
-}
-
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  color: var(--text-primary);
-  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
-  font-size: var(--fs-body);
-  line-height: var(--lh-normal);
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: var(--color-ink1);
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
-
-/* Tabular figures utility — ETA, deposit, phone */
-.rr-numeric {
-  font-variant-numeric: tabular-nums lining-nums;
-  font-feature-settings: var(--numeric-features);
-}
-
-/* Uppercase eyebrow label */
-.rr-eyebrow {
-  font-family: var(--font-condensed), sans-serif;
-  font-weight: var(--fw-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--ls-eyebrow);
-  font-size: var(--fs-eyebrow);
-  color: var(--caution-yellow);
-}
-
-/* Tire-tread background texture (never place body text directly over it) */
-.rr-tread {
-  background-image: var(--tread);
-  background-repeat: repeat;
-}
-
-/* Tread divider — a thin horizontal band of tread texture between sections */
-.rr-tread-divider {
-  height: 28px;
-  background-image: var(--tread);
-  background-repeat: repeat;
-  border-top: 1px solid var(--border-default);
-  border-bottom: 1px solid var(--border-default);
-  opacity: 0.9;
-}
-
-/* Corner-bracket framing (viewfinder). Apply to a positioned container. */
-.rr-brackets {
-  position: relative;
-}
-.rr-brackets::before,
-.rr-brackets::after {
-  content: '';
-  position: absolute;
-  width: var(--bracket-size);
-  height: var(--bracket-size);
-  pointer-events: none;
-}
-.rr-brackets::before {
-  top: 8px;
-  left: 8px;
-  border-top: var(--bracket-weight) solid var(--bracket-color);
-  border-left: var(--bracket-weight) solid var(--bracket-color);
-}
-.rr-brackets::after {
-  bottom: 8px;
-  right: 8px;
-  border-bottom: var(--bracket-weight) solid var(--bracket-color);
-  border-right: var(--bracket-weight) solid var(--bracket-color);
-}
-
-/* Diagonal-cut section top edge — asymmetric, not a straight band */
-.rr-diagonal-top {
-  clip-path: polygon(0 var(--diagonal-slope), 100% 0, 100% 100%, 0 100%);
-}
-.rr-diagonal-bottom {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--diagonal-slope)), 0 100%);
-}
-
-a {
-  color: var(--link);
-  text-decoration: none;
-}
-a:hover {
-  color: var(--action-hover);
-}
-
-@keyframes rr-pulse {
-  0% {
-    box-shadow: 0 0 0 0 currentColor;
-  }
-  70% {
-    box-shadow: 0 0 0 8px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-
-/* Hero: two columns on desktop, stack on mobile (mobile-first product) */
-.rr-hero-grid {
-  grid-template-columns: 1.05fr 0.95fr;
-}
-
-/* Footer: 4-column grid on desktop */
-.rr-footer-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  gap: 32px;
-}
-@media (max-width: 860px) {
-  .rr-hero-grid {
-    grid-template-columns: 1fr;
-  }
-  .rr-services-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  .rr-reviews-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .rr-deposit,
-  .rr-coverage,
-  .rr-footer-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .rr-desktop-nav,
-  .rr-desktop-phone {
-    display: none !important;
-  }
-  .rr-mobile-phone {
-    display: flex !important;
-  }
-  .rr-mobile-menu-wrapper {
-    display: block !important;
-  }
-}
-@media (max-width: 560px) {
-  .rr-services-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .rr-hero-trust {
-    gap: 18px !important;
-  }
-  .rr-sms-cta {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* QuoteForm 2-col grid — collapses to 1 col on small phones */
-.rr-form-2col {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-@media (max-width: 480px) {
-  .rr-form-2col {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Skip-to-content link — visible on keyboard focus, hidden otherwise */
-.rr-skip-link {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: -60px;
-  z-index: 9999;
-  padding: 10px 24px;
-  background: var(--signal-orange);
-  color: var(--off-white);
-  font-family: var(--font-condensed);
-  font-weight: 700;
-  font-size: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  border-radius: var(--radius-md);
-  transition: top var(--dur-fast) var(--ease-out);
-}
-.rr-skip-link:focus {
-  top: 8px;
-}
+img, video { max-width: 100%; display: block; }
+a { color: inherit; }
