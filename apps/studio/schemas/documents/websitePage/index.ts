@@ -47,6 +47,8 @@ export const websitePage = defineType({
           defineArrayMember({ type: 'coverageSection' }),
           defineArrayMember({ type: 'depositCallout' }),
           defineArrayMember({ type: 'smsBanner' }),
+          defineArrayMember({ type: 'finalCta' }),
+          defineArrayMember({ type: 'gallery' }),
         ],
       group: 'content',
     }),

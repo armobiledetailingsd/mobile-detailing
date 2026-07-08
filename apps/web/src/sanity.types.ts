@@ -15,6 +15,64 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: 'reference';
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+};
+
+export type GalleryItemImage = {
+  asset?: SanityImageAssetReference;
+  media?: unknown; // Unable to locate the referenced type "image.media" in schema
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  _type: 'image';
+};
+
+export type Gallery = {
+  _type: 'gallery';
+  eyebrow?: string;
+  heading: string;
+  items: Array<{
+    image?: GalleryItemImage;
+    label?: string;
+    aspect?: '4/3' | '16/9';
+    _type: 'galleryItem';
+    _key: string;
+  }>;
+};
+
+export type FinalCta = {
+  _type: 'finalCta';
+  eyebrow?: string;
+  heading: string;
+  body?: string;
+  phoneNumber: string;
+  phoneDisplay: string;
+  trustItems?: Array<{
+    icon?:
+      | 'phone'
+      | 'map-pin'
+      | 'navigation'
+      | 'clock'
+      | 'wrench'
+      | 'check'
+      | 'check-circle'
+      | 'arrow-right'
+      | 'star'
+      | 'shield'
+      | 'truck'
+      | 'alert-triangle'
+      | 'dollar-sign'
+      | 'message'
+      | 'gauge';
+    text: string;
+    _type: 'trustItem';
+    _key: string;
+  }>;
+};
+
 export type SmsBanner = {
   _type: 'smsBanner';
   headline: string;
@@ -94,27 +152,21 @@ export type ServicesSection = {
   _type: 'servicesSection';
   eyebrow?: string;
   heading: string;
-  services: Array<{
-    icon?:
-      | 'phone'
-      | 'map-pin'
-      | 'navigation'
-      | 'clock'
-      | 'wrench'
-      | 'check'
-      | 'check-circle'
-      | 'arrow-right'
-      | 'star'
-      | 'shield'
-      | 'truck'
-      | 'alert-triangle'
-      | 'dollar-sign'
-      | 'message'
-      | 'gauge';
-    title: string;
+  packages: Array<{
+    name: string;
+    price: number;
+    duration: string;
     description?: string;
-    price?: string;
-    _type: 'serviceItem';
+    includes?: Array<string>;
+    popular?: boolean;
+    _type: 'servicePackage';
+    _key: string;
+  }>;
+  addons?: Array<{
+    label: string;
+    price: number;
+    duration?: string;
+    _type: 'serviceAddon';
     _key: string;
   }>;
 };
@@ -217,13 +269,6 @@ export type PageSettings = {
   _type: 'pageSettings';
   hideNavigation?: boolean;
   hideFooter?: boolean;
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: 'reference';
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
 };
 
 export type Seo = {
@@ -402,6 +447,12 @@ export type WebsitePage = {
     | ({
         _key: string;
       } & SmsBanner)
+    | ({
+        _key: string;
+      } & FinalCta)
+    | ({
+        _key: string;
+      } & Gallery)
   >;
   pageSettings?: PageSettings;
   seo?: Seo;
@@ -505,6 +556,10 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | SanityImageAssetReference
+  | GalleryItemImage
+  | Gallery
+  | FinalCta
   | SmsBanner
   | DepositCallout
   | CoverageSection
@@ -517,7 +572,6 @@ export type AllSanitySchemaTypes =
   | WebsitePageReference
   | Link
   | PageSettings
-  | SanityImageAssetReference
   | Seo
   | Redirect
   | FooterNavigation
@@ -539,7 +593,7 @@ export type AllSanitySchemaTypes =
 
 // Source: ../web/src/lib/sanity/queries/blog.ts
 // Variable: allBlogPostsQuery
-// Query: *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {    _id,    _type,    title,    "slug": slug.current,    excerpt,    coverImage,    publishedAt  }
+// Query: *[_type == "blogPost" && defined(slug.current) && defined(publishedAt)] | order(publishedAt desc) {    _id,    _type,    title,    "slug": slug.current,    excerpt,    coverImage,    publishedAt  }
 export type AllBlogPostsQueryResult = Array<{
   _id: string;
   _type: 'blogPost';
@@ -598,7 +652,7 @@ export type BlogPostBySlugQueryResult = {
 
 // Source: ../web/src/lib/sanity/queries/blog.ts
 // Variable: allBlogPostSlugsQuery
-// Query: *[_type == "blogPost" && defined(slug.current)]{    "slug": slug.current  }
+// Query: *[_type == "blogPost" && defined(slug.current) && defined(publishedAt)]{    "slug": slug.current  }
 export type AllBlogPostSlugsQueryResult = Array<{
   slug: string;
 }>;
@@ -772,6 +826,14 @@ export type HomepageQueryResult = {
         }> | null;
       }
     | {
+        _type: 'finalCta';
+        _key: string;
+      }
+    | {
+        _type: 'gallery';
+        _key: string;
+      }
+    | {
         _type: 'heroSection';
         _key: string;
         eyebrow: string | null;
@@ -850,28 +912,7 @@ export type HomepageQueryResult = {
         _key: string;
         eyebrow: string | null;
         heading: string;
-        services: Array<{
-          icon:
-            | 'alert-triangle'
-            | 'arrow-right'
-            | 'check-circle'
-            | 'check'
-            | 'clock'
-            | 'dollar-sign'
-            | 'gauge'
-            | 'map-pin'
-            | 'message'
-            | 'navigation'
-            | 'phone'
-            | 'shield'
-            | 'star'
-            | 'truck'
-            | 'wrench'
-            | null;
-          title: string;
-          description: string | null;
-          price: string | null;
-        }>;
+        services: null;
       }
     | {
         _type: 'smsBanner';
@@ -960,6 +1001,14 @@ export type WebsitePageBySlugQueryResult = {
         }> | null;
       }
     | {
+        _type: 'finalCta';
+        _key: string;
+      }
+    | {
+        _type: 'gallery';
+        _key: string;
+      }
+    | {
         _type: 'heroSection';
         _key: string;
         eyebrow: string | null;
@@ -1038,28 +1087,7 @@ export type WebsitePageBySlugQueryResult = {
         _key: string;
         eyebrow: string | null;
         heading: string;
-        services: Array<{
-          icon:
-            | 'alert-triangle'
-            | 'arrow-right'
-            | 'check-circle'
-            | 'check'
-            | 'clock'
-            | 'dollar-sign'
-            | 'gauge'
-            | 'map-pin'
-            | 'message'
-            | 'navigation'
-            | 'phone'
-            | 'shield'
-            | 'star'
-            | 'truck'
-            | 'wrench'
-            | null;
-          title: string;
-          description: string | null;
-          price: string | null;
-        }>;
+        services: null;
       }
     | {
         _type: 'smsBanner';
@@ -1126,9 +1154,9 @@ export type AllRedirectsQueryResult = Array<{
 import '@sanity/client';
 declare module '@sanity/client' {
   interface SanityQueries {
-    '\n  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt\n  }\n': AllBlogPostsQueryResult;
+    '\n  *[_type == "blogPost" && defined(slug.current) && defined(publishedAt)] | order(publishedAt desc) {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt\n  }\n': AllBlogPostsQueryResult;
     '\n  *[_type == "blogPost" && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    body,\n    seo\n  }\n': BlogPostBySlugQueryResult;
-    '\n  *[_type == "blogPost" && defined(slug.current)]{\n    "slug": slug.current\n  }\n': AllBlogPostSlugsQueryResult;
+    '\n  *[_type == "blogPost" && defined(slug.current) && defined(publishedAt)]{\n    "slug": slug.current\n  }\n': AllBlogPostSlugsQueryResult;
     '\n  *[_type == "blogPost" && defined(slug.current) && defined(publishedAt) && seo.noIndex != true]\n    | order(_updatedAt desc) {\n    "slug": slug.current,\n    "lastModified": _updatedAt\n  }\n': BlogPostsForSitemapQueryResult;
     '*[_id == $id && _type == "siteSettings"][0].blogEnabled': BlogEnabledQueryResult;
     '{\n  label,\n  linkType,\n  openInNewTab,\n  "href": select(\n    linkType == "external" => externalUrl,\n    linkType == "internal" => "/" + internalReference->slug.current,\n    null\n  )\n}': LinkProjectionResult;
