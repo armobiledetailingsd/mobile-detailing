@@ -219,3 +219,4 @@ Three files are always required:
 4. Add the array member to `websitePage` schema so editors can pick it
 
 Then run `pnpm --filter studio typegen:all` and commit the updated types.
+# mobile-detailing
