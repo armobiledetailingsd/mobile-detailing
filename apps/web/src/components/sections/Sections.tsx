@@ -9,6 +9,7 @@ import { Coverage } from './Coverage';
 import { DepositCallout } from './DepositCallout';
 import { SmsBanner } from './SmsBanner';
 import { FinalCTA } from './FinalCTA';
+import { Gallery } from './Gallery';
 
 type PageSection = NonNullable<NonNullable<HomepageQueryResult>['sections']>[number];
 
@@ -43,6 +44,8 @@ export function Sections({ sections }: SectionsProps) {
             return <SmsBanner key={section._key} {...section} />;
           case 'finalCta':
             return <FinalCTA key={section._key} {...section} />;
+          case 'gallery':
+            return <Gallery key={section._key} {...section} />;
           default:
             if (process.env.NODE_ENV !== 'production') {
               const unknown = section as { _type: string; _key: string };
