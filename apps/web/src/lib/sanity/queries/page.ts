@@ -38,8 +38,8 @@ const pageProjection = groq`{
     _type == "servicesSection" => {
       eyebrow,
       heading,
-      packages[]{ name, price, duration, description, includes, popular },
-      addons[]{ label, price, duration }
+      packages[]{ _key, name, price, duration, description, includes, popular },
+      addons[]{ _key, label, price, duration }
     },
     _type == "howItWorks" => {
       eyebrow,
@@ -80,7 +80,7 @@ const pageProjection = groq`{
       body,
       phoneNumber,
       phoneDisplay,
-      trustItems[]{ icon, text }
+      trustItems[]{ _key, icon, text }
     },
     _type == "gallery" => {
       eyebrow,

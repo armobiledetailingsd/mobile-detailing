@@ -53,8 +53,8 @@ export function FinalCTA({ eyebrow, heading, body, phoneNumber, phoneDisplay, tr
 
         {trustItems && trustItems.length > 0 && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: 32, flexWrap: 'wrap' }}>
-            {trustItems.map((item, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            {trustItems.map((item) => (
+              <div key={item._key} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                 {item.icon && <Icon name={item.icon as IconName} size={14} style={{ color: 'var(--color-steel)' }} />}
                 <span style={{ fontSize: 13, color: 'var(--color-steel)' }}>{item.text}</span>
               </div>

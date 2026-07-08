@@ -7,71 +7,53 @@ export type ServicesSectionProps = Extract<PageSection, { _type: 'servicesSectio
 
 export function Services({ eyebrow, heading, packages, addons }: ServicesSectionProps) {
   return (
-    <section id="services" aria-labelledby="services-heading" style={{ background: 'var(--color-paper)', borderTop: '1px solid var(--color-line)' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '80px 24px' }}>
+    <section id="services" aria-labelledby="services-heading" className="bg-paper border-t border-line">
+      <div className="max-w-[1200px] mx-auto px-6 py-20">
         {eyebrow && (
-          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-muted)' }}>
+          <p className="m-0 mb-[10px] text-[12px] font-semibold tracking-[0.12em] uppercase text-muted">
             {eyebrow}
           </p>
         )}
         <h2
           id="services-heading"
-          style={{
-            margin: '0 0 48px',
-            fontFamily: 'var(--font-sans)',
-            fontWeight: 600,
-            fontSize: 'clamp(28px,4vw,40px)',
-            color: 'var(--color-ink1)',
-            letterSpacing: '-0.02em',
-          }}
+          className="m-0 mb-12 font-sans font-semibold text-[clamp(28px,4vw,40px)] text-ink1 tracking-[-0.02em]"
         >
           {heading ?? 'Services & Pricing'}
         </h2>
 
         {packages && packages.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, marginBottom: 48 }}>
-            {packages.map((pkg, i) => (
+          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))] gap-5 mb-12">
+            {packages.map((pkg) => (
               <div
-                key={i}
-                style={{
-                  position: 'relative',
-                  background: 'var(--color-surface)',
-                  border: pkg.popular ? '2px solid var(--color-ink1)' : '1.5px solid var(--color-line)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '28px 24px 24px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
+                key={pkg._key}
+                className={[
+                  'relative bg-surface rounded-card p-[28px_24px_24px] flex flex-col',
+                  pkg.popular ? 'border-2 border-ink1' : 'border border-[1.5px] border-line',
+                ].join(' ')}
               >
                 {pkg.popular && (
-                  <span style={{
-                    position: 'absolute', top: -12, left: 24,
-                    background: 'var(--color-ink1)', color: 'var(--color-platinum)',
-                    fontSize: 11, fontWeight: 600, letterSpacing: '0.08em',
-                    padding: '3px 10px', borderRadius: 100,
-                    textTransform: 'uppercase',
-                  }}>
+                  <span className="absolute -top-3 left-6 bg-ink1 text-platinum text-[11px] font-semibold tracking-[0.08em] px-[10px] py-[3px] rounded-full uppercase">
                     Most popular
                   </span>
                 )}
 
-                <div style={{ marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, color: 'var(--color-muted)', fontWeight: 500 }}>{pkg.duration}</span>
+                <div className="mb-1">
+                  <span className="text-[13px] text-muted font-medium">{pkg.duration}</span>
                 </div>
-                <h3 style={{ margin: '0 0 8px', fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: 20, color: 'var(--color-ink1)' }}>
+                <h3 className="m-0 mb-2 font-sans font-semibold text-[20px] text-ink1">
                   {pkg.name}
                 </h3>
                 {pkg.description && (
-                  <p style={{ margin: '0 0 20px', fontSize: 14, color: 'var(--color-ink2)', lineHeight: 1.55 }}>
+                  <p className="m-0 mb-5 text-[14px] text-ink2 leading-[1.55]">
                     {pkg.description}
                   </p>
                 )}
 
                 {pkg.includes && pkg.includes.length > 0 && (
-                  <ul style={{ listStyle: 'none', margin: '0 0 24px', padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <ul className="list-none m-0 mb-6 p-0 flex flex-col gap-2">
                     {pkg.includes.map((item, j) => (
-                      <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 14, color: 'var(--color-ink2)' }}>
-                        <span style={{ color: 'var(--color-success)', flexShrink: 0, marginTop: 2 }}>
+                      <li key={j} className="flex items-start gap-2 text-[14px] text-ink2">
+                        <span className="text-success shrink-0 mt-[2px]">
                           <Icon name="check" size={15} />
                         </span>
                         {item}
@@ -80,8 +62,8 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                   </ul>
                 )}
 
-                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 28, color: 'var(--color-ink1)' }}>
+                <div className="mt-auto flex items-center justify-between">
+                  <span className="font-sans font-bold text-[28px] text-ink1">
                     ${pkg.price}
                   </span>
                   <Button variant={pkg.popular ? 'ink' : 'outline'} size="sm" aria-label={`Book ${pkg.name}`}>Book now</Button>
@@ -92,20 +74,15 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
         )}
 
         {addons && addons.length > 0 && (
-          <div style={{
-            background: 'var(--color-surface)',
-            border: '1.5px solid var(--color-line)',
-            borderRadius: 'var(--radius-panel)',
-            padding: '28px 28px',
-          }}>
-            <p style={{ margin: '0 0 20px', fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: 15, color: 'var(--color-ink1)' }}>
+          <div className="bg-surface border border-[1.5px] border-line rounded-panel p-7">
+            <p className="m-0 mb-5 font-sans font-semibold text-[15px] text-ink1">
               Add-ons
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
-              {addons.map((addon, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 14, color: 'var(--color-ink2)' }}>{addon.label}</span>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-ink1)', whiteSpace: 'nowrap' }}>+${addon.price}</span>
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))] gap-[14px]">
+              {addons.map((addon) => (
+                <div key={addon._key} className="flex justify-between items-center gap-2">
+                  <span className="text-[14px] text-ink2">{addon.label}</span>
+                  <span className="text-[14px] font-semibold text-ink1 whitespace-nowrap">+${addon.price}</span>
                 </div>
               ))}
             </div>
