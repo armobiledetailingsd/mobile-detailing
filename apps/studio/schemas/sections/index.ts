@@ -7,6 +7,8 @@ import { reviewsSection } from './reviewsSection';
 import { coverageSection } from './coverageSection';
 import { depositCallout } from './depositCallout';
 import { smsBanner } from './smsBanner';
+import { finalCta } from './finalCta';
+import { gallery } from './gallery';
 
 export const sectionTypes = [
   richText,
@@ -18,4 +20,6 @@ export const sectionTypes = [
   coverageSection,
   depositCallout,
   smsBanner,
+  finalCta,
+  gallery,
 ];

@@ -14,12 +14,16 @@ type IconButtonProps = {
   style?: CSSProperties;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
-const DIMS: Record<IconButtonSize, number> = { sm: 36, md: 44, lg: 52 };
+const DIM_CLASSES: Record<IconButtonSize, string> = {
+  sm: 'size-9',
+  md: 'size-11',
+  lg: 'size-[52px]',
+};
 
-const VARIANTS: Record<IconButtonVariant, CSSProperties> = {
-  primary: { background: 'linear-gradient(135deg, #F1F3F5 0%, #CFD4DA 46%, #A7ADB6 100%)', color: '#16181b', border: 'none' },
-  secondary: { background: 'var(--color-paper)', color: 'var(--color-ink2)', border: '1px solid var(--color-line)' },
-  ghost: { background: 'transparent', color: 'var(--color-ink2)', border: '1px solid transparent' },
+const VARIANT_CLASSES: Record<IconButtonVariant, string> = {
+  primary: 'bg-metal text-[#16181b] border-0',
+  secondary: 'bg-paper text-ink2 border border-line',
+  ghost: 'bg-transparent text-ink2 border border-transparent',
 };
 
 export function IconButton({
@@ -29,30 +33,25 @@ export function IconButton({
   label,
   disabled = false,
   style,
+  className,
   ...rest
 }: IconButtonProps) {
-  const d = DIMS[size] ?? DIMS.md;
   const iconSize = size === 'lg' ? 22 : size === 'sm' ? 16 : 18;
-  const v = VARIANTS[variant] ?? VARIANTS.secondary;
   return (
     <button
       type="button"
       aria-label={label}
       disabled={disabled}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: d,
-        height: d,
-        borderRadius: 'var(--radius-btn)',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.45 : 1,
-        transition: 'opacity 120ms ease',
-        WebkitTapHighlightColor: 'transparent',
-        ...v,
-        ...style,
-      }}
+      className={[
+        'inline-flex items-center justify-center rounded-btn cursor-pointer',
+        'transition-opacity duration-[120ms] ease-out',
+        '[-webkit-tap-highlight-color:transparent]',
+        'disabled:opacity-[0.45] disabled:cursor-not-allowed',
+        DIM_CLASSES[size] ?? DIM_CLASSES.md,
+        VARIANT_CLASSES[variant] ?? VARIANT_CLASSES.secondary,
+        className ?? '',
+      ].filter(Boolean).join(' ')}
+      style={style}
       {...rest}
     >
       <Icon name={icon} size={iconSize} />

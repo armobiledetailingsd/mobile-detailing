@@ -38,7 +38,8 @@ const pageProjection = groq`{
     _type == "servicesSection" => {
       eyebrow,
       heading,
-      services[]{ icon, title, description, price }
+      packages[]{ _key, name, price, duration, description, includes, popular },
+      addons[]{ _key, label, price, duration }
     },
     _type == "howItWorks" => {
       eyebrow,
@@ -72,6 +73,19 @@ const pageProjection = groq`{
       body,
       phoneNumber,
       phoneDisplay
+    },
+    _type == "finalCta" => {
+      eyebrow,
+      heading,
+      body,
+      phoneNumber,
+      phoneDisplay,
+      trustItems[]{ _key, icon, text }
+    },
+    _type == "gallery" => {
+      eyebrow,
+      heading,
+      items[]{ _key, image{ asset{ _ref }, hotspot, crop }, label, aspect }
     }
   }
 }`;

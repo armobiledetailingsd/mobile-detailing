@@ -24,7 +24,7 @@ const allBlogPostsQuery = groq`
 `;
 
 const blogPostBySlugQuery = groq`
-  *[_type == "blogPost" && slug.current == $slug][0]{
+  *[_type == "blogPost" && slug.current == $slug && defined(publishedAt)][0]{
     _id,
     _type,
     title,

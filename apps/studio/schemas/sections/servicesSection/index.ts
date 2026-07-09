@@ -1,11 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { ControlsIcon } from '@sanity/icons';
 
-const ICON_OPTIONS = [
-  'phone', 'map-pin', 'navigation', 'clock', 'wrench', 'check', 'check-circle',
-  'arrow-right', 'star', 'shield', 'truck', 'alert-triangle', 'dollar-sign', 'message', 'gauge',
-].map((v) => ({ title: v, value: v }));
-
 export const servicesSection = defineType({
   name: 'servicesSection',
   title: 'Services',
@@ -24,22 +19,54 @@ export const servicesSection = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'services',
-      title: 'Services',
+      name: 'packages',
+      title: 'Packages',
       type: 'array',
       validation: (Rule) => Rule.required().min(1),
       of: [
         defineArrayMember({
           type: 'object',
-          name: 'serviceItem',
+          name: 'servicePackage',
           fields: [
-            defineField({ name: 'icon', title: 'Icon', type: 'string', options: { list: ICON_OPTIONS } }),
-            defineField({ name: 'title', title: 'Title', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'name', title: 'Name', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'price', title: 'Price ($)', type: 'number', validation: (Rule) => Rule.required().positive() }),
+            defineField({ name: 'duration', title: 'Duration', type: 'string', description: 'e.g. "~45 min"', validation: (Rule) => Rule.required() }),
             defineField({ name: 'description', title: 'Description', type: 'text', rows: 2 }),
-            defineField({ name: 'price', title: 'Price', type: 'string', description: 'Optional, e.g. "$49"' }),
+            defineField({
+              name: 'includes',
+              title: 'Includes',
+              type: 'array',
+              of: [defineArrayMember({ type: 'string' })],
+            }),
+            defineField({ name: 'popular', title: 'Most popular?', type: 'boolean' }),
           ],
           preview: {
-            select: { title: 'title', subtitle: 'price' },
+            select: { title: 'name', subtitle: 'price' },
+            prepare({ title, subtitle }) {
+              return { title, subtitle: subtitle ? `$${subtitle}` : '' };
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: 'addons',
+      title: 'Add-ons',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'serviceAddon',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'price', title: 'Price ($)', type: 'number', validation: (Rule) => Rule.required().positive() }),
+            defineField({ name: 'duration', title: 'Duration', type: 'string', description: 'e.g. "~30 min"' }),
+          ],
+          preview: {
+            select: { title: 'label', subtitle: 'price' },
+            prepare({ title, subtitle }) {
+              return { title, subtitle: subtitle ? `+$${subtitle}` : '' };
+            },
           },
         }),
       ],

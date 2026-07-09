@@ -6,41 +6,26 @@ type FieldLabelProps = {
   style?: CSSProperties;
 } & LabelHTMLAttributes<HTMLLabelElement>;
 
-export function FieldLabel({ children, htmlFor, optional = false, hint, style, ...rest }: FieldLabelProps) {
+export function FieldLabel({ children, htmlFor, optional = false, hint, style, className, ...rest }: FieldLabelProps) {
   return (
     <label
       htmlFor={htmlFor}
-      style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: 8,
-        marginBottom: 8,
-        fontFamily: 'var(--font-sans)',
-        fontWeight: 600,
-        fontSize: 13,
-        textTransform: 'uppercase',
-        letterSpacing: '0.07em',
-        color: 'var(--color-ink2)',
-        ...style,
-      }}
+      className={[
+        'flex items-baseline gap-2 mb-2',
+        'font-sans font-semibold text-[13px] uppercase tracking-[0.07em] text-ink2',
+        className ?? '',
+      ].filter(Boolean).join(' ')}
+      style={style}
       {...rest}
     >
       {children}
       {optional && (
-        <span style={{ fontSize: 12, letterSpacing: '0.04em', color: 'var(--color-muted)', fontWeight: 500 }}>
+        <span className="text-[12px] tracking-[0.04em] text-muted font-medium normal-case">
           Optional
         </span>
       )}
       {hint && (
-        <span
-          style={{
-            fontSize: 12,
-            letterSpacing: '0.04em',
-            color: 'var(--color-muted)',
-            fontWeight: 500,
-            textTransform: 'none',
-          }}
-        >
+        <span className="text-[12px] tracking-[0.04em] text-muted font-medium normal-case">
           {hint}
         </span>
       )}

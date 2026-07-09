@@ -1,10 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CreditCardIcon } from '@sanity/icons';
-
-const ICON_OPTIONS = [
-  'phone', 'map-pin', 'navigation', 'clock', 'wrench', 'check', 'check-circle',
-  'arrow-right', 'star', 'shield', 'truck', 'alert-triangle', 'dollar-sign', 'message', 'gauge',
-].map((v) => ({ title: v, value: v }));
+import { ICON_OPTIONS } from '../../shared/iconOptions';
 
 export const depositCallout = defineType({
   name: 'depositCallout',

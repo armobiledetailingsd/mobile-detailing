@@ -23,22 +23,8 @@ export function Textarea({ invalid = false, rows = 3, style, onFocus, onBlur, ..
         setFocused(false);
         onBlur?.(e);
       }}
-      style={{
-        width: '100%',
-        padding: '14px 16px',
-        background: 'var(--color-paper)',
-        color: 'var(--color-ink1)',
-        fontFamily: 'var(--font-sans)',
-        fontSize: 15,
-        fontWeight: 400,
-        lineHeight: 1.5,
-        border: `2px solid ${borderColor}`,
-        borderRadius: 'var(--radius-input)',
-        outline: 'none',
-        resize: 'vertical',
-        transition: 'border-color 120ms ease',
-        ...style,
-      }}
+      className="w-full py-[14px] px-4 bg-paper text-ink1 font-sans text-[15px] font-normal leading-[1.5] rounded-input outline-none resize-y transition-[border-color] duration-[120ms] ease-out"
+      style={{ border: `2px solid ${borderColor}`, ...style }}
       {...rest}
     />
   );

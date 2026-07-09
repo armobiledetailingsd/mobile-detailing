@@ -16,6 +16,7 @@ export function SectionEdge({
   background = 'var(--color-paper)',
   slope = 40,
   style,
+  className,
   ...rest
 }: SectionEdgeProps) {
   const clip =
@@ -27,12 +28,8 @@ export function SectionEdge({
 
   return (
     <section
-      style={{
-        position: 'relative',
-        background,
-        clipPath: clip,
-        ...style,
-      }}
+      className={`relative${className ? ` ${className}` : ''}`}
+      style={{ background, clipPath: clip, ...style }}
       {...rest}
     >
       {children}

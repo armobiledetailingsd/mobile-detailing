@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Sections } from '@/components/sections/Sections';
-import { Gallery } from '@/components/sections/Gallery';
-import { FinalCTA } from '@/components/sections/FinalCTA';
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { getAllWebsitePageSlugs, getHomepage, getWebsitePageBySlug } from '@/lib/sanity/queries/page';
 
@@ -26,8 +24,8 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
   if (isHomepageRoute(params.slug)) {
     const page = await getHomepage();
     return {
-      title: page?.seo?.metaTitle ?? 'Alex Detailing — Premium Mobile Detailing in Austin, TX',
-      description: page?.seo?.metaDescription ?? 'Professional mobile auto detailing in Austin and surrounding areas. We come to your home or office. Book in minutes.',
+      title: page?.seo?.metaTitle ?? 'Alex Detailing — Premium Mobile Detailing in North County San Diego',
+      description: page?.seo?.metaDescription ?? 'Professional mobile auto detailing in North County San Diego and surrounding areas. We come to your home or office. Book in minutes.',
       robots: page?.seo?.noIndex ? { index: false, follow: false } : undefined,
     };
   }
@@ -53,8 +51,6 @@ export default async function Page(props: { params: Promise<RouteParams> }) {
     return (
       <div data-sanity={createDocDataAttribute(page).toString()}>
         <Sections sections={page.sections} />
-        <Gallery />
-        <FinalCTA />
       </div>
     );
   }

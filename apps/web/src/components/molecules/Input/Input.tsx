@@ -16,16 +16,11 @@ export function Input({ icon, invalid = false, numeric = false, style, onFocus, 
   const borderColor = invalid ? 'var(--color-error)' : focused ? 'var(--color-accent)' : 'var(--color-line)';
 
   return (
-    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+    <div className="relative flex items-center">
       {icon && (
         <span
-          style={{
-            position: 'absolute',
-            left: 14,
-            display: 'flex',
-            color: focused ? 'var(--color-accent)' : 'var(--color-steel)',
-            pointerEvents: 'none',
-          }}
+          className="absolute left-[14px] flex pointer-events-none"
+          style={{ color: focused ? 'var(--color-accent)' : 'var(--color-steel)' }}
         >
           <Icon name={icon} size={20} />
         </span>
@@ -34,22 +29,13 @@ export function Input({ icon, invalid = false, numeric = false, style, onFocus, 
         aria-invalid={invalid || undefined}
         onFocus={(e) => { setFocused(true); onFocus?.(e); }}
         onBlur={(e) => { setFocused(false); onBlur?.(e); }}
-        style={{
-          width: '100%',
-          height: 48,
-          padding: icon ? '0 16px 0 44px' : '0 16px',
-          background: 'var(--color-paper)',
-          color: 'var(--color-ink1)',
-          fontFamily: 'var(--font-sans)',
-          fontVariantNumeric: numeric ? 'tabular-nums lining-nums' : 'normal',
-          fontSize: numeric ? 18 : 15,
-          fontWeight: 500,
-          border: `2px solid ${borderColor}`,
-          borderRadius: 'var(--radius-input)',
-          outline: 'none',
-          transition: 'border-color 120ms ease',
-          ...style,
-        }}
+        className={[
+          'w-full h-12 bg-paper text-ink1 font-sans font-medium rounded-input outline-none',
+          'transition-[border-color] duration-[120ms] ease-out',
+          icon ? 'pl-[44px] pr-4' : 'px-4',
+          numeric ? 'text-[18px] [font-variant-numeric:tabular-nums_lining-nums]' : 'text-[15px]',
+        ].filter(Boolean).join(' ')}
+        style={{ border: `2px solid ${borderColor}`, ...style }}
         {...rest}
       />
     </div>

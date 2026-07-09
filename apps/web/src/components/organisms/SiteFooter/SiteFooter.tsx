@@ -57,38 +57,30 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
     <footer
       data-component="site-footer"
       data-sanity={navigation ? createDocDataAttribute(navigation).toString() : undefined}
-      style={{ background: 'var(--color-ink1)', borderTop: '1px solid rgba(255,255,255,0.08)' }}
+      className="bg-ink1 border-t border-[rgba(255,255,255,0.08)]"
     >
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '56px 24px 36px' }}>
+      <div className="max-w-[1200px] mx-auto px-6 pt-14 pb-9">
         {/* Brand + columns grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8" style={{ marginBottom: 48 }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand column */}
           <div>
-            <div style={{ marginBottom: 16 }}>
-              <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 16, color: 'var(--color-platinum)', letterSpacing: '0.06em' }}>
+            <div className="mb-4">
+              <span className="font-sans font-bold text-[16px] text-platinum tracking-[0.06em]">
                 ALEX·DETAILING
               </span>
             </div>
-            <p style={{ margin: 0, fontSize: 14, color: 'var(--color-steel)', lineHeight: 1.6, maxWidth: 200 }}>
-              Premium mobile detailing in Austin, TX. We come to you — no shop, no wait.
+            <p className="m-0 text-[14px] text-steel leading-[1.6] max-w-[200px]">
+              Premium mobile detailing in North County San Diego. We come to you — no shop, no wait.
             </p>
           </div>
 
           {/* Nav columns */}
           {columns.map((col) => (
             <div key={col._key}>
-              <h3 style={{
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 600,
-                fontSize: 11,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: 'var(--color-muted)',
-                margin: '0 0 14px',
-              }}>
+              <h3 className="font-sans font-semibold text-[11px] uppercase tracking-[0.1em] text-muted m-0 mb-[14px]">
                 {col.heading}
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div className="flex flex-col gap-[10px]">
                 {(col.links ?? []).map((link) =>
                   link.href ? (
                     <a
@@ -96,12 +88,12 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
                       href={resolveNavHref(link.href)}
                       target={link.openInNewTab ? '_blank' : undefined}
                       rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
-                      style={{ fontSize: 14, color: 'var(--color-silver)', textDecoration: 'none' }}
+                      className="text-[14px] text-silver no-underline"
                     >
                       {link.label}
                     </a>
                   ) : (
-                    <span key={link.label} style={{ fontSize: 14, color: 'var(--color-silver)' }}>
+                    <span key={link.label} className="text-[14px] text-silver">
                       {link.label}
                     </span>
                   )
@@ -112,19 +104,11 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
         </div>
 
         {/* Bottom bar */}
-        <div style={{
-          paddingTop: 20,
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 12,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <span style={{ fontSize: 13, color: 'var(--color-muted)' }}>{copyright}</span>
-          <div style={{ display: 'flex', gap: 20 }}>
+        <div className="pt-5 border-t border-[rgba(255,255,255,0.08)] flex flex-wrap gap-3 justify-between items-center">
+          <span className="text-[13px] text-muted">{copyright}</span>
+          <div className="flex gap-5">
             {['Privacy', 'Terms'].map((l) => (
-              <a key={l} href="#" style={{ fontSize: 13, color: 'var(--color-muted)', textDecoration: 'none' }}>
+              <a key={l} href="#" className="text-[13px] text-muted no-underline">
                 {l}
               </a>
             ))}
