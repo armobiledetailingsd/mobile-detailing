@@ -36,20 +36,20 @@ const homepage = {
       headlineAccent: 'delivered to you.',
       body: "Austin's mobile detail service. We come to your home or office, no shop needed.",
       trustMarkers: [
-        { _key: 'tm1', icon: 'star', value: '5.0', label: 'on Google' },
-        { _key: 'tm2', icon: 'check-circle', value: '140+', label: 'reviews' },
-        { _key: 'tm3', icon: 'shield', value: 'Fully', label: 'insured' },
-        { _key: 'tm4', icon: 'truck', value: 'We come', label: 'to you' },
+        { _type: 'trustMarker', _key: 'tm1', icon: 'star', value: '5.0', label: 'on Google' },
+        { _type: 'trustMarker', _key: 'tm2', icon: 'check-circle', value: '140+', label: 'reviews' },
+        { _type: 'trustMarker', _key: 'tm3', icon: 'shield', value: 'Fully', label: 'insured' },
+        { _type: 'trustMarker', _key: 'tm4', icon: 'truck', value: 'We come', label: 'to you' },
       ],
     },
     {
       _type: 'trustBar',
       _key: 'trust',
       items: [
-        { _key: 'tb1', icon: 'star', value: '5.0 Rating', label: 'on Google' },
-        { _key: 'tb2', icon: 'check-circle', value: '140+ Reviews', label: 'verified customers' },
-        { _key: 'tb3', icon: 'shield', value: 'Fully Insured', label: 'licensed & bonded' },
-        { _key: 'tb4', icon: 'truck', value: 'Mobile Service', label: 'we come to you' },
+        { _type: 'trustBarItem', _key: 'tb1', icon: 'star', value: '5.0 Rating', label: 'on Google' },
+        { _type: 'trustBarItem', _key: 'tb2', icon: 'check-circle', value: '140+ Reviews', label: 'verified customers' },
+        { _type: 'trustBarItem', _key: 'tb3', icon: 'shield', value: 'Fully Insured', label: 'licensed & bonded' },
+        { _type: 'trustBarItem', _key: 'tb4', icon: 'truck', value: 'Mobile Service', label: 'we come to you' },
       ],
     },
     {
@@ -59,6 +59,7 @@ const homepage = {
       heading: 'Services & Pricing',
       packages: [
         {
+          _type: 'servicePackage',
           _key: 'pkg1',
           name: 'Express Refresh',
           price: 89,
@@ -68,6 +69,7 @@ const homepage = {
           popular: false,
         },
         {
+          _type: 'servicePackage',
           _key: 'pkg2',
           name: 'Signature Detail',
           price: 249,
@@ -83,6 +85,7 @@ const homepage = {
           popular: true,
         },
         {
+          _type: 'servicePackage',
           _key: 'pkg3',
           name: 'Ceramic Coating',
           price: 699,
@@ -97,6 +100,7 @@ const homepage = {
           popular: false,
         },
         {
+          _type: 'servicePackage',
           _key: 'pkg4',
           name: 'Paint Correction',
           price: 549,
@@ -112,10 +116,10 @@ const homepage = {
         },
       ],
       addons: [
-        { _key: 'ao1', label: 'Pet Hair Removal', price: 40, duration: '~30 min' },
-        { _key: 'ao2', label: 'Engine Bay Detail', price: 45, duration: '~30 min' },
-        { _key: 'ao3', label: 'Headlight Restoration', price: 60, duration: '~45 min' },
-        { _key: 'ao4', label: 'Odor Elimination', price: 50, duration: '~30 min' },
+        { _type: 'serviceAddon', _key: 'ao1', label: 'Pet Hair Removal', price: 40, duration: '~30 min' },
+        { _type: 'serviceAddon', _key: 'ao2', label: 'Engine Bay Detail', price: 45, duration: '~30 min' },
+        { _type: 'serviceAddon', _key: 'ao3', label: 'Headlight Restoration', price: 60, duration: '~45 min' },
+        { _type: 'serviceAddon', _key: 'ao4', label: 'Odor Elimination', price: 50, duration: '~30 min' },
       ],
     },
     {
@@ -124,9 +128,9 @@ const homepage = {
       eyebrow: 'Simple process',
       heading: 'How it works',
       steps: [
-        { _key: 's1', title: 'Book online', description: 'Choose your service and pick a time that works for you. Takes under 2 minutes.' },
-        { _key: 's2', title: 'We come to you', description: 'Our detailer arrives at your home, office, or wherever your car is parked.' },
-        { _key: 's3', title: 'Drive away clean', description: "Sit back while we work. You'll get a spotless car without leaving your driveway." },
+        { _type: 'step', _key: 's1', title: 'Book online', description: 'Choose your service and pick a time that works for you. Takes under 2 minutes.' },
+        { _type: 'step', _key: 's2', title: 'We come to you', description: 'Our detailer arrives at your home, office, or wherever your car is parked.' },
+        { _type: 'step', _key: 's3', title: 'Drive away clean', description: "Sit back while we work. You'll get a spotless car without leaving your driveway." },
       ],
     },
     {
@@ -138,18 +142,21 @@ const homepage = {
       reviewCount: 140,
       quotes: [
         {
+          _type: 'reviewQuote',
           _key: 'r1',
           quote: 'Absolutely incredible work. My car looks better than it did when I bought it. Will 100% be booking again.',
           name: 'Marcus T.',
           city: 'Austin, TX',
         },
         {
+          _type: 'reviewQuote',
           _key: 'r2',
           quote: 'The convenience alone is worth it -- they came to my office while I worked. Car was spotless when I came down.',
           name: 'Priya S.',
           city: 'Round Rock, TX',
         },
         {
+          _type: 'reviewQuote',
           _key: 'r3',
           quote: "Best detail I've ever had. The ceramic coating looks amazing and the team was super professional.",
           name: 'Jordan K.',
@@ -178,9 +185,9 @@ const homepage = {
       depositLabel: 'Deposit',
       depositNote: 'Applied to your total at checkout. Refundable with 24-hour notice.',
       reasons: [
-        { _key: 'd1', icon: 'clock', title: 'Protects your time slot', description: 'Guarantees we show up for you.' },
-        { _key: 'd2', icon: 'dollar-sign', title: 'Goes toward your total', description: 'Not an extra charge.' },
-        { _key: 'd3', icon: 'check-circle', title: 'Easy refunds', description: '24-hour cancellation window.' },
+        { _type: 'depositReason', _key: 'd1', icon: 'clock', title: 'Protects your time slot', description: 'Guarantees we show up for you.' },
+        { _type: 'depositReason', _key: 'd2', icon: 'dollar-sign', title: 'Goes toward your total', description: 'Not an extra charge.' },
+        { _type: 'depositReason', _key: 'd3', icon: 'check-circle', title: 'Easy refunds', description: '24-hour cancellation window.' },
       ],
     },
     {
@@ -200,9 +207,9 @@ const homepage = {
       phoneNumber: '+15124567890',
       phoneDisplay: '(512) 456-7890',
       trustItems: [
-        { _key: 'ti1', icon: 'star', text: '5.0 on Google (140+ reviews)' },
-        { _key: 'ti2', icon: 'shield', text: 'Fully insured' },
-        { _key: 'ti3', icon: 'check-circle', text: 'Satisfaction guaranteed' },
+        { _type: 'trustItem', _key: 'ti1', icon: 'star', text: '5.0 on Google (140+ reviews)' },
+        { _type: 'trustItem', _key: 'ti2', icon: 'shield', text: 'Fully insured' },
+        { _type: 'trustItem', _key: 'ti3', icon: 'check-circle', text: 'Satisfaction guaranteed' },
       ],
     },
     {
@@ -211,12 +218,12 @@ const homepage = {
       eyebrow: 'Our work',
       heading: 'Results that speak for themselves',
       items: [
-        { _key: 'g1', label: 'Paint correction before/after', aspect: '4/3' },
-        { _key: 'g2', label: 'Ceramic coating application', aspect: '16/9' },
-        { _key: 'g3', label: 'Interior deep clean', aspect: '4/3' },
-        { _key: 'g4', label: 'Engine bay detail', aspect: '4/3' },
-        { _key: 'g5', label: 'Wheel & tire restoration', aspect: '4/3' },
-        { _key: 'g6', label: 'Signature Detail result', aspect: '16/9' },
+        { _type: 'galleryItem', _key: 'g1', label: 'Paint correction before/after', aspect: '4/3' },
+        { _type: 'galleryItem', _key: 'g2', label: 'Ceramic coating application', aspect: '16/9' },
+        { _type: 'galleryItem', _key: 'g3', label: 'Interior deep clean', aspect: '4/3' },
+        { _type: 'galleryItem', _key: 'g4', label: 'Engine bay detail', aspect: '4/3' },
+        { _type: 'galleryItem', _key: 'g5', label: 'Wheel & tire restoration', aspect: '4/3' },
+        { _type: 'galleryItem', _key: 'g6', label: 'Signature Detail result', aspect: '16/9' },
       ],
     },
   ],
