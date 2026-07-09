@@ -1,5 +1,11 @@
 // apps/studio/scripts/seed-homepage.ts
 import { createClient } from '@sanity/client';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Load .env.local from the studio app directory
+config({ path: resolve(__dirname, '../.env.local') });
+config({ path: resolve(__dirname, '../.env') });
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID;
 const dataset = process.env.SANITY_STUDIO_DATASET ?? 'production';
