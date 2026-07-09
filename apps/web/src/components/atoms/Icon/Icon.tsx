@@ -135,8 +135,8 @@ export function Icon({
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden={rest['aria-label'] ? undefined : true}
-      className={className}
-      style={{ display: 'block', flex: 'none', ...style }}
+      className={`block flex-none${className ? ` ${className}` : ''}`}
+      style={style}
       {...rest}
     >
       {glyph ?? null}

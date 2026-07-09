@@ -9,36 +9,24 @@ type BadgeProps = {
   style?: CSSProperties;
 } & HTMLAttributes<HTMLSpanElement>;
 
-const TONES: Record<BadgeTone, { background: string; color: string; border: string }> = {
-  caution: { background: 'rgba(247,144,9,0.14)', color: 'var(--color-warning)', border: 'rgba(247,144,9,0.3)' },
-  success: { background: 'rgba(18,183,106,0.12)', color: 'var(--color-success)', border: 'rgba(18,183,106,0.3)' },
-  neutral: { background: 'var(--color-paper)', color: 'var(--color-ink2)', border: 'var(--color-line)' },
-  solid: { background: 'var(--color-elev-d)', color: 'var(--color-platinum)', border: 'rgba(255,255,255,0.1)' },
+const TONE_CLASSES: Record<BadgeTone, string> = {
+  caution: 'bg-[rgba(247,144,9,0.14)] text-warning border border-[rgba(247,144,9,0.3)]',
+  success: 'bg-[rgba(18,183,106,0.12)] text-success border border-[rgba(18,183,106,0.3)]',
+  neutral: 'bg-paper text-ink2 border border-line',
+  solid: 'bg-elev-d text-platinum border border-white/10',
 };
 
-export function Badge({ children, tone = 'neutral', icon, style, ...rest }: BadgeProps) {
-  const t = TONES[tone] ?? TONES.neutral;
+export function Badge({ children, tone = 'neutral', icon, style, className, ...rest }: BadgeProps) {
   return (
     <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 5,
-        height: 24,
-        padding: '0 10px',
-        fontFamily: 'var(--font-sans)',
-        fontWeight: 600,
-        fontSize: 11,
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        lineHeight: 1,
-        borderRadius: 100,
-        border: `1px solid ${t.border}`,
-        background: t.background,
-        color: t.color,
-        whiteSpace: 'nowrap',
-        ...style,
-      }}
+      className={[
+        'inline-flex items-center gap-[5px] h-6 px-[10px]',
+        'font-sans font-semibold text-[11px] uppercase tracking-[0.08em] leading-none',
+        'rounded-full whitespace-nowrap',
+        TONE_CLASSES[tone] ?? TONE_CLASSES.neutral,
+        className ?? '',
+      ].filter(Boolean).join(' ')}
+      style={style}
       {...rest}
     >
       {icon && <Icon name={icon} size={12} strokeWidth={2.5} />}

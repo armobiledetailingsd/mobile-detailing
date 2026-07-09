@@ -26,7 +26,7 @@ export function Select({
   const borderColor = invalid ? 'var(--color-error)' : focused ? 'var(--color-accent)' : 'var(--color-line)';
 
   return (
-    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+    <div className="relative flex items-center">
       <select
         aria-invalid={invalid || undefined}
         onFocus={(e) => {
@@ -38,24 +38,8 @@ export function Select({
           onBlur?.(e);
         }}
         defaultValue={placeholder ? '' : undefined}
-        style={{
-          width: '100%',
-          height: 48,
-          padding: '0 44px 0 16px',
-          background: 'var(--color-paper)',
-          color: 'var(--color-ink1)',
-          fontFamily: 'var(--font-sans)',
-          fontSize: 15,
-          fontWeight: 500,
-          border: `2px solid ${borderColor}`,
-          borderRadius: 'var(--radius-input)',
-          outline: 'none',
-          appearance: 'none',
-          WebkitAppearance: 'none',
-          cursor: 'pointer',
-          transition: 'border-color 120ms ease',
-          ...style,
-        }}
+        className="w-full h-12 pl-4 pr-[44px] bg-paper text-ink1 font-sans text-[15px] font-medium rounded-input outline-none appearance-none cursor-pointer transition-[border-color] duration-[120ms] ease-out"
+        style={{ border: `2px solid ${borderColor}`, ...style }}
         {...rest}
       >
         {placeholder && (
@@ -73,7 +57,7 @@ export function Select({
           );
         })}
       </select>
-      <span style={{ position: 'absolute', right: 14, display: 'flex', color: 'var(--color-steel)', pointerEvents: 'none' }}>
+      <span className="absolute right-[14px] flex text-steel pointer-events-none">
         <Icon name="chevron-down" size={20} />
       </span>
     </div>

@@ -15,31 +15,21 @@ type ButtonProps = {
   style?: CSSProperties;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const SIZES: Record<ButtonSize, { height: number; padding: string; font: number }> = {
-  sm: { height: 38, padding: '0 16px', font: 14 },
-  md: { height: 48, padding: '0 22px', font: 15 },
-  lg: { height: 56, padding: '0 28px', font: 16 },
+const SIZE_CLASSES: Record<ButtonSize, string> = {
+  sm: 'h-[38px] px-4 text-sm',
+  md: 'h-12 px-[22px] text-[15px]',
+  lg: 'h-14 px-7 text-base',
 };
 
-const VARIANTS: Record<ButtonVariant, CSSProperties> = {
-  metal: {
-    background: 'linear-gradient(135deg, #F1F3F5 0%, #CFD4DA 46%, #A7ADB6 100%)',
-    color: '#16181b',
-    border: 'none',
-    boxShadow: '0 1px 3px rgba(0,0,0,.18), 0 4px 12px rgba(0,0,0,.10)',
-  },
-  ink: {
-    background: 'var(--color-ink1)',
-    color: 'var(--color-platinum)',
-    border: 'none',
-    boxShadow: 'none',
-  },
-  outline: {
-    background: 'transparent',
-    color: 'var(--color-ink1)',
-    border: '1.5px solid var(--color-line)',
-    boxShadow: 'none',
-  },
+const VARIANT_CLASSES: Record<ButtonVariant, string> = {
+  metal: [
+    'bg-metal text-[#16181b]',
+    'shadow-[0_1px_3px_rgba(0,0,0,.18),0_4px_12px_rgba(0,0,0,.10)]',
+    'enabled:hover:-translate-y-px enabled:hover:shadow-[0_2px_6px_rgba(0,0,0,.20),0_8px_20px_rgba(0,0,0,.12)]',
+    'enabled:active:scale-[0.98]',
+  ].join(' '),
+  ink: 'bg-ink1 text-platinum',
+  outline: 'bg-transparent text-ink1 border-[1.5px] border-line',
 };
 
 export function Button({
@@ -55,48 +45,23 @@ export function Button({
   className,
   ...rest
 }: ButtonProps) {
-  const s = SIZES[size] ?? SIZES.md;
-  const v = VARIANTS[variant] ?? VARIANTS.metal;
   return (
     <button
       type={type}
       disabled={disabled}
-      className={`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-accent)]${className ? ` ${className}` : ''}`}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-        width: fullWidth ? '100%' : 'auto',
-        height: s.height,
-        padding: s.padding,
-        fontFamily: 'var(--font-sans)',
-        fontWeight: 600,
-        fontSize: s.font,
-        lineHeight: 1,
-        borderRadius: 'var(--radius-btn)',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-        background: disabled ? 'var(--color-line)' : (v.background as string),
-        color: disabled ? 'var(--color-muted)' : (v.color as string),
-        border: disabled ? 'none' : (v.border as string),
-        boxShadow: disabled ? 'none' : (v.boxShadow as string),
-        transition: 'transform 120ms ease, box-shadow 120ms ease',
-        WebkitTapHighlightColor: 'transparent',
-        ...style,
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled && variant === 'metal') {
-          e.currentTarget.style.transform = 'translateY(-1px)';
-          e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,.20), 0 8px 20px rgba(0,0,0,.12)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = '';
-        e.currentTarget.style.boxShadow = disabled ? 'none' : (v.boxShadow as string ?? '');
-      }}
-      onMouseDown={(e) => { if (!disabled) e.currentTarget.style.transform = 'scale(0.98)'; }}
-      onMouseUp={(e) => { e.currentTarget.style.transform = ''; }}
+      className={[
+        'inline-flex items-center justify-center gap-2',
+        'font-sans font-semibold leading-none rounded-btn cursor-pointer',
+        'transition-[transform,box-shadow] duration-[120ms] ease-out',
+        '[-webkit-tap-highlight-color:transparent]',
+        'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted disabled:shadow-none disabled:border-0',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-accent)]',
+        fullWidth ? 'w-full' : '',
+        SIZE_CLASSES[size] ?? SIZE_CLASSES.md,
+        VARIANT_CLASSES[variant] ?? VARIANT_CLASSES.metal,
+        className ?? '',
+      ].filter(Boolean).join(' ')}
+      style={style}
       {...rest}
     >
       {icon && <Icon name={icon} size={size === 'lg' ? 20 : 17} />}

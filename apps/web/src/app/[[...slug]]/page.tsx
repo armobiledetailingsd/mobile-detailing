@@ -24,8 +24,8 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
   if (isHomepageRoute(params.slug)) {
     const page = await getHomepage();
     return {
-      title: page?.seo?.metaTitle ?? 'Alex Detailing — Premium Mobile Detailing in Austin, TX',
-      description: page?.seo?.metaDescription ?? 'Professional mobile auto detailing in Austin and surrounding areas. We come to your home or office. Book in minutes.',
+      title: page?.seo?.metaTitle ?? 'Alex Detailing — Premium Mobile Detailing in North County San Diego',
+      description: page?.seo?.metaDescription ?? 'Professional mobile auto detailing in North County San Diego and surrounding areas. We come to your home or office. Book in minutes.',
       robots: page?.seo?.noIndex ? { index: false, follow: false } : undefined,
     };
   }

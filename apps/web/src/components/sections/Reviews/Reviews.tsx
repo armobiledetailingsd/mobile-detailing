@@ -6,9 +6,9 @@ export type ReviewsSectionProps = Extract<PageSection, { _type: 'reviewsSection'
 
 function Stars({ size = 16, label }: { size?: number; label?: string }) {
   return (
-    <div aria-label={label} style={{ display: 'flex', gap: 2 }}>
+    <div aria-label={label} className="flex gap-0.5">
       {[0, 1, 2, 3, 4].map((i) => (
-        <Icon key={i} name="star" size={size} style={{ color: 'var(--color-warning)', fill: 'var(--color-warning)' }} />
+        <Icon key={i} name="star" size={size} className="text-warning fill-warning" />
       ))}
     </div>
   );
@@ -16,67 +16,52 @@ function Stars({ size = 16, label }: { size?: number; label?: string }) {
 
 export function Reviews({ eyebrow, heading, rating, reviewCount, quotes }: ReviewsSectionProps) {
   return (
-    <section id="reviews" aria-labelledby="reviews-heading" style={{ background: 'var(--color-paper)', borderTop: '1px solid var(--color-line)' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '80px 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 40 }}>
+    <section id="reviews" aria-labelledby="reviews-heading" className="bg-paper border-t border-line">
+      <div className="max-w-[1200px] mx-auto py-20 px-6">
+        <div className="flex items-end justify-between flex-wrap gap-3 mb-10">
           <div>
             {eyebrow && (
-              <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-muted)' }}>
+              <p className="m-0 mb-[10px] text-xs font-semibold tracking-[0.12em] uppercase text-muted">
                 {eyebrow}
               </p>
             )}
             <h2
               id="reviews-heading"
-              style={{
-                margin: 0,
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 600,
-                fontSize: 'clamp(26px,4vw,38px)',
-                letterSpacing: '-0.02em',
-                color: 'var(--color-ink1)',
-              }}
+              className="m-0 font-sans font-semibold text-[clamp(26px,4vw,38px)] tracking-[-0.02em] text-ink1"
             >
               {heading}
             </h2>
           </div>
           <div
             aria-label={`Rated ${rating} out of 5 stars · ${(reviewCount ?? 0).toLocaleString()} Google reviews`}
-            style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+            className="flex items-center gap-[10px]"
           >
             <Stars size={20} />
-            <span aria-hidden="true" style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 22, color: 'var(--color-ink1)' }}>
+            <span aria-hidden="true" className="font-sans font-bold text-[22px] text-ink1">
               {rating}
             </span>
-            <span aria-hidden="true" style={{ fontSize: 14, color: 'var(--color-muted)' }}>
+            <span aria-hidden="true" className="text-sm text-muted">
               · {(reviewCount ?? 0).toLocaleString()} Google reviews
             </span>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
+        <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
           {quotes.map((r, i) => (
             <div
               key={i}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 16,
-                padding: 24,
-                background: 'var(--color-surface)',
-                border: '1px solid var(--color-line)',
-                borderRadius: 'var(--radius-card)',
-              }}
+              className="flex flex-col gap-4 p-6 bg-surface border border-line rounded-card"
             >
               <Stars label="5 out of 5 stars" />
-              <p style={{ margin: 0, fontSize: 15, color: 'var(--color-ink2)', lineHeight: 1.65, flexGrow: 1 }}>
+              <p className="m-0 text-[15px] text-ink2 leading-[1.65] grow">
                 &quot;{r.quote}&quot;
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: 14, color: 'var(--color-ink1)' }}>
+              <div className="flex flex-col gap-0.5">
+                <span className="font-sans font-semibold text-sm text-ink1">
                   {r.name}
                 </span>
                 {r.city && (
-                  <span style={{ fontSize: 13, color: 'var(--color-muted)' }}>{r.city}</span>
+                  <span className="text-[13px] text-muted">{r.city}</span>
                 )}
               </div>
             </div>

@@ -15,20 +15,19 @@ export function Card({
   padding = 24,
   raised = false,
   style,
+  className,
   ...rest
 }: CardProps) {
   const bracketSize = 18;
   const bw = 2;
   return (
     <div
-      style={{
-        position: 'relative',
-        background: raised ? 'var(--color-paper)' : 'var(--color-surface)',
-        border: '1px solid var(--color-line)',
-        borderRadius: 'var(--radius-card)',
-        padding,
-        ...style,
-      }}
+      className={[
+        'relative border border-line rounded-card',
+        raised ? 'bg-paper' : 'bg-surface',
+        className ?? '',
+      ].filter(Boolean).join(' ')}
+      style={{ padding, ...style }}
       {...rest}
     >
       {brackets && (

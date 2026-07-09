@@ -9,21 +9,21 @@ type TrustMarkerProps = {
   style?: CSSProperties;
 } & HTMLAttributes<HTMLDivElement>;
 
-export function TrustMarker({ icon, value, label, align = 'left', style, ...rest }: TrustMarkerProps) {
+export function TrustMarker({ icon, value, label, align = 'left', style, className, ...rest }: TrustMarkerProps) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, textAlign: align, ...style }} {...rest}>
+    <div
+      className={`flex items-center gap-3${className ? ` ${className}` : ''}`}
+      style={{ textAlign: align, ...style }}
+      {...rest}
+    >
       {icon && (
-        <span style={{ display: 'flex', color: 'var(--color-accent)', flexShrink: 0 }}>
+        <span className="flex text-accent shrink-0">
           <Icon name={icon} size={24} />
         </span>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-        <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 22, color: 'var(--color-ink1)' }}>
-          {value}
-        </span>
-        <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13, fontWeight: 500, color: 'var(--color-muted)' }}>
-          {label}
-        </span>
+      <div className="flex flex-col leading-[1.2]">
+        <span className="font-sans font-bold text-[22px] text-ink1">{value}</span>
+        <span className="font-sans text-[13px] font-medium text-muted">{label}</span>
       </div>
     </div>
   );
