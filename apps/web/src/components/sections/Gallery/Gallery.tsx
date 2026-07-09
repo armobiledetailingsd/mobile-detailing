@@ -21,12 +21,13 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
         {items && items.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {items.map((item) => {
-              const imageUrl = item.image ? urlForImage(item.image).width(800).url() : null;
+              const imageUrl = item.image?.asset ? urlForImage(item.image).width(800).url() : null;
+              const aspectRatio = (item.aspect ?? '4/3').replace('/', ' / ');
               return (
                 <div
                   key={item._key}
                   style={{
-                    aspectRatio: item.aspect ?? '4/3',
+                    aspectRatio,
                     position: 'relative',
                     borderRadius: 'var(--radius-card)',
                     border: '1px solid rgba(255,255,255,0.06)',

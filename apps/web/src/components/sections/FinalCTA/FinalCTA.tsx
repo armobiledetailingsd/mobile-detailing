@@ -44,7 +44,7 @@ export function FinalCTA({ eyebrow, heading, body, phoneNumber, phoneDisplay, tr
           <Button variant="metal" size="lg" iconRight="arrow-right">Book your detail</Button>
           {phoneNumber && (
             <a href={`tel:${phoneNumber}`} style={{ textDecoration: 'none' }}>
-              <Button variant="outline" size="lg" icon="phone" style={{ color: 'var(--color-silver)', borderColor: 'rgba(255,255,255,0.18)' }}>
+              <Button variant="outline" size="lg" icon="phone" aria-label={phoneDisplay || phoneNumber} style={{ color: 'var(--color-silver)', borderColor: 'rgba(255,255,255,0.18)' }}>
                 {phoneDisplay}
               </Button>
             </a>

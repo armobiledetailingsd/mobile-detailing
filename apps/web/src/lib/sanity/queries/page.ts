@@ -85,7 +85,7 @@ const pageProjection = groq`{
     _type == "gallery" => {
       eyebrow,
       heading,
-      items[]{ _key, image{ asset->, hotspot, crop }, label, aspect }
+      items[]{ _key, image{ asset{ _ref }, hotspot, crop }, label, aspect }
     }
   }
 }`;

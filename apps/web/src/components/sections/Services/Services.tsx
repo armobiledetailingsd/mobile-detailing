@@ -21,6 +21,10 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
           {heading ?? 'Services & Pricing'}
         </h2>
 
+        {(!packages || packages.length === 0) && (!addons || addons.length === 0) && (
+          <p className="text-[14px] text-muted">No services available yet.</p>
+        )}
+
         {packages && packages.length > 0 && (
           <div className="grid [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))] gap-5 mb-12">
             {packages.map((pkg) => (
@@ -28,7 +32,7 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                 key={pkg._key}
                 className={[
                   'relative bg-surface rounded-card p-[28px_24px_24px] flex flex-col',
-                  pkg.popular ? 'border-2 border-ink1' : 'border border-[1.5px] border-line',
+                  pkg.popular ? 'border-2 border-ink1' : 'border-[1.5px] border-line',
                 ].join(' ')}
               >
                 {pkg.popular && (
@@ -74,7 +78,7 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
         )}
 
         {addons && addons.length > 0 && (
-          <div className="bg-surface border border-[1.5px] border-line rounded-panel p-7">
+          <div className="bg-surface border-[1.5px] border-line rounded-panel p-7">
             <p className="m-0 mb-5 font-sans font-semibold text-[15px] text-ink1">
               Add-ons
             </p>

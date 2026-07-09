@@ -1,10 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { ArrowRightIcon } from '@sanity/icons';
-
-const ICON_OPTIONS = [
-  'phone', 'map-pin', 'navigation', 'clock', 'wrench', 'check', 'check-circle',
-  'arrow-right', 'star', 'shield', 'truck', 'alert-triangle', 'dollar-sign', 'message', 'gauge',
-].map((v) => ({ title: v, value: v }));
+import { ICON_OPTIONS } from '../../shared/iconOptions';
 
 export const finalCta = defineType({
   name: 'finalCta',
@@ -35,7 +31,7 @@ export const finalCta = defineType({
       type: 'string',
       description: 'Used in tel: link. E.164 preferred: +15124567890.',
       validation: (Rule) =>
-        Rule.required().regex(/^\+?1?\d{10}$|^\+\d{7,15}$/, { name: 'phone number', invert: false }),
+        Rule.required().regex(/^\+\d{7,15}$/, { name: 'phone number', invert: false }),
     }),
     defineField({
       name: 'phoneDisplay',
