@@ -5,13 +5,7 @@ type PageSection = NonNullable<NonNullable<HomepageQueryResult>['sections']>[num
 export type SmsBannerProps = Extract<PageSection, { _type: 'smsBanner' }>;
 
 export function SmsBanner({ headline, body, phoneNumber, phoneDisplay }: SmsBannerProps) {
-  const normalizedNumber = ['+12035550148', '12035550148', '2035550148'].includes(phoneNumber)
-    ? '+15124567890'
-    : phoneNumber;
-  const normalizedDisplay = ['(203) 555-0148', '203-555-0148', '2035550148'].includes(phoneDisplay)
-    ? '(512) 456-7890'
-    : phoneDisplay;
-  const smsHref = normalizedNumber.startsWith('+') ? `sms:${normalizedNumber}` : `sms:+1${normalizedNumber}`;
+  const smsHref = phoneNumber.startsWith('+') ? `sms:${phoneNumber}` : `sms:+1${phoneNumber}`;
 
   return (
     <section aria-label={headline} className="bg-ink1 border-t border-white/[0.06]">
@@ -33,7 +27,7 @@ export function SmsBanner({ headline, body, phoneNumber, phoneDisplay }: SmsBann
           href={smsHref}
           className="inline-flex items-center gap-[10px] h-[52px] px-[22px] bg-metal text-[#16181b] rounded-btn no-underline font-sans font-semibold text-base"
         >
-          {normalizedDisplay}
+          {phoneDisplay}
           <Icon name="arrow-right" size={18} className="text-[#16181b]" />
         </a>
       </div>
