@@ -10,6 +10,7 @@ export const siteSettings = defineType({
     { name: 'metadata', title: 'Metadata', default: true },
     { name: 'organization', title: 'Organization' },
     { name: 'features', title: 'Features' },
+    { name: 'booking', title: 'Booking' },
   ],
   fields: [
     defineField({
@@ -57,6 +58,24 @@ export const siteSettings = defineType({
         'Kill switch for the blog. When off, /blog and all post pages return 404 and posts drop out of the sitemap. Post content is kept in Sanity.',
       initialValue: true,
       group: 'features',
+    }),
+    defineField({
+      name: 'calendlyUrl',
+      title: 'Calendly scheduling URL',
+      type: 'url',
+      description:
+        'Public Calendly event link customers book on, e.g. https://calendly.com/your-team/mobile-detail',
+      validation: (Rule) => Rule.required().uri({ scheme: ['https'] }),
+      group: 'booking',
+    }),
+    defineField({
+      name: 'stripeDepositLink',
+      title: 'Stripe deposit Payment Link',
+      type: 'url',
+      description:
+        'Stripe Payment Link for the flat booking deposit, e.g. https://buy.stripe.com/xxxx',
+      validation: (Rule) => Rule.required().uri({ scheme: ['https'] }),
+      group: 'booking',
     }),
   ],
   preview: {
