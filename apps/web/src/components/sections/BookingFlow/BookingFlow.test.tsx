@@ -51,6 +51,30 @@ describe('BookingFlow', () => {
     expect(src.searchParams.get('name')).toBe('Sam Jones');
   });
 
+  it('offers a fallback Stripe deposit link alongside the Calendly fallback', async () => {
+    render(<BookingFlow {...PROPS} />);
+    await fillContact();
+    expect(screen.getByText(/step 2 of 3/i)).toBeInTheDocument();
+    expect(screen.queryByText(/refresh/i)).not.toBeInTheDocument();
+    const payLink = screen.getByRole('link', { name: /pay your deposit here/i });
+    const href = new URL((payLink as HTMLAnchorElement).href);
+    expect(href.origin + href.pathname).toBe(PROPS.stripeDepositLink);
+    expect(href.searchParams.get('prefilled_email')).toBe('sam@example.com');
+  });
+
+  it('marks the invalid field and announces the contact error to assistive tech', async () => {
+    render(<BookingFlow {...PROPS} />);
+    await fillContact({ email: 'not-an-email' });
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent(/valid email/i);
+    const emailInput = screen.getByLabelText(/email/i);
+    const zipInput = screen.getByLabelText(/zip/i);
+    expect(emailInput).toHaveAttribute('aria-invalid', 'true');
+    expect(emailInput).toHaveAttribute('aria-describedby', alert.id);
+    expect(zipInput).toHaveAttribute('aria-invalid', 'false');
+    expect(zipInput).toHaveAttribute('aria-describedby', alert.id);
+  });
+
   it('advances to the pay step when Calendly reports event_scheduled', async () => {
     render(<BookingFlow {...PROPS} />);
     await fillContact();

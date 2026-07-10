@@ -29,6 +29,8 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
   const [email, setEmail] = useState('');
   const [zip, setZip] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [errorField, setErrorField] = useState<'email' | 'zip' | null>(null);
+  const errorId = 'contact-form-error';
 
   useEffect(() => {
     if (step !== 'schedule') return;
@@ -46,13 +48,16 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
   function submitContact() {
     if (!isValidEmail(email.trim())) {
       setError('Please enter a valid email address.');
+      setErrorField('email');
       return;
     }
     if (!isServiceableZip(zip.trim().slice(0, 5))) {
       setError("Sorry, we don't cover that ZIP yet.");
+      setErrorField('zip');
       return;
     }
     setError(null);
+    setErrorField(null);
     setStep('schedule');
   }
 
@@ -95,6 +100,8 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
                 onChange={(e) => setEmail(e.target.value)}
                 className={INPUT_CLASSES}
                 style={INPUT_STYLE}
+                aria-invalid={errorField === 'email'}
+                aria-describedby={error ? errorId : undefined}
               />
             </label>
             <label className="flex flex-col gap-1 text-[13px] text-steel">
@@ -108,11 +115,15 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
                 onChange={(e) => setZip(e.target.value)}
                 className={INPUT_CLASSES}
                 style={INPUT_STYLE}
+                aria-invalid={errorField === 'zip'}
+                aria-describedby={error ? errorId : undefined}
               />
             </label>
 
             {error && (
               <div
+                id={errorId}
+                role="alert"
                 className="p-[12px_14px] rounded-input flex items-center gap-2"
                 style={{
                   background: 'rgba(240,68,56,0.10)',
@@ -152,7 +163,19 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
             >
               Book directly on Calendly
             </a>
-            {' '}— then come back and refresh.
+            {' '}in a new tab.
+          </p>
+          <p className="mt-2 mb-0 text-[13px] text-steel">
+            Booked through Calendly directly?{' '}
+            <a
+              href={buildStripeUrl(stripeDepositLink, email.trim())}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-platinum"
+            >
+              Pay your deposit here
+            </a>
+            .
           </p>
         </>
       )}
