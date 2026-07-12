@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { isServiceableZip } from '@/lib/booking/packages';
@@ -66,15 +67,17 @@ export function BookingCTA() {
       )}
 
       {serviceable && (
-        <Button variant="metal" size="lg" fullWidth iconRight="arrow-right">
-          Book your detail
-        </Button>
+        <Link href="/book" className="block">
+          <Button variant="metal" size="lg" fullWidth iconRight="arrow-right">
+            Book your detail
+          </Button>
+        </Link>
       )}
 
       <div className="mt-5 flex flex-col gap-[10px]">
         {[
           { icon: 'map-pin' as const, text: 'We come to you — home, office, anywhere' },
-          { icon: 'check-circle' as const, text: 'No deposit required to book' },
+          { icon: 'check-circle' as const, text: 'A small deposit secures your appointment' },
           { icon: 'clock' as const, text: 'Same-day appointments available' },
         ].map((item) => (
           <div key={item.text} className="flex items-center gap-[10px]">

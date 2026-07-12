@@ -30,7 +30,9 @@ const siteSettingsQuery = groq`*[_id == $id && _type == "siteSettings"][0]{
   defaultOpenGraphImage,
   organizationLegalName,
   organizationUrl,
-  blogEnabled
+  blogEnabled,
+  calendlyUrl,
+  stripeDepositLink
 }`;
 
 const headerNavigationQuery = groq`*[_id == $id && _type == "headerNavigation"][0]{

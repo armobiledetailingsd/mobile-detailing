@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { HomepageQueryResult } from '@/sanity.types';
 import type { IconName } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
@@ -41,7 +42,9 @@ export function FinalCTA({ eyebrow, heading, body, phoneNumber, phoneDisplay, tr
         )}
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginBottom: 40 }}>
-          <Button variant="metal" size="lg" iconRight="arrow-right">Book your detail</Button>
+          <Link href="/book" style={{ textDecoration: 'none' }}>
+            <Button variant="metal" size="lg" iconRight="arrow-right">Book your detail</Button>
+          </Link>
           {phoneNumber && (
             <a href={`tel:${phoneNumber}`} style={{ textDecoration: 'none' }}>
               <Button variant="outline" size="lg" icon="phone" aria-label={phoneDisplay || phoneNumber} style={{ color: 'var(--color-silver)', borderColor: 'rgba(255,255,255,0.18)' }}>
