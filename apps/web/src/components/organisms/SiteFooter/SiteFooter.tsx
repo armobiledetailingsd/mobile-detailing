@@ -11,8 +11,8 @@ const FALLBACK_COLUMNS = [
     _key: 'contact',
     heading: 'Contact',
     links: [
-      { label: '(512) 456-7890', href: 'tel:+15124567890', openInNewTab: false },
-      { label: 'Text us', href: 'sms:+15124567890', openInNewTab: false },
+      { label: '(442) 999-1980', href: 'tel:+14429991980', openInNewTab: false },
+      { label: 'Text us', href: 'sms:+14429991980', openInNewTab: false },
     ],
   },
   {

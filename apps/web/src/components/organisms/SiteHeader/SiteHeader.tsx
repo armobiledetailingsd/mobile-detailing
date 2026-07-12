@@ -8,8 +8,8 @@ import type { HeaderNavigationQueryResult } from '@/sanity.types';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 
-const PHONE_HREF = 'tel:+15124567890';
-const PHONE_LABEL = '(512) 456-7890';
+const PHONE_HREF = 'tel:+14429991980';
+const PHONE_LABEL = '(442) 999-1980';
 
 const FALLBACK_LINKS = [
   { label: 'Services', href: '/#services', openInNewTab: false },
