@@ -66,18 +66,27 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                   </ul>
                 )}
 
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="font-sans font-bold text-[28px] text-ink1">
-                    ${pkg.price}
-                  </span>
-                  <Button
-                    href="/book"
-                    variant={pkg.popular ? 'ink' : 'outline'}
-                    size="sm"
-                    aria-label={`Book now: ${pkg.name}`}
-                  >
-                    Book now
-                  </Button>
+                <div className="mt-auto">
+                  <dl className="m-0 mb-4 flex flex-col gap-[6px]">
+                    <div className="flex items-baseline justify-between">
+                      <dt className="text-[13px] font-medium text-muted">Sedan</dt>
+                      <dd className="m-0 font-sans font-bold text-[22px] text-ink1">${pkg.priceSedan}</dd>
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <dt className="text-[13px] font-medium text-muted">Truck or SUV</dt>
+                      <dd className="m-0 font-sans font-bold text-[22px] text-ink1">${pkg.priceTruckSuv}</dd>
+                    </div>
+                  </dl>
+                  <div className="flex justify-end">
+                    <Button
+                      href="/book"
+                      variant={pkg.popular ? 'ink' : 'outline'}
+                      size="sm"
+                      aria-label={`Book now: ${pkg.name}`}
+                    >
+                      Book now
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
