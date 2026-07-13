@@ -12,7 +12,8 @@
     "extract-schema": "sanity schema extract --path schema.json --enforce-required-fields",
     "typegen": "sanity typegen generate",
     "typegen:all": "pnpm extract-schema && pnpm typegen",
-    "seed": "tsx scripts/seed-homepage.ts"
+    "seed": "tsx scripts/seed-homepage.ts",
+    "update-services": "tsx scripts/update-services-pricing.ts"
   },
   "dependencies": {
     "@oclif/core": "4.11.14",
