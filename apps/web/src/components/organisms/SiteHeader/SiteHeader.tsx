@@ -83,7 +83,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
         {/* Right side */}
         <div className="flex items-center gap-3 ml-auto">
           <div className="hidden lg:block">
-            <Button variant="metal" size="sm">
+            <Button href="/book" variant="metal" size="sm">
               Book now
             </Button>
           </div>
@@ -149,7 +149,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
             <a href={PHONE_HREF} className="text-[16px] text-silver no-underline">
               {PHONE_LABEL}
             </a>
-            <Button variant="metal" size="lg" fullWidth>
+            <Button href="/book" variant="metal" size="lg" fullWidth onClick={() => setMenuOpen(false)}>
               Book now
             </Button>
           </div>

@@ -50,9 +50,9 @@ export function Hero({ eyebrow, headlineMain, headlineAccent, body, trustMarkers
             </p>
           )}
 
-          <div className="flex gap-3">
-            <Button variant="metal" size="lg" iconRight="arrow-right">Book your detail</Button>
-            <Button variant="outline" size="lg" style={{ color: 'var(--color-silver)', borderColor: 'rgba(255,255,255,0.2)' }}>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button href="/book" variant="metal" size="lg" iconRight="arrow-right">Book your detail</Button>
+            <Button href="/#services" variant="outline" size="lg" style={{ color: 'var(--color-silver)', borderColor: 'rgba(255,255,255,0.2)' }}>
               View services
             </Button>
           </div>

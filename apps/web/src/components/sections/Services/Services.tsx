@@ -70,7 +70,14 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                   <span className="font-sans font-bold text-[28px] text-ink1">
                     ${pkg.price}
                   </span>
-                  <Button variant={pkg.popular ? 'ink' : 'outline'} size="sm" aria-label={`Book ${pkg.name}`}>Book now</Button>
+                  <Button
+                    href="/book"
+                    variant={pkg.popular ? 'ink' : 'outline'}
+                    size="sm"
+                    aria-label={`Book now: ${pkg.name}`}
+                  >
+                    Book now
+                  </Button>
                 </div>
               </div>
             ))}

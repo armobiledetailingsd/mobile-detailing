@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { isServiceableZip } from '@/lib/booking/packages';
@@ -67,11 +66,9 @@ export function BookingCTA() {
       )}
 
       {serviceable && (
-        <Link href="/book" className="block">
-          <Button variant="metal" size="lg" fullWidth iconRight="arrow-right">
-            Book your detail
-          </Button>
-        </Link>
+        <Button href="/book" variant="metal" size="lg" fullWidth iconRight="arrow-right">
+          Book your detail
+        </Button>
       )}
 
       <div className="mt-5 flex flex-col gap-[10px]">
