@@ -79,16 +79,36 @@ export const ADDONS: Addon[] = [
   { id: 'odor',      label: 'Odor Elimination',      price: 50, durationMin: 30 },
 ];
 
+// North County San Diego service area. This list must stay in sync with the
+// coverage towns edited in Sanity (homepage coverage section): adding or
+// removing a town there requires updating these ZIPs too, and vice versa —
+// nothing enforces the sync automatically.
 export const CORE_ZIPS = new Set([
-  '78701','78702','78703','78704','78705',
-  '78745','78746','78748','78749',
-  '78751','78756','78757','78758',
+  // Carlsbad
+  '92008', '92009', '92010', '92011',
+  // Oceanside
+  '92054', '92056', '92057', '92058',
+  // Vista
+  '92081', '92083', '92084',
+  // San Marcos
+  '92069', '92078',
+  // Escondido
+  '92025', '92026', '92027', '92029',
+  // Encinitas (incl. Cardiff-by-the-Sea)
+  '92024', '92007',
+  // Solana Beach
+  '92075',
+  // Del Mar
+  '92014',
+  // Rancho Santa Fe
+  '92067', '92091',
+  // Fallbrook
+  '92028',
 ]);
 
-export const TRAVEL_ZIPS = new Set([
-  '78610','78613','78620','78641','78660',
-  '78664','78681','78737','78738',
-]);
+// ZIPs here are serviceable but add a $25 travel fee. Move outlying ZIPs
+// from CORE_ZIPS into this set if a travel surcharge is wanted.
+export const TRAVEL_ZIPS = new Set<string>([]);
 
 export function getTravelFee(zip: string): number {
   return TRAVEL_ZIPS.has(zip) ? 25 : 0;
