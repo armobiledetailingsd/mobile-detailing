@@ -15,6 +15,8 @@ type BookingFlowProps = {
 
 const STEP_NUMBER: Record<Step, number> = { contact: 1, schedule: 2, pay: 3 };
 
+const AUTO_REDIRECT_DELAY_MS = 1500;
+
 const INPUT_CLASSES =
   'w-full h-12 px-[14px] font-sans text-[15px] rounded-input text-platinum focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-d)] focus-visible:border-[var(--color-accent-d)]';
 
@@ -44,6 +46,14 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
   }, [step]);
+
+  useEffect(() => {
+    if (step !== 'pay') return;
+    const timer = setTimeout(() => {
+      window.location.href = buildStripeUrl(stripeDepositLink, email.trim());
+    }, AUTO_REDIRECT_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [step, stripeDepositLink, email]);
 
   function submitContact() {
     if (!isValidEmail(email.trim())) {
@@ -149,7 +159,11 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
           </h2>
           <iframe
             title="Pick a time"
-            src={buildCalendlyUrl(calendlyUrl, { name: name.trim(), email: email.trim() })}
+            src={buildCalendlyUrl(
+              calendlyUrl,
+              { name: name.trim(), email: email.trim() },
+              typeof window !== 'undefined' ? window.location.hostname : undefined,
+            )}
             className="w-full rounded-input border-0"
             style={{ minHeight: 640, background: 'rgba(255,255,255,0.04)' }}
           />
@@ -186,16 +200,11 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
             You&apos;re booked! One last step.
           </h2>
           <p className="m-0 mb-5 text-[15px] text-steel">
-            Secure your appointment with a deposit. Use the same email (
+            Redirecting you to secure payment. Use the same email (
             <span className="text-platinum">{email.trim()}</span>) so we can match your
-            payment to your booking.
+            payment to your booking. Not redirected automatically?
           </p>
-          <a
-            href={buildStripeUrl(stripeDepositLink, email.trim())}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
+          <a href={buildStripeUrl(stripeDepositLink, email.trim())} className="block">
             <Button variant="metal" size="lg" fullWidth iconRight="arrow-right">
               Pay your deposit
             </Button>

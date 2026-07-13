@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CORE_ZIPS } from '@/lib/booking/packages';
 import { BookingFlow } from './BookingFlow';
 
@@ -105,5 +105,58 @@ describe('BookingFlow', () => {
       );
     });
     expect(screen.getByText(/step 2 of 3/i)).toBeInTheDocument();
+  });
+
+  describe('auto-redirect on the pay step', () => {
+    let hrefSpy: ReturnType<typeof vi.fn<(value: string) => void>>;
+
+    beforeEach(() => {
+      hrefSpy = vi.fn();
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        value: {
+          get href() {
+            return 'https://example.com/book';
+          },
+          set href(value: string) {
+            hrefSpy(value);
+          },
+        },
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('automatically navigates to the Stripe deposit link after reaching the pay step', async () => {
+      render(<BookingFlow {...PROPS} />);
+      await fillContact();
+
+      // userEvent's internal delays rely on real timers, so fake timers are
+      // enabled only after all user interaction is done.
+      vi.useFakeTimers();
+
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: 'https://calendly.com',
+            data: { event: 'calendly.event_scheduled' },
+          }),
+        );
+      });
+      expect(screen.getByText(/step 3 of 3/i)).toBeInTheDocument();
+      expect(hrefSpy).not.toHaveBeenCalled();
+
+      act(() => {
+        vi.runAllTimers();
+      });
+
+      expect(hrefSpy).toHaveBeenCalledTimes(1);
+      const [redirectUrl] = hrefSpy.mock.calls[0] as [string];
+      const url = new URL(redirectUrl);
+      expect(url.origin + url.pathname).toBe(PROPS.stripeDepositLink);
+      expect(url.searchParams.get('prefilled_email')).toBe('sam@example.com');
+    });
   });
 });

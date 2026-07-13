@@ -9,11 +9,19 @@ export function isValidEmail(email: string): boolean {
 export function buildCalendlyUrl(
   base: string,
   prefill: { name: string; email: string },
+  embedDomain?: string,
 ): string {
   const url = new URL(base);
   if (prefill.name) url.searchParams.set('name', prefill.name);
   if (prefill.email) url.searchParams.set('email', prefill.email);
   url.searchParams.set('hide_gdpr_banner', '1');
+  // Calendly only posts window.postMessage() events (e.g. calendly.event_scheduled)
+  // to the parent window when embed_domain is present — normally added by Calendly's
+  // widget.js, but this is a hand-rolled iframe so it has to be set explicitly.
+  if (embedDomain) {
+    url.searchParams.set('embed_domain', embedDomain);
+    url.searchParams.set('embed_type', 'Inline');
+  }
   return url.toString();
 }
 
