@@ -8,9 +8,11 @@ export type Package = {
   duration: string;
 };
 
-// Rate card mirrors the Sanity servicesSection content
-// (apps/studio/scripts/update-services-pricing.ts). Calendly event durations
-// are configured per package in Calendly itself; these strings are display copy.
+// This is the canonical rate card. It is mirrored by hand in the Sanity
+// servicesSection content via apps/studio/scripts/update-services-pricing.ts
+// and apps/studio/scripts/seed-homepage.ts — update all three in lockstep,
+// nothing enforces this automatically. Calendly event durations are
+// configured per package in Calendly itself; these strings are display copy.
 export const PACKAGES: Package[] = [
   { slug: 'bronze', name: 'Bronze', priceSedan: 99.99, priceTruckSuv: 120, duration: '~1.5 hr' },
   { slug: 'silver', name: 'Silver', priceSedan: 180, priceTruckSuv: 249.99, duration: '~3 hr' },

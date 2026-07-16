@@ -1,4 +1,9 @@
 // apps/studio/scripts/seed-homepage.ts
+//
+// Rate card content here must mirror scripts/update-services-pricing.ts, whose
+// canonical source is apps/web/src/lib/booking/packages.ts (PACKAGES). If you
+// change prices/durations, update all three in lockstep — nothing enforces
+// this automatically.
 import { createClient } from '@sanity/client';
 import { config } from 'dotenv';
 import { resolve } from 'path';
