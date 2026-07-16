@@ -18,10 +18,8 @@ export default async function BookPage({ searchParams }: BookPageProps) {
   const [settings, params] = await Promise.all([getSiteSettings(), searchParams]);
 
   if (
-    !settings?.calendlyUrlBronze ||
-    !settings?.calendlyUrlSilver ||
-    !settings?.calendlyUrlGold ||
-    !settings?.stripeDepositLink
+    !settings?.stripeDepositLink ||
+    (!settings?.calendlyUrlBronze && !settings?.calendlyUrlSilver && !settings?.calendlyUrlGold)
   ) {
     notFound();
   }
@@ -40,9 +38,9 @@ export default async function BookPage({ searchParams }: BookPageProps) {
         </p>
         <BookingFlow
           calendlyUrls={{
-            bronze: settings.calendlyUrlBronze,
-            silver: settings.calendlyUrlSilver,
-            gold: settings.calendlyUrlGold,
+            bronze: settings.calendlyUrlBronze ?? undefined,
+            silver: settings.calendlyUrlSilver ?? undefined,
+            gold: settings.calendlyUrlGold ?? undefined,
           }}
           stripeDepositLink={settings.stripeDepositLink}
           initialPackage={initialPackage}

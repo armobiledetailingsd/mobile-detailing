@@ -349,9 +349,9 @@ export type SiteSettings = {
   organizationLegalName?: string;
   organizationUrl?: string;
   blogEnabled?: boolean;
-  calendlyUrlBronze: string;
-  calendlyUrlSilver: string;
-  calendlyUrlGold: string;
+  calendlyUrlBronze?: string;
+  calendlyUrlSilver?: string;
+  calendlyUrlGold?: string;
   stripeDepositLink: string;
 };
 
@@ -703,9 +703,9 @@ export type SiteSettingsQueryResult = {
   organizationLegalName: string | null;
   organizationUrl: string | null;
   blogEnabled: boolean | null;
-  calendlyUrlBronze: string;
-  calendlyUrlSilver: string;
-  calendlyUrlGold: string;
+  calendlyUrlBronze: string | null;
+  calendlyUrlSilver: string | null;
+  calendlyUrlGold: string | null;
   stripeDepositLink: string;
 } | null;
 
