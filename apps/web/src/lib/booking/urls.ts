@@ -25,6 +25,15 @@ export function buildCalendlyUrl(
   return url.toString();
 }
 
+export function isTrustedCalendlyUrl(url: string): boolean {
+  try {
+    const { hostname, protocol } = new URL(url);
+    return protocol === 'https:' && (hostname === 'calendly.com' || hostname.endsWith('.calendly.com'));
+  } catch {
+    return false;
+  }
+}
+
 export function buildStripeUrl(base: string, email: string): string {
   const url = new URL(base);
   if (email) url.searchParams.set('prefilled_email', email);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CORE_ZIPS, isServiceableZip } from './packages';
+import { CORE_ZIPS, PACKAGES, isServiceableZip, resolvePackageSlug } from './packages';
 
 describe('isServiceableZip', () => {
   it('accepts a known core ZIP', () => {
@@ -20,5 +20,34 @@ describe('isServiceableZip', () => {
 
   it('rejects the old Austin placeholder ZIPs', () => {
     expect(isServiceableZip('78701')).toBe(false);
+  });
+});
+
+describe('PACKAGES', () => {
+  it('lists the Bronze, Silver, and Gold rate card', () => {
+    expect(PACKAGES.map((p) => p.slug)).toEqual(['bronze', 'silver', 'gold']);
+    const bronze = PACKAGES[0]!;
+    expect(bronze).toEqual({
+      slug: 'bronze',
+      name: 'Bronze',
+      priceSedan: 99.99,
+      priceTruckSuv: 120,
+      duration: '~1.5 hr',
+    });
+  });
+});
+
+describe('resolvePackageSlug', () => {
+  it('resolves known names case-insensitively with whitespace trimmed', () => {
+    expect(resolvePackageSlug('Bronze')).toBe('bronze');
+    expect(resolvePackageSlug(' silver ')).toBe('silver');
+    expect(resolvePackageSlug('GOLD')).toBe('gold');
+  });
+
+  it('returns null for unknown, empty, or missing names', () => {
+    expect(resolvePackageSlug('Full Detail')).toBeNull();
+    expect(resolvePackageSlug('')).toBeNull();
+    expect(resolvePackageSlug(null)).toBeNull();
+    expect(resolvePackageSlug(undefined)).toBeNull();
   });
 });

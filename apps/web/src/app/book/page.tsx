@@ -1,17 +1,31 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BookingFlow } from '@/components/sections/BookingFlow';
+import { resolvePackageSlug } from '@/lib/booking/packages';
 import { getSiteSettings } from '@/lib/sanity/queries/global';
 
 export const metadata: Metadata = {
   title: 'Book Your Detail',
   description:
-    'Check your ZIP, pick a time, and reserve your mobile detail with a deposit.',
+    'Pick a package, check your ZIP, choose a time, and reserve your mobile detail with a deposit.',
 };
 
-export default async function BookPage() {
-  const settings = await getSiteSettings();
-  if (!settings?.calendlyUrl || !settings?.stripeDepositLink) notFound();
+type BookPageProps = {
+  searchParams: Promise<{ package?: string }>;
+};
+
+export default async function BookPage({ searchParams }: BookPageProps) {
+  const [settings, params] = await Promise.all([getSiteSettings(), searchParams]);
+
+  if (
+    !settings?.stripeDepositLink ||
+    (!settings?.calendlyUrlBronze && !settings?.calendlyUrlSilver && !settings?.calendlyUrlGold)
+  ) {
+    notFound();
+  }
+
+  // Invalid or missing ?package= values fall back to the in-flow picker.
+  const initialPackage = resolvePackageSlug(params.package) ?? undefined;
 
   return (
     <main className="min-h-screen bg-ink1 px-6 py-16">
@@ -20,11 +34,16 @@ export default async function BookPage() {
           Book your detail
         </h1>
         <p className="m-0 mb-8 text-[16px] text-steel">
-          Three quick steps: your info, a time that works, and a deposit to lock it in.
+          Four quick steps: your package, your info, a time that works, and a deposit to lock it in.
         </p>
         <BookingFlow
-          calendlyUrl={settings.calendlyUrl}
+          calendlyUrls={{
+            bronze: settings.calendlyUrlBronze ?? undefined,
+            silver: settings.calendlyUrlSilver ?? undefined,
+            gold: settings.calendlyUrlGold ?? undefined,
+          }}
           stripeDepositLink={settings.stripeDepositLink}
+          initialPackage={initialPackage}
         />
       </div>
     </main>

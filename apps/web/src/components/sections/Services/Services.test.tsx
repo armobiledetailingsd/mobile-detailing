@@ -23,7 +23,17 @@ const PROPS: ServicesSectionProps = {
 };
 
 describe('Services booking CTAs', () => {
-  it('links each package Book now CTA to /book', () => {
+  it('links a known package Book now CTA to /book with its slug', () => {
+    const props: ServicesSectionProps = {
+      ...PROPS,
+      packages: [{ ...PROPS.packages![0]!, name: 'Silver' }],
+    };
+    render(<Services {...props} />);
+    const cta = screen.getByRole('link', { name: /book now: silver/i });
+    expect(cta).toHaveAttribute('href', '/book?package=silver');
+  });
+
+  it('falls back to plain /book when the package name is unknown', () => {
     render(<Services {...PROPS} />);
     const cta = screen.getByRole('link', { name: /book now: full detail/i });
     expect(cta).toHaveAttribute('href', '/book');

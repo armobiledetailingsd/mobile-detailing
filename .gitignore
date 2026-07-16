@@ -49,3 +49,6 @@ _design-export.html
 /RoadReady Landing Page.html
 .vercel
 .env*
+
+# local MCP server config (may reference machine-specific tokens)
+.mcp.json

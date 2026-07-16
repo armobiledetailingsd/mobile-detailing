@@ -1,6 +1,11 @@
 // apps/studio/scripts/update-services-pricing.ts
 // Replaces the servicesSection packages/addons on the homepage (published and
 // draft) with the current rate card. Content must mirror scripts/seed-homepage.ts.
+//
+// Canonical rate card lives in apps/web/src/lib/booking/packages.ts (PACKAGES).
+// Booking flow duration copy and pricing come from there, independently of
+// this CMS content — if you change prices/durations here, update packages.ts
+// and seed-homepage.ts too. Nothing enforces this automatically.
 import { createClient } from '@sanity/client';
 import { config } from 'dotenv';
 import { resolve } from 'path';

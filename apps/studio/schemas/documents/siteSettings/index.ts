@@ -60,12 +60,63 @@ export const siteSettings = defineType({
       group: 'features',
     }),
     defineField({
-      name: 'calendlyUrl',
-      title: 'Calendly scheduling URL',
+      name: 'calendlyUrlBronze',
+      title: 'Calendly URL — Bronze (~1.5 hr)',
       type: 'url',
       description:
-        'Public Calendly event link customers book on, e.g. https://calendly.com/your-team/mobile-detail',
-      validation: (Rule) => Rule.required().uri({ scheme: ['https'] }),
+        'Public Calendly link for the Bronze Detail event type, e.g. https://calendly.com/your-team/bronze-detail. Leave blank to hide this package on the book page until it is ready.',
+      validation: (Rule) =>
+        Rule.uri({ scheme: ['https'] }).custom((value) => {
+          if (!value) return true;
+          try {
+            const { hostname } = new URL(value);
+            return hostname === 'calendly.com' || hostname.endsWith('.calendly.com')
+              ? true
+              : 'Must be a calendly.com URL';
+          } catch {
+            return 'Must be a valid URL';
+          }
+        }),
+      group: 'booking',
+    }),
+    defineField({
+      name: 'calendlyUrlSilver',
+      title: 'Calendly URL — Silver (~3 hr)',
+      type: 'url',
+      description:
+        'Public Calendly link for the Silver Detail event type, e.g. https://calendly.com/your-team/silver-detail. Leave blank to hide this package on the book page until it is ready.',
+      validation: (Rule) =>
+        Rule.uri({ scheme: ['https'] }).custom((value) => {
+          if (!value) return true;
+          try {
+            const { hostname } = new URL(value);
+            return hostname === 'calendly.com' || hostname.endsWith('.calendly.com')
+              ? true
+              : 'Must be a calendly.com URL';
+          } catch {
+            return 'Must be a valid URL';
+          }
+        }),
+      group: 'booking',
+    }),
+    defineField({
+      name: 'calendlyUrlGold',
+      title: 'Calendly URL — Gold (~4.5 hr)',
+      type: 'url',
+      description:
+        'Public Calendly link for the Gold Detail event type, e.g. https://calendly.com/your-team/gold-detail. Leave blank to hide this package on the book page until it is ready.',
+      validation: (Rule) =>
+        Rule.uri({ scheme: ['https'] }).custom((value) => {
+          if (!value) return true;
+          try {
+            const { hostname } = new URL(value);
+            return hostname === 'calendly.com' || hostname.endsWith('.calendly.com')
+              ? true
+              : 'Must be a calendly.com URL';
+          } catch {
+            return 'Must be a valid URL';
+          }
+        }),
       group: 'booking',
     }),
     defineField({

@@ -45,6 +45,18 @@ const METAL_INTERACTION = {
   link: 'hover:-translate-y-px hover:shadow-[0_2px_6px_rgba(0,0,0,.20),0_8px_20px_rgba(0,0,0,.12)] active:scale-[0.98]',
 };
 
+const ALLOWED_HREF_SCHEMES = ['http:', 'https:', 'tel:', 'mailto:'];
+
+// Root-relative hrefs go through next/link (never hit a raw <a>); this only
+// guards absolute/scheme hrefs, which may come from CMS content.
+function isAllowedHref(href: string): boolean {
+  try {
+    return ALLOWED_HREF_SCHEMES.includes(new URL(href, 'https://placeholder.invalid').protocol);
+  } catch {
+    return false;
+  }
+}
+
 export function Button(props: ButtonProps) {
   const {
     children,
@@ -101,6 +113,15 @@ export function Button(props: ButtonProps) {
     // next/link only handles internal routes; tel:, mailto:, and absolute URLs
     // get a plain anchor.
     if (!href.startsWith('/')) {
+      // href may come from CMS content — refuse to render javascript:/data:
+      // etc. as an interactive link.
+      if (!isAllowedHref(href)) {
+        return (
+          <span className={classes} style={style}>
+            {content}
+          </span>
+        );
+      }
       return (
         <a href={href} className={classes} style={style} {...anchorRest}>
           {content}
