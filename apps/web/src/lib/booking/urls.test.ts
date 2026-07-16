@@ -37,6 +37,29 @@ describe('buildCalendlyUrl', () => {
     expect(url.searchParams.get('month')).toBe('2026-08');
     expect(url.searchParams.get('email')).toBe('sam@example.com');
   });
+
+  it('sets embed_domain and embed_type so Calendly emits postMessage events', () => {
+    const url = new URL(
+      buildCalendlyUrl(
+        'https://calendly.com/ar-detailing/mobile-detail',
+        { name: 'Sam Jones', email: 'sam@example.com' },
+        'example.com',
+      ),
+    );
+    expect(url.searchParams.get('embed_domain')).toBe('example.com');
+    expect(url.searchParams.get('embed_type')).toBe('Inline');
+  });
+
+  it('omits embed_domain when no domain is provided', () => {
+    const url = new URL(
+      buildCalendlyUrl('https://calendly.com/ar-detailing/mobile-detail', {
+        name: 'Sam Jones',
+        email: 'sam@example.com',
+      }),
+    );
+    expect(url.searchParams.has('embed_domain')).toBe(false);
+    expect(url.searchParams.has('embed_type')).toBe(false);
+  });
 });
 
 describe('buildStripeUrl', () => {

@@ -38,7 +38,7 @@ const pageProjection = groq`{
     _type == "servicesSection" => {
       eyebrow,
       heading,
-      packages[]{ _key, name, price, duration, description, includes, popular },
+      packages[]{ _key, name, priceSedan, priceTruckSuv, duration, description, includes, popular },
       addons[]{ _key, label, price, duration }
     },
     _type == "howItWorks" => {

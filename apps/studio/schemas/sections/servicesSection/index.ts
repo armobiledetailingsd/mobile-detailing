@@ -29,7 +29,8 @@ export const servicesSection = defineType({
           name: 'servicePackage',
           fields: [
             defineField({ name: 'name', title: 'Name', type: 'string', validation: (Rule) => Rule.required() }),
-            defineField({ name: 'price', title: 'Price ($)', type: 'number', validation: (Rule) => Rule.required().positive() }),
+            defineField({ name: 'priceSedan', title: 'Sedan price ($)', type: 'number', validation: (Rule) => Rule.required().positive() }),
+            defineField({ name: 'priceTruckSuv', title: 'Truck or SUV price ($)', type: 'number', validation: (Rule) => Rule.required().positive() }),
             defineField({ name: 'duration', title: 'Duration', type: 'string', description: 'e.g. "~45 min"', validation: (Rule) => Rule.required() }),
             defineField({ name: 'description', title: 'Description', type: 'text', rows: 2 }),
             defineField({
@@ -41,9 +42,10 @@ export const servicesSection = defineType({
             defineField({ name: 'popular', title: 'Most popular?', type: 'boolean' }),
           ],
           preview: {
-            select: { title: 'name', subtitle: 'price' },
-            prepare({ title, subtitle }) {
-              return { title, subtitle: subtitle ? `$${subtitle}` : '' };
+            select: { title: 'name', sedan: 'priceSedan', truckSuv: 'priceTruckSuv' },
+            prepare({ title, sedan, truckSuv }) {
+              const rates = [sedan, truckSuv].filter((v) => v != null).map((v) => `$${v}`);
+              return { title, subtitle: rates.join(' / ') };
             },
           },
         }),
