@@ -4,19 +4,19 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { PACKAGES, isServiceableZip, type PackageSlug } from '@/lib/booking/packages';
-import { buildCalendlyUrl, buildStripeUrl, isValidEmail } from '@/lib/booking/urls';
+import { buildCalendlyUrl, buildStripeUrl, isTrustedCalendlyUrl, isValidEmail } from '@/lib/booking/urls';
 
 type Step = 'package' | 'contact' | 'schedule' | 'pay';
 
 type BookingFlowProps = {
-  calendlyUrls: Record<PackageSlug, string>;
+  calendlyUrls: Partial<Record<PackageSlug, string>>;
   stripeDepositLink: string;
   initialPackage?: PackageSlug;
 };
 
 const STEP_NUMBER: Record<Step, number> = { package: 1, contact: 2, schedule: 3, pay: 4 };
 
-const AUTO_REDIRECT_DELAY_MS = 1500;
+const AUTO_REDIRECT_DELAY_MS = 5000;
 
 const INPUT_CLASSES =
   'w-full h-12 px-[14px] font-sans text-[15px] rounded-input text-platinum focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-d)] focus-visible:border-[var(--color-accent-d)]';
@@ -34,10 +34,14 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
   const [zip, setZip] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<'email' | 'zip' | null>(null);
+  const [autoRedirectCancelled, setAutoRedirectCancelled] = useState(false);
+  const [redirectSecondsLeft, setRedirectSecondsLeft] = useState(
+    Math.ceil(AUTO_REDIRECT_DELAY_MS / 1000),
+  );
   const errorId = 'contact-form-error';
 
   const selectedPackage = PACKAGES.find((p) => p.slug === selected) ?? null;
-  const calendlyUrl = selected ? calendlyUrls[selected] : '';
+  const calendlyUrl = selected ? (calendlyUrls[selected] ?? '') : '';
 
   useEffect(() => {
     if (step !== 'schedule') return;
@@ -53,12 +57,19 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
   }, [step]);
 
   useEffect(() => {
-    if (step !== 'pay') return;
+    if (step !== 'pay' || autoRedirectCancelled) return;
+    setRedirectSecondsLeft(Math.ceil(AUTO_REDIRECT_DELAY_MS / 1000));
+    const interval = setInterval(() => {
+      setRedirectSecondsLeft((s) => Math.max(0, s - 1));
+    }, 1000);
     const timer = setTimeout(() => {
       window.location.href = buildStripeUrl(stripeDepositLink, email.trim());
     }, AUTO_REDIRECT_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [step, stripeDepositLink, email]);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [step, stripeDepositLink, email, autoRedirectCancelled]);
 
   function submitContact() {
     if (!isValidEmail(email.trim())) {
@@ -202,47 +213,58 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
         </>
       )}
 
-      {step === 'schedule' && (
-        <>
-          <h2 className="m-0 mb-5 font-sans font-semibold text-[22px] text-platinum">
-            Pick a time that works
-          </h2>
-          <iframe
-            title="Pick a time"
-            src={buildCalendlyUrl(
-              calendlyUrl,
-              { name: name.trim(), email: email.trim() },
-              typeof window !== 'undefined' ? window.location.hostname : undefined,
-            )}
-            className="w-full rounded-input border-0"
-            style={{ minHeight: 640, background: 'rgba(255,255,255,0.04)' }}
-          />
-          <p className="mt-3 mb-0 text-[13px] text-steel">
-            Having trouble with the calendar?{' '}
-            <a
-              href={buildCalendlyUrl(calendlyUrl, { name: name.trim(), email: email.trim() })}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline text-platinum"
-            >
-              Book directly on Calendly
-            </a>{' '}
-            in a new tab.
-          </p>
-          <p className="mt-2 mb-0 text-[13px] text-steel">
-            Booked through Calendly directly?{' '}
-            <a
-              href={buildStripeUrl(stripeDepositLink, email.trim())}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline text-platinum"
-            >
-              Pay your deposit here
-            </a>
-            .
-          </p>
-        </>
-      )}
+      {step === 'schedule' &&
+        (isTrustedCalendlyUrl(calendlyUrl) ? (
+          <>
+            <h2 className="m-0 mb-5 font-sans font-semibold text-[22px] text-platinum">
+              Pick a time that works
+            </h2>
+            <iframe
+              title="Pick a time"
+              src={buildCalendlyUrl(
+                calendlyUrl,
+                { name: name.trim(), email: email.trim() },
+                typeof window !== 'undefined' ? window.location.hostname : undefined,
+              )}
+              className="w-full rounded-input border-0"
+              style={{ minHeight: 640, background: 'rgba(255,255,255,0.04)' }}
+            />
+            <p className="mt-3 mb-0 text-[13px] text-steel">
+              Having trouble with the calendar?{' '}
+              <a
+                href={buildCalendlyUrl(calendlyUrl, { name: name.trim(), email: email.trim() })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-platinum"
+              >
+                Book directly on Calendly
+              </a>{' '}
+              in a new tab.
+            </p>
+            <p className="mt-2 mb-0 text-[13px] text-steel">
+              Booked through Calendly directly?{' '}
+              <a
+                href={buildStripeUrl(stripeDepositLink, email.trim())}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-platinum"
+              >
+                Pay your deposit here
+              </a>
+              .
+            </p>
+          </>
+        ) : (
+          <>
+            <h2 className="m-0 mb-3 font-sans font-semibold text-[22px] text-platinum">
+              Scheduling is temporarily unavailable
+            </h2>
+            <p className="m-0 text-[15px] text-steel">
+              We couldn&apos;t load the booking calendar for this package. Please contact us
+              directly to pick a time.
+            </p>
+          </>
+        ))}
 
       {step === 'pay' && (
         <>
@@ -250,15 +272,28 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
             You&apos;re booked! One last step.
           </h2>
           <p className="m-0 mb-5 text-[15px] text-steel">
-            Redirecting you to secure payment. Use the same email (
-            <span className="text-platinum">{email.trim()}</span>) so we can match your payment to
-            your booking. Not redirected automatically?
+            Use the same email (<span className="text-platinum">{email.trim()}</span>) so we can
+            match your payment to your booking.
+            {autoRedirectCancelled ? null : ` Redirecting you to secure payment in ${redirectSecondsLeft}s.`}
           </p>
-          <a href={buildStripeUrl(stripeDepositLink, email.trim())} className="block">
-            <Button variant="metal" size="lg" fullWidth iconRight="arrow-right">
-              Pay your deposit
-            </Button>
-          </a>
+          {!autoRedirectCancelled && (
+            <button
+              type="button"
+              onClick={() => setAutoRedirectCancelled(true)}
+              className="mb-4 underline text-platinum cursor-pointer bg-transparent border-0 p-0 text-[13px]"
+            >
+              Cancel auto-redirect
+            </button>
+          )}
+          <Button
+            href={buildStripeUrl(stripeDepositLink, email.trim())}
+            variant="metal"
+            size="lg"
+            fullWidth
+            iconRight="arrow-right"
+          >
+            Pay your deposit
+          </Button>
         </>
       )}
     </div>
