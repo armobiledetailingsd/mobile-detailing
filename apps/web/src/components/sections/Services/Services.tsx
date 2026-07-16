@@ -1,6 +1,7 @@
 import type { HomepageQueryResult } from '@/sanity.types';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
+import { resolvePackageSlug } from '@/lib/booking/packages';
 
 type PageSection = NonNullable<NonNullable<HomepageQueryResult>['sections']>[number];
 export type ServicesSectionProps = Extract<PageSection, { _type: 'servicesSection' }>;
@@ -27,7 +28,9 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
 
         {packages && packages.length > 0 && (
           <div className="grid [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))] gap-5 mb-12">
-            {packages.map((pkg) => (
+            {packages.map((pkg) => {
+              const slug = resolvePackageSlug(pkg.name);
+              return (
               <div
                 key={pkg._key}
                 className={[
@@ -79,7 +82,7 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                   </dl>
                   <div className="flex justify-end">
                     <Button
-                      href="/book"
+                      href={slug ? `/book?package=${slug}` : '/book'}
                       variant={pkg.popular ? 'ink' : 'outline'}
                       size="sm"
                       aria-label={`Book now: ${pkg.name}`}
@@ -89,7 +92,8 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         )}
 
