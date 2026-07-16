@@ -78,13 +78,15 @@ export function Services({ eyebrow, heading, packages, addons }: ServicesSection
                       <div className="flex items-baseline justify-between">
                         <dt className="text-[13px] font-medium text-muted">Sedan</dt>
                         <dd className="m-0 font-sans font-bold text-[22px] text-ink1">
-                          ${pkg.priceSedan}
+                          {pkg.priceSedan != null ? `$${pkg.priceSedan}` : 'Contact for pricing'}
                         </dd>
                       </div>
                       <div className="flex items-baseline justify-between">
                         <dt className="text-[13px] font-medium text-muted">Truck or SUV</dt>
                         <dd className="m-0 font-sans font-bold text-[22px] text-ink1">
-                          ${pkg.priceTruckSuv}
+                          {pkg.priceTruckSuv != null
+                            ? `$${pkg.priceTruckSuv}`
+                            : 'Contact for pricing'}
                         </dd>
                       </div>
                     </dl>
