@@ -349,7 +349,9 @@ export type SiteSettings = {
   organizationLegalName?: string;
   organizationUrl?: string;
   blogEnabled?: boolean;
-  calendlyUrl: string;
+  calendlyUrlBronze: string;
+  calendlyUrlSilver: string;
+  calendlyUrlGold: string;
   stripeDepositLink: string;
 };
 
@@ -685,7 +687,7 @@ export type LinkProjectionResult = {
 
 // Source: ../web/src/lib/sanity/queries/global.ts
 // Variable: siteSettingsQuery
-// Query: *[_id == $id && _type == "siteSettings"][0]{  _id,  _type,  siteName,  siteDescription,  defaultOpenGraphImage,  organizationLegalName,  organizationUrl,  blogEnabled,  calendlyUrl,  stripeDepositLink}
+// Query: *[_id == $id && _type == "siteSettings"][0]{  _id,  _type,  siteName,  siteDescription,  defaultOpenGraphImage,  organizationLegalName,  organizationUrl,  blogEnabled,  calendlyUrlBronze,  calendlyUrlSilver,  calendlyUrlGold,  stripeDepositLink}
 export type SiteSettingsQueryResult = {
   _id: string;
   _type: 'siteSettings';
@@ -701,7 +703,9 @@ export type SiteSettingsQueryResult = {
   organizationLegalName: string | null;
   organizationUrl: string | null;
   blogEnabled: boolean | null;
-  calendlyUrl: string;
+  calendlyUrlBronze: string;
+  calendlyUrlSilver: string;
+  calendlyUrlGold: string;
   stripeDepositLink: string;
 } | null;
 
@@ -1275,7 +1279,7 @@ declare module '@sanity/client' {
     '\n  *[_type == "blogPost" && defined(slug.current) && defined(publishedAt) && seo.noIndex != true]\n    | order(_updatedAt desc) {\n    "slug": slug.current,\n    "lastModified": _updatedAt\n  }\n': BlogPostsForSitemapQueryResult;
     '*[_id == $id && _type == "siteSettings"][0].blogEnabled': BlogEnabledQueryResult;
     '{\n  label,\n  linkType,\n  openInNewTab,\n  "href": select(\n    linkType == "external" => externalUrl,\n    linkType == "internal" => "/" + internalReference->slug.current,\n    null\n  )\n}': LinkProjectionResult;
-    '*[_id == $id && _type == "siteSettings"][0]{\n  _id,\n  _type,\n  siteName,\n  siteDescription,\n  defaultOpenGraphImage,\n  organizationLegalName,\n  organizationUrl,\n  blogEnabled,\n  calendlyUrl,\n  stripeDepositLink\n}': SiteSettingsQueryResult;
+    '*[_id == $id && _type == "siteSettings"][0]{\n  _id,\n  _type,\n  siteName,\n  siteDescription,\n  defaultOpenGraphImage,\n  organizationLegalName,\n  organizationUrl,\n  blogEnabled,\n  calendlyUrlBronze,\n  calendlyUrlSilver,\n  calendlyUrlGold,\n  stripeDepositLink\n}': SiteSettingsQueryResult;
     '*[_id == $id && _type == "headerNavigation"][0]{\n  _id,\n  _type,\n  title,\n  links[]{\n  label,\n  linkType,\n  openInNewTab,\n  "href": select(\n    linkType == "external" => externalUrl,\n    linkType == "internal" => "/" + internalReference->slug.current,\n    null\n  )\n}\n}': HeaderNavigationQueryResult;
     '*[_id == $id && _type == "footerNavigation"][0]{\n  _id,\n  _type,\n  title,\n  columns[]{\n    _key,\n    heading,\n    links[]{\n  label,\n  linkType,\n  openInNewTab,\n  "href": select(\n    linkType == "external" => externalUrl,\n    linkType == "internal" => "/" + internalReference->slug.current,\n    null\n  )\n}\n  },\n  copyright\n}': FooterNavigationQueryResult;
     '*[_id == $id && _type == "siteSettings"][0]{\n  siteName,\n  siteDescription,\n  blogEnabled\n}': SiteSettingsForLlmsQueryResult;

@@ -31,7 +31,9 @@ const siteSettingsQuery = groq`*[_id == $id && _type == "siteSettings"][0]{
   organizationLegalName,
   organizationUrl,
   blogEnabled,
-  calendlyUrl,
+  calendlyUrlBronze,
+  calendlyUrlSilver,
+  calendlyUrlGold,
   stripeDepositLink
 }`;
 

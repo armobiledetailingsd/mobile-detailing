@@ -60,11 +60,29 @@ export const siteSettings = defineType({
       group: 'features',
     }),
     defineField({
-      name: 'calendlyUrl',
-      title: 'Calendly scheduling URL',
+      name: 'calendlyUrlBronze',
+      title: 'Calendly URL — Bronze (1.5 hr)',
       type: 'url',
       description:
-        'Public Calendly event link customers book on, e.g. https://calendly.com/your-team/mobile-detail',
+        'Public Calendly link for the Bronze Detail event type, e.g. https://calendly.com/your-team/bronze-detail',
+      validation: (Rule) => Rule.required().uri({ scheme: ['https'] }),
+      group: 'booking',
+    }),
+    defineField({
+      name: 'calendlyUrlSilver',
+      title: 'Calendly URL — Silver (2.5 hr)',
+      type: 'url',
+      description:
+        'Public Calendly link for the Silver Detail event type, e.g. https://calendly.com/your-team/silver-detail',
+      validation: (Rule) => Rule.required().uri({ scheme: ['https'] }),
+      group: 'booking',
+    }),
+    defineField({
+      name: 'calendlyUrlGold',
+      title: 'Calendly URL — Gold (4 hr)',
+      type: 'url',
+      description:
+        'Public Calendly link for the Gold Detail event type, e.g. https://calendly.com/your-team/gold-detail',
       validation: (Rule) => Rule.required().uri({ scheme: ['https'] }),
       group: 'booking',
     }),
