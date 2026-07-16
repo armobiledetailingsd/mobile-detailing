@@ -5,6 +5,7 @@ Prep doc for client meeting — everything needed to take the site live.
 ## Decisions needed from client
 
 - [ ] **Deposit amount** — dollar amount for the Stripe booking deposit
+- [ ] **Stripe** — currently on a Stripe test account only; need to switch to a live account (real business details + bank) before launch
 - [ ] **Calendly scheduling setup** — confirm the Calendly link, event duration/buffer, and availability/time zone
 - [ ] **Domain name** — exact name to purchase, and who owns/pays for the registrar account
 - [ ] **Service area** — confirm ZIP codes/cities are correct (currently set to North County San Diego)
