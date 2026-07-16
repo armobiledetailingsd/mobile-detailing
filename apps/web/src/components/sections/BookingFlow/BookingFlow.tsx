@@ -3,17 +3,18 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
-import { isServiceableZip } from '@/lib/booking/packages';
+import { PACKAGES, isServiceableZip, type PackageSlug } from '@/lib/booking/packages';
 import { buildCalendlyUrl, buildStripeUrl, isValidEmail } from '@/lib/booking/urls';
 
-type Step = 'contact' | 'schedule' | 'pay';
+type Step = 'package' | 'contact' | 'schedule' | 'pay';
 
 type BookingFlowProps = {
-  calendlyUrl: string;
+  calendlyUrls: Record<PackageSlug, string>;
   stripeDepositLink: string;
+  initialPackage?: PackageSlug;
 };
 
-const STEP_NUMBER: Record<Step, number> = { contact: 1, schedule: 2, pay: 3 };
+const STEP_NUMBER: Record<Step, number> = { package: 1, contact: 2, schedule: 3, pay: 4 };
 
 const AUTO_REDIRECT_DELAY_MS = 1500;
 
@@ -25,14 +26,18 @@ const INPUT_STYLE = {
   border: '1.5px solid rgba(255,255,255,0.15)',
 } as const;
 
-export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps) {
-  const [step, setStep] = useState<Step>('contact');
+export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }: BookingFlowProps) {
+  const [step, setStep] = useState<Step>(initialPackage ? 'contact' : 'package');
+  const [selected, setSelected] = useState<PackageSlug | null>(initialPackage ?? null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [zip, setZip] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<'email' | 'zip' | null>(null);
   const errorId = 'contact-form-error';
+
+  const selectedPackage = PACKAGES.find((p) => p.slug === selected) ?? null;
+  const calendlyUrl = selected ? calendlyUrls[selected] : '';
 
   useEffect(() => {
     if (step !== 'schedule') return;
@@ -74,14 +79,59 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
   return (
     <div className="bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.1)] rounded-panel py-8 px-7 backdrop-blur-[8px]">
       <p className="m-0 mb-[6px] text-[12px] font-semibold tracking-[0.12em] uppercase text-steel">
-        Step {STEP_NUMBER[step]} of 3
+        Step {STEP_NUMBER[step]} of 4
       </p>
+
+      {step === 'package' && (
+        <>
+          <h2 className="m-0 mb-5 font-sans font-semibold text-[22px] text-platinum">
+            Choose your package
+          </h2>
+          <div className="flex flex-col gap-3">
+            {PACKAGES.map((pkg) => (
+              <button
+                key={pkg.slug}
+                type="button"
+                onClick={() => {
+                  setSelected(pkg.slug);
+                  setStep('contact');
+                }}
+                className="w-full text-left p-[16px_18px] rounded-input cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-d)]"
+                style={INPUT_STYLE}
+              >
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="font-sans font-semibold text-[16px] text-platinum">
+                    {pkg.name}
+                  </span>
+                  <span className="text-[13px] text-steel">{pkg.duration}</span>
+                </span>
+                <span className="mt-1 block text-[13px] text-steel">
+                  Sedan ${pkg.priceSedan} · Truck or SUV ${pkg.priceTruckSuv}
+                </span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       {step === 'contact' && (
         <>
-          <h2 className="m-0 mb-5 font-sans font-semibold text-[22px] text-platinum">
+          <h2 className="m-0 mb-2 font-sans font-semibold text-[22px] text-platinum">
             Tell us where to find you
           </h2>
+          {selectedPackage && (
+            <p className="m-0 mb-5 text-[13px] text-steel">
+              Package: <span className="text-platinum">{selectedPackage.name}</span> (
+              {selectedPackage.duration}){' '}
+              <button
+                type="button"
+                onClick={() => setStep('package')}
+                className="underline text-platinum cursor-pointer bg-transparent border-0 p-0 text-[13px]"
+              >
+                Change
+              </button>
+            </p>
+          )}
           <form
             className="flex flex-col gap-4"
             onSubmit={(e) => {
@@ -176,8 +226,8 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
               className="underline text-platinum"
             >
               Book directly on Calendly
-            </a>
-            {' '}in a new tab.
+            </a>{' '}
+            in a new tab.
           </p>
           <p className="mt-2 mb-0 text-[13px] text-steel">
             Booked through Calendly directly?{' '}
@@ -201,8 +251,8 @@ export function BookingFlow({ calendlyUrl, stripeDepositLink }: BookingFlowProps
           </h2>
           <p className="m-0 mb-5 text-[15px] text-steel">
             Redirecting you to secure payment. Use the same email (
-            <span className="text-platinum">{email.trim()}</span>) so we can match your
-            payment to your booking. Not redirected automatically?
+            <span className="text-platinum">{email.trim()}</span>) so we can match your payment to
+            your booking. Not redirected automatically?
           </p>
           <a href={buildStripeUrl(stripeDepositLink, email.trim())} className="block">
             <Button variant="metal" size="lg" fullWidth iconRight="arrow-right">
