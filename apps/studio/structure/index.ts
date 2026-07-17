@@ -1,4 +1,4 @@
-import type { StructureResolver } from 'sanity/structure';
+import type { DefaultDocumentNodeResolver, StructureResolver } from 'sanity/structure';
 import {
   CogIcon,
   ComposeIcon,
@@ -10,6 +10,7 @@ import {
   ThListIcon,
   TransferIcon,
 } from '@sanity/icons';
+import { PagePreview } from './components/PagePreview';
 
 // Documents pinned by ID — these power the singleton entries in the structure.
 // Keep these IDs stable; they are referenced from the structure and may be
@@ -22,6 +23,23 @@ export const SINGLETON_IDS = {
 } as const;
 
 const SINGLETON_ID_LIST = Object.values(SINGLETON_IDS);
+
+// Shared Editor/Preview view pair for websitePage documents. Applied both via
+// defaultDocumentNode (for documentTypeList items, e.g. All Pages) and
+// explicitly on any S.document() built directly in the structure below —
+// an explicit S.document() fully defines its own node and does not fall
+// through to defaultDocumentNode.
+const websitePageViews = (S: Parameters<DefaultDocumentNodeResolver>[0]) => [
+  S.view.form(),
+  S.view.component(PagePreview).title('Preview'),
+];
+
+export const defaultDocumentNode: DefaultDocumentNodeResolver = (S, { schemaType }) => {
+  if (schemaType === 'websitePage') {
+    return S.document().views(websitePageViews(S));
+  }
+  return S.document();
+};
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -37,7 +55,12 @@ export const structure: StructureResolver = (S) =>
               S.listItem()
                 .title('Homepage')
                 .icon(HomeIcon)
-                .child(S.document().schemaType('websitePage').documentId(SINGLETON_IDS.homepage)),
+                .child(
+                  S.document()
+                    .schemaType('websitePage')
+                    .documentId(SINGLETON_IDS.homepage)
+                    .views(websitePageViews(S)),
+                ),
               S.divider(),
               S.listItem()
                 .title('All Pages')

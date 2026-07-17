@@ -3,7 +3,7 @@ import { structureTool } from 'sanity/structure';
 import { presentationTool, defineLocations } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './schemas';
-import { structure } from './structure';
+import { structure, defaultDocumentNode } from './structure';
 
 const PLACEHOLDER_PROJECT_ID = 'your-sanity-project-id';
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? PLACEHOLDER_PROJECT_ID;
@@ -25,7 +25,7 @@ export default defineConfig({
   dataset,
   autoUpdatesEnabled: false,
   plugins: [
-    structureTool({ structure }),
+    structureTool({ structure, defaultDocumentNode }),
     presentationTool({
       previewUrl: {
         origin: PREVIEW_URL,
