@@ -107,9 +107,12 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
         <div className="pt-5 border-t border-[rgba(255,255,255,0.08)] flex flex-wrap gap-3 justify-between items-center">
           <span className="text-[13px] text-muted">{copyright}</span>
           <div className="flex gap-5">
-            {['Privacy', 'Terms'].map((l) => (
-              <a key={l} href="#" className="text-[13px] text-muted no-underline">
-                {l}
+            {[
+              { label: 'Privacy', href: '/privacy' },
+              { label: 'Terms', href: '/terms' },
+            ].map((l) => (
+              <a key={l.label} href={l.href} className="text-[13px] text-muted no-underline">
+                {l.label}
               </a>
             ))}
           </div>
