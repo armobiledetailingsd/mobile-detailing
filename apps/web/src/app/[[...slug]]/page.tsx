@@ -3,6 +3,10 @@ import { notFound } from 'next/navigation';
 import { Sections } from '@/components/sections/Sections';
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { getAllWebsitePageSlugs, getHomepage, getWebsitePageBySlug } from '@/lib/sanity/queries/page';
+import { getSiteSettings } from '@/lib/sanity/queries/global';
+import { buildLocalBusinessJsonLd } from '@/lib/seo/localBusiness';
+
+const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 
 type RouteParams = { slug?: string[] };
 
@@ -24,7 +28,7 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
   if (isHomepageRoute(params.slug)) {
     const page = await getHomepage();
     return {
-      title: page?.seo?.metaTitle ?? 'Alex Detailing — Premium Mobile Detailing in North County San Diego',
+      title: page?.seo?.metaTitle ?? 'AR Mobile Detailing — Premium Mobile Detailing in North County San Diego',
       description: page?.seo?.metaDescription ?? 'Professional mobile auto detailing in North County San Diego and surrounding areas. We come to your home or office. Book in minutes.',
       robots: page?.seo?.noIndex ? { index: false, follow: false } : undefined,
     };
@@ -46,10 +50,17 @@ export default async function Page(props: { params: Promise<RouteParams> }) {
   const params = await props.params;
 
   if (isHomepageRoute(params.slug)) {
-    const page = await getHomepage();
+    const [page, siteSettings] = await Promise.all([getHomepage(), getSiteSettings()]);
     if (!page) return null;
+    const jsonLd = buildLocalBusinessJsonLd({ siteSettings, homepage: page, baseUrl });
     return (
       <div data-sanity={createDocDataAttribute(page).toString()}>
+        {jsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        )}
         <Sections sections={page.sections} />
       </div>
     );

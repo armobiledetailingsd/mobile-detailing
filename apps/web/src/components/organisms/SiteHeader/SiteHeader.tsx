@@ -19,9 +19,10 @@ const FALLBACK_LINKS = [
   { label: 'Coverage', href: '/#coverage', openInNewTab: false },
 ];
 
-type SiteHeaderProps = { navigation: HeaderNavigationQueryResult };
+type SiteHeaderProps = { navigation: HeaderNavigationQueryResult; siteName: string };
 
-export function SiteHeader({ navigation }: SiteHeaderProps) {
+export function SiteHeader({ navigation, siteName }: SiteHeaderProps) {
+  const initial = siteName.trim().charAt(0).toUpperCase();
   const [menuOpen, setMenuOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const sanityLinks = navigation?.links ?? [];
@@ -47,15 +48,14 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
         {/* Brand mark */}
         <Link
           href="/"
-          aria-label="Alex Detailing"
+          aria-label={siteName}
           className="flex items-center gap-[10px] no-underline shrink-0"
         >
           <span className="w-[34px] h-[34px] flex items-center justify-center bg-elev-d border border-[rgba(255,255,255,0.12)] rounded-[9px] font-sans font-bold text-[16px] text-platinum shrink-0">
-            A
+            {initial}
           </span>
-          <span className="font-sans font-semibold text-[15px] tracking-[0.06em]">
-            <span className="text-platinum">ALEX</span>
-            <span className="text-steel">·DETAILING</span>
+          <span className="font-sans font-semibold text-[15px] tracking-[0.06em] text-platinum">
+            {siteName}
           </span>
         </Link>
 
@@ -113,7 +113,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
             onClick={(e) => e.stopPropagation()}
           >
             <span className="font-sans font-semibold text-[15px] text-platinum tracking-[0.06em]">
-              ALEX·DETAILING
+              {siteName}
             </span>
             <button
               ref={closeButtonRef}

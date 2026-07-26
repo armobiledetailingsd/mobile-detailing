@@ -5,14 +5,14 @@ import { SiteHeader } from './SiteHeader';
 
 describe('SiteHeader booking CTAs', () => {
   it('links the desktop Book now CTA to /book', () => {
-    render(<SiteHeader navigation={null} />);
+    render(<SiteHeader navigation={null} siteName="AR Mobile Detailing" />);
     const cta = screen.getByRole('link', { name: /book now/i });
     expect(cta).toHaveAttribute('href', '/book');
   });
 
   it('links the mobile drawer Book now CTA to /book', async () => {
     const user = userEvent.setup();
-    render(<SiteHeader navigation={null} />);
+    render(<SiteHeader navigation={null} siteName="AR Mobile Detailing" />);
     await user.click(screen.getByRole('button', { name: /open menu/i }));
     const ctas = screen.getAllByRole('link', { name: /book now/i });
     for (const cta of ctas) {
