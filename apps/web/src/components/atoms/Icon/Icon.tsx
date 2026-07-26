@@ -23,7 +23,9 @@ export type IconName =
   | 'dollar-sign'
   | 'message'
   | 'menu'
-  | 'gauge';
+  | 'gauge'
+  | 'facebook'
+  | 'instagram';
 
 const PATHS: Record<IconName, React.ReactNode> = {
   phone: <path d="M5 3h3l2 5-2 1.5a12 12 0 0 0 5.5 5.5L20 13l1 6-3 2C10 21 3 14 3 6z" />,
@@ -101,6 +103,14 @@ const PATHS: Record<IconName, React.ReactNode> = {
     <>
       <path d="M4 18a8 8 0 1 1 16 0" />
       <path d="M12 14l4-4" />
+    </>
+  ),
+  facebook: <path d="M15 4h-2a4 4 0 0 0-4 4v3H7v4h2v7h4v-7h3l1-4h-4V8a1 1 0 0 1 1-1h3z" />,
+  instagram: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
     </>
   ),
 };

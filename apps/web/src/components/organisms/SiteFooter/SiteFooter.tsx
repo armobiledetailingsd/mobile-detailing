@@ -1,9 +1,15 @@
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { resolveNavHref } from '@/lib/nav';
+import { Icon } from '@/components/atoms/Icon';
 import type { FooterNavigationQueryResult } from '@/sanity.types';
 
 type SiteFooterProps = {
   navigation: FooterNavigationQueryResult;
+  siteName: string;
+  email?: string | null;
+  hours?: string | null;
+  facebookUrl?: string | null;
+  instagramUrl?: string | null;
 };
 
 const FALLBACK_COLUMNS = [
@@ -13,14 +19,6 @@ const FALLBACK_COLUMNS = [
     links: [
       { label: '(442) 999-1980', href: 'tel:+14429991980', openInNewTab: false },
       { label: 'Text us', href: 'sms:+14429991980', openInNewTab: false },
-    ],
-  },
-  {
-    _key: 'hours',
-    heading: 'Hours',
-    links: [
-      { label: 'Mon–Sat  8am–7pm', href: null, openInNewTab: false },
-      { label: 'Sunday  10am–5pm', href: null, openInNewTab: false },
     ],
   },
   {
@@ -44,14 +42,20 @@ const FALLBACK_COLUMNS = [
   },
 ];
 
-const FALLBACK_COPYRIGHT = `© ${new Date().getFullYear()} Alex Detailing. All rights reserved.`;
-
-export function SiteFooter({ navigation }: SiteFooterProps) {
+export function SiteFooter({
+  navigation,
+  siteName,
+  email,
+  hours,
+  facebookUrl,
+  instagramUrl,
+}: SiteFooterProps) {
   const sanityColumns = navigation?.columns ?? [];
   const columns = sanityColumns.length > 0 ? sanityColumns : FALLBACK_COLUMNS;
+  const fallbackCopyright = `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`;
   const copyright = navigation?.copyright
     ? navigation.copyright.replace('{year}', new Date().getFullYear().toString())
-    : FALLBACK_COPYRIGHT;
+    : fallbackCopyright;
 
   return (
     <footer
@@ -66,12 +70,47 @@ export function SiteFooter({ navigation }: SiteFooterProps) {
           <div>
             <div className="mb-4">
               <span className="font-sans font-bold text-[16px] text-platinum tracking-[0.06em]">
-                ALEX·DETAILING
+                {siteName}
               </span>
             </div>
-            <p className="m-0 text-[14px] text-steel leading-[1.6] max-w-[200px]">
+            <p className="m-0 mb-4 text-[14px] text-steel leading-[1.6] max-w-[200px]">
               Premium mobile detailing in North County San Diego. We come to you — no shop, no wait.
             </p>
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="block text-[14px] text-silver no-underline mb-1"
+              >
+                {email}
+              </a>
+            )}
+            {hours && <p className="m-0 text-[14px] text-steel">{hours}</p>}
+            {(facebookUrl || instagramUrl) && (
+              <div className="flex gap-3 mt-4">
+                {facebookUrl && (
+                  <a
+                    href={facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    className="text-silver"
+                  >
+                    <Icon name="facebook" size={18} />
+                  </a>
+                )}
+                {instagramUrl && (
+                  <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="text-silver"
+                  >
+                    <Icon name="instagram" size={18} />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Nav columns */}

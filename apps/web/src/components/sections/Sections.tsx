@@ -4,6 +4,7 @@ import { Hero } from './Hero';
 import { TrustBar } from './TrustBar';
 import { Services } from './Services';
 import { HowItWorks } from './HowItWorks';
+import { AboutSection } from './AboutSection';
 import { Reviews } from './Reviews';
 import { Coverage } from './Coverage';
 import { DepositCallout } from './DepositCallout';
@@ -34,6 +35,8 @@ export function Sections({ sections }: SectionsProps) {
             return <Services key={section._key} {...section} />;
           case 'howItWorks':
             return <HowItWorks key={section._key} {...section} />;
+          case 'aboutSection':
+            return <AboutSection key={section._key} {...section} />;
           case 'reviewsSection':
             return <Reviews key={section._key} {...section} />;
           case 'coverageSection':

@@ -51,6 +51,33 @@ export const siteSettings = defineType({
       group: 'organization',
     }),
     defineField({
+      name: 'contactEmail',
+      title: 'Contact email',
+      type: 'email',
+      group: 'organization',
+    }),
+    defineField({
+      name: 'businessHours',
+      title: 'Business hours',
+      type: 'string',
+      description: 'Shown in the site footer, e.g. Mon–Sat, 8am–5pm.',
+      group: 'organization',
+    }),
+    defineField({
+      name: 'socialFacebookUrl',
+      title: 'Facebook URL',
+      type: 'url',
+      validation: (Rule) => Rule.uri({ scheme: ['https'] }),
+      group: 'organization',
+    }),
+    defineField({
+      name: 'socialInstagramUrl',
+      title: 'Instagram URL',
+      type: 'url',
+      validation: (Rule) => Rule.uri({ scheme: ['https'] }),
+      group: 'organization',
+    }),
+    defineField({
       name: 'blogEnabled',
       title: 'Blog enabled',
       type: 'boolean',

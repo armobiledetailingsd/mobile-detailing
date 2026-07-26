@@ -3,6 +3,7 @@ import { heroSection } from './heroSection';
 import { trustBar } from './trustBar';
 import { servicesSection } from './servicesSection';
 import { howItWorks } from './howItWorks';
+import { aboutSection } from './aboutSection';
 import { reviewsSection } from './reviewsSection';
 import { coverageSection } from './coverageSection';
 import { depositCallout } from './depositCallout';
@@ -16,6 +17,7 @@ export const sectionTypes = [
   trustBar,
   servicesSection,
   howItWorks,
+  aboutSection,
   reviewsSection,
   coverageSection,
   depositCallout,

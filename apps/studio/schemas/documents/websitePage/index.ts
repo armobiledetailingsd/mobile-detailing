@@ -43,6 +43,7 @@ export const websitePage = defineType({
           defineArrayMember({ type: 'trustBar' }),
           defineArrayMember({ type: 'servicesSection' }),
           defineArrayMember({ type: 'howItWorks' }),
+          defineArrayMember({ type: 'aboutSection' }),
           defineArrayMember({ type: 'reviewsSection' }),
           defineArrayMember({ type: 'coverageSection' }),
           defineArrayMember({ type: 'depositCallout' }),

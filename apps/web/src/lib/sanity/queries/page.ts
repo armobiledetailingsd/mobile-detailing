@@ -46,6 +46,15 @@ const pageProjection = groq`{
       heading,
       steps[]{ title, description }
     },
+    _type == "aboutSection" => {
+      eyebrow,
+      heading,
+      body,
+      founderName,
+      founderTitle,
+      foundedYear,
+      yearsExperience
+    },
     _type == "reviewsSection" => {
       eyebrow,
       heading,
