@@ -5,6 +5,13 @@ import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { getAllWebsitePageSlugs, getHomepage, getWebsitePageBySlug } from '@/lib/sanity/queries/page';
 import { getSiteSettings } from '@/lib/sanity/queries/global';
 import { buildLocalBusinessJsonLd } from '@/lib/seo/localBusiness';
+import { urlForImage } from '@/lib/sanity/image';
+
+function ogImagesFor(openGraphImage: { asset?: { _ref: string } } | null | undefined) {
+  if (!openGraphImage?.asset) return undefined;
+  const url = urlForImage(openGraphImage).width(1200).height(630).url();
+  return [{ url, width: 1200, height: 630 }];
+}
 
 const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 
@@ -27,10 +34,20 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
 
   if (isHomepageRoute(params.slug)) {
     const page = await getHomepage();
+    const title = page?.seo?.metaTitle ?? 'AR Mobile Detailing — Premium Mobile Detailing in North County San Diego';
+    const description = page?.seo?.metaDescription ?? 'Professional mobile auto detailing in North County San Diego and surrounding areas. We come to your home or office. Book in minutes.';
+    const images = ogImagesFor(page?.seo?.openGraphImage);
     return {
-      title: page?.seo?.metaTitle ?? 'AR Mobile Detailing — Premium Mobile Detailing in North County San Diego',
-      description: page?.seo?.metaDescription ?? 'Professional mobile auto detailing in North County San Diego and surrounding areas. We come to your home or office. Book in minutes.',
+      // Absolute: the homepage title is already the full brand title, so it
+      // must skip the root layout's `%s | siteName` template rather than
+      // getting the site name appended a second time.
+      title: { absolute: title },
+      description,
       robots: page?.seo?.noIndex ? { index: false, follow: false } : undefined,
+      ...(images && {
+        openGraph: { title, description, images },
+        twitter: { card: 'summary_large_image', title, description, images },
+      }),
     };
   }
 
@@ -39,10 +56,18 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
     return { title: 'Page not found' };
   }
 
+  const title = page.seo?.metaTitle ?? page.title;
+  const description = page.seo?.metaDescription ?? undefined;
+  const images = ogImagesFor(page.seo?.openGraphImage);
+
   return {
-    title: page.seo?.metaTitle ?? page.title,
-    description: page.seo?.metaDescription ?? undefined,
+    title,
+    description,
     robots: page.seo?.noIndex ? { index: false, follow: false } : undefined,
+    ...(images && {
+      openGraph: { title, description, images },
+      twitter: { card: 'summary_large_image', title, description, images },
+    }),
   };
 }
 

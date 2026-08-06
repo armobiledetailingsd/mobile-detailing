@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getSiteSettings } from '@/lib/sanity/queries/global';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
@@ -6,9 +7,16 @@ export const metadata: Metadata = {
 };
 
 const EFFECTIVE_DATE = 'July 16, 2026';
-const CONTACT_EMAIL = '[CONTACT_EMAIL]';
+const FALLBACK_CONTACT_EMAIL = 'hello@example.com';
+const FALLBACK_PHONE_HREF = 'tel:+14429991980';
+const FALLBACK_PHONE_LABEL = '(442) 999-1980';
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const settings = await getSiteSettings();
+  const contactEmail = settings?.contactEmail ?? FALLBACK_CONTACT_EMAIL;
+  const phoneHref = settings?.phoneNumber ? `tel:${settings.phoneNumber}` : FALLBACK_PHONE_HREF;
+  const phoneLabel = settings?.phoneDisplay ?? FALLBACK_PHONE_LABEL;
+
   return (
     <main className="bg-ink1 px-6 py-16">
       <article className="mx-auto w-full max-w-[720px] text-[15px] leading-[1.7] text-silver">
@@ -127,12 +135,12 @@ export default function TermsPage() {
         <Section title="11. Contact us">
           <p>
             Questions about these Terms? Reach us at{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-accent-d underline">
-              {CONTACT_EMAIL}
+            <a href={`mailto:${contactEmail}`} className="text-accent-d underline">
+              {contactEmail}
             </a>{' '}
             or by phone/text at{' '}
-            <a href="tel:+14429991980" className="text-accent-d underline">
-              (442) 999-1980
+            <a href={phoneHref} className="text-accent-d underline">
+              {phoneLabel}
             </a>
             .
           </p>

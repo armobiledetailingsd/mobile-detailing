@@ -10,17 +10,26 @@ type SiteFooterProps = {
   hours?: string | null;
   facebookUrl?: string | null;
   instagramUrl?: string | null;
+  phoneNumber?: string | null;
+  phoneDisplay?: string | null;
 };
 
-const FALLBACK_COLUMNS = [
-  {
+const FALLBACK_PHONE_HREF = 'tel:+14429991980';
+const FALLBACK_SMS_HREF = 'sms:+14429991980';
+const FALLBACK_PHONE_LABEL = '(442) 999-1980';
+
+function buildContactColumn(phoneHref: string, smsHref: string, phoneLabel: string) {
+  return {
     _key: 'contact',
     heading: 'Contact',
     links: [
-      { label: '(442) 999-1980', href: 'tel:+14429991980', openInNewTab: false },
-      { label: 'Text us', href: 'sms:+14429991980', openInNewTab: false },
+      { label: phoneLabel, href: phoneHref, openInNewTab: false },
+      { label: 'Text us', href: smsHref, openInNewTab: false },
     ],
-  },
+  };
+}
+
+const FALLBACK_OTHER_COLUMNS = [
   {
     _key: 'services',
     heading: 'Services',
@@ -49,9 +58,17 @@ export function SiteFooter({
   hours,
   facebookUrl,
   instagramUrl,
+  phoneNumber,
+  phoneDisplay,
 }: SiteFooterProps) {
   const sanityColumns = navigation?.columns ?? [];
-  const columns = sanityColumns.length > 0 ? sanityColumns : FALLBACK_COLUMNS;
+  const phoneHref = phoneNumber ? `tel:${phoneNumber}` : FALLBACK_PHONE_HREF;
+  const smsHref = phoneNumber ? `sms:${phoneNumber}` : FALLBACK_SMS_HREF;
+  const phoneLabel = phoneDisplay ?? FALLBACK_PHONE_LABEL;
+  const columns =
+    sanityColumns.length > 0
+      ? sanityColumns
+      : [buildContactColumn(phoneHref, smsHref, phoneLabel), ...FALLBACK_OTHER_COLUMNS];
   const fallbackCopyright = `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`;
   const copyright = navigation?.copyright
     ? navigation.copyright.replace('{year}', new Date().getFullYear().toString())

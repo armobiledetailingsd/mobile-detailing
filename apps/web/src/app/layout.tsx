@@ -2,14 +2,17 @@ import type { Metadata } from 'next';
 import { Outfit } from 'next/font/google';
 import { draftMode } from 'next/headers';
 import { VisualEditing } from 'next-sanity/visual-editing';
+import { Analytics } from '@vercel/analytics/next';
 import { SanityLive } from '@/lib/sanity/live';
 import {
   getFooterNavigation,
   getHeaderNavigation,
   getSiteSettings,
 } from '@/lib/sanity/queries/global';
+import { urlForImage } from '@/lib/sanity/image';
 
 const DEFAULT_SITE_NAME = 'AR Mobile Detailing';
+const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 import { SiteHeader } from '@/components/organisms/SiteHeader';
 import { SiteFooter } from '@/components/organisms/SiteFooter';
 import './globals.css';
@@ -23,12 +26,27 @@ const outfit = Outfit({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const siteName = settings?.siteName ?? 'Site';
+  const ogImageUrl = settings?.defaultOpenGraphImage?.asset
+    ? urlForImage(settings.defaultOpenGraphImage).width(1200).height(630).url()
+    : undefined;
+
   return {
+    metadataBase: new URL(baseUrl),
     title: {
-      default: settings?.siteName ?? 'Site',
-      template: `%s | ${settings?.siteName ?? 'Site'}`,
+      default: siteName,
+      template: `%s | ${siteName}`,
     },
     description: settings?.siteDescription ?? undefined,
+    openGraph: {
+      siteName,
+      type: 'website',
+      images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
   };
 }
 
@@ -52,7 +70,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           Skip to main content
         </a>
-        <SiteHeader navigation={headerNavigation} siteName={siteName} />
+        <SiteHeader
+          navigation={headerNavigation}
+          siteName={siteName}
+          phoneNumber={siteSettings?.phoneNumber ?? null}
+          phoneDisplay={siteSettings?.phoneDisplay ?? null}
+        />
         <main id="main-content">
           {children}
         </main>
@@ -63,9 +86,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           hours={siteSettings?.businessHours ?? null}
           facebookUrl={siteSettings?.socialFacebookUrl ?? null}
           instagramUrl={siteSettings?.socialInstagramUrl ?? null}
+          phoneNumber={siteSettings?.phoneNumber ?? null}
+          phoneDisplay={siteSettings?.phoneDisplay ?? null}
         />
         <SanityLive />
         {isDraftMode && <VisualEditing />}
+        <Analytics />
       </body>
     </html>
   );
