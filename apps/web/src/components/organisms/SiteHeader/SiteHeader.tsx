@@ -6,37 +6,36 @@ import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { resolveNavHref } from '@/lib/nav';
 import type { HeaderNavigationQueryResult } from '@/sanity.types';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useState } from 'react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 
-const PHONE_HREF = 'tel:+14429991980';
-const PHONE_LABEL = '(442) 999-1980';
+const FALLBACK_PHONE_HREF = 'tel:+14429991980';
+const FALLBACK_PHONE_LABEL = '(442) 999-1980';
 
 const FALLBACK_LINKS = [
   { label: 'Services', href: '/#services', openInNewTab: false },
   { label: 'How it works', href: '/#how-it-works', openInNewTab: false },
-  { label: 'Gallery', href: '/#gallery', openInNewTab: false },
+  { label: 'Portfolio', href: '/#gallery', openInNewTab: false },
   { label: 'Reviews', href: '/#reviews', openInNewTab: false },
   { label: 'Coverage', href: '/#coverage', openInNewTab: false },
 ];
 
-type SiteHeaderProps = { navigation: HeaderNavigationQueryResult; siteName: string };
+type SiteHeaderProps = {
+  navigation: HeaderNavigationQueryResult;
+  siteName: string;
+  phoneNumber?: string | null;
+  phoneDisplay?: string | null;
+};
 
-export function SiteHeader({ navigation, siteName }: SiteHeaderProps) {
+export function SiteHeader({ navigation, siteName, phoneNumber, phoneDisplay }: SiteHeaderProps) {
   const initial = siteName.trim().charAt(0).toUpperCase();
   const [menuOpen, setMenuOpen] = useState(false);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const { containerRef } = useDialogA11y<HTMLDivElement>({ isOpen: menuOpen, onClose: closeMenu });
   const sanityLinks = navigation?.links ?? [];
   const navLinks = sanityLinks.length > 0 ? sanityLinks : FALLBACK_LINKS;
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    closeButtonRef.current?.focus();
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setMenuOpen(false);
-    }
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [menuOpen]);
+  const phoneHref = phoneNumber ? `tel:${phoneNumber}` : FALLBACK_PHONE_HREF;
+  const phoneLabel = phoneDisplay ?? FALLBACK_PHONE_LABEL;
 
   return (
     <>
@@ -102,11 +101,12 @@ export function SiteHeader({ navigation, siteName }: SiteHeaderProps) {
       {/* Mobile drawer */}
       {menuOpen && (
         <div
+          ref={containerRef}
           role="dialog"
           aria-modal={true}
           aria-label="Navigation menu"
           className="fixed inset-0 z-[100] bg-[rgba(12,14,16,.95)] backdrop-blur-[16px] flex flex-col p-6"
-          onClick={() => setMenuOpen(false)}
+          onClick={closeMenu}
         >
           <div
             className="flex justify-between mb-10"
@@ -116,9 +116,8 @@ export function SiteHeader({ navigation, siteName }: SiteHeaderProps) {
               {siteName}
             </span>
             <button
-              ref={closeButtonRef}
               aria-label="Close menu"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="bg-transparent border-0 cursor-pointer text-platinum"
             >
               <Icon name="x" size={22} />
@@ -130,7 +129,7 @@ export function SiteHeader({ navigation, siteName }: SiteHeaderProps) {
                 <a
                   key={link.href}
                   href={resolveNavHref(link.href)}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={closeMenu}
                   className="text-[22px] font-medium text-platinum no-underline py-2"
                 >
                   {link.label}
@@ -146,10 +145,10 @@ export function SiteHeader({ navigation, siteName }: SiteHeaderProps) {
             )}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
-            <a href={PHONE_HREF} className="text-[16px] text-silver no-underline">
-              {PHONE_LABEL}
+            <a href={phoneHref} className="text-[16px] text-silver no-underline">
+              {phoneLabel}
             </a>
-            <Button href="/book" variant="metal" size="lg" fullWidth onClick={() => setMenuOpen(false)}>
+            <Button href="/book" variant="metal" size="lg" fullWidth onClick={closeMenu}>
               Book now
             </Button>
           </div>
