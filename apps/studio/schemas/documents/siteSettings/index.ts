@@ -57,6 +57,25 @@ export const siteSettings = defineType({
       group: 'organization',
     }),
     defineField({
+      name: 'phoneNumber',
+      title: 'Phone number (href)',
+      type: 'string',
+      description: 'E.164 format for tel:/sms: links, e.g. +14155551234. Used site-wide in the header, footer, and legal pages.',
+      validation: (Rule) =>
+        Rule.regex(/^\+[1-9]\d{1,14}$/, {
+          name: 'phone number',
+          invert: false,
+        }).error('Must be E.164 format, e.g. +14155551234 — no spaces, parens, or dashes.'),
+      group: 'organization',
+    }),
+    defineField({
+      name: 'phoneDisplay',
+      title: 'Phone number (display)',
+      type: 'string',
+      description: 'Formatted for display, e.g. (415) 555-1234.',
+      group: 'organization',
+    }),
+    defineField({
       name: 'businessHours',
       title: 'Business hours',
       type: 'string',

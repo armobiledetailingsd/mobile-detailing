@@ -31,6 +31,8 @@ const siteSettingsQuery = groq`*[_id == $id && _type == "siteSettings"][0]{
   organizationLegalName,
   organizationUrl,
   contactEmail,
+  phoneNumber,
+  phoneDisplay,
   businessHours,
   socialFacebookUrl,
   socialInstagramUrl,
@@ -61,12 +63,20 @@ const footerNavigationQuery = groq`*[_id == $id && _type == "footerNavigation"][
 }`;
 
 export async function getSiteSettings(): Promise<SiteSettingsQueryResult> {
-  const { data } = await sanityFetch({
-    query: siteSettingsQuery,
-    params: { id: SITE_SETTINGS_ID },
-    tags: ['siteSettings'],
-  });
-  return data;
+  // Site settings back header/footer/legal pages across the whole app —
+  // a Sanity outage shouldn't take those down. Callers fall back to their
+  // own hardcoded defaults when this resolves to null.
+  try {
+    const { data } = await sanityFetch({
+      query: siteSettingsQuery,
+      params: { id: SITE_SETTINGS_ID },
+      tags: ['siteSettings'],
+    });
+    return data;
+  } catch (error) {
+    console.error('getSiteSettings failed, falling back to null', error);
+    return null;
+  }
 }
 
 export async function getHeaderNavigation(): Promise<HeaderNavigationQueryResult> {
