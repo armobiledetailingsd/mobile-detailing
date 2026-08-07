@@ -22,6 +22,14 @@ export const siteSettings = defineType({
       group: 'metadata',
     }),
     defineField({
+      name: 'logo',
+      title: 'Logo',
+      type: 'image',
+      description: 'Brand mark shown in the site header and footer. Falls back to a letter avatar when empty.',
+      options: { hotspot: true },
+      group: 'metadata',
+    }),
+    defineField({
       name: 'siteDescription',
       title: 'Site description',
       type: 'text',

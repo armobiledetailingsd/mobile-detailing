@@ -73,6 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteHeader
           navigation={headerNavigation}
           siteName={siteName}
+          logo={siteSettings?.logo ?? null}
           phoneNumber={siteSettings?.phoneNumber ?? null}
           phoneDisplay={siteSettings?.phoneDisplay ?? null}
         />
@@ -82,6 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteFooter
           navigation={footerNavigation}
           siteName={siteName}
+          logo={siteSettings?.logo ?? null}
           email={siteSettings?.contactEmail ?? null}
           hours={siteSettings?.businessHours ?? null}
           facebookUrl={siteSettings?.socialFacebookUrl ?? null}
