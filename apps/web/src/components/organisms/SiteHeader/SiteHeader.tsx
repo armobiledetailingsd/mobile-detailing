@@ -3,8 +3,10 @@
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
+import { urlForImage } from '@/lib/sanity/image';
 import { resolveNavHref } from '@/lib/nav';
-import type { HeaderNavigationQueryResult } from '@/sanity.types';
+import type { HeaderNavigationQueryResult, SiteSettingsQueryResult } from '@/sanity.types';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { useDialogA11y } from '@/lib/useDialogA11y';
@@ -23,12 +25,14 @@ const FALLBACK_LINKS = [
 type SiteHeaderProps = {
   navigation: HeaderNavigationQueryResult;
   siteName: string;
+  logo?: NonNullable<SiteSettingsQueryResult>['logo'];
   phoneNumber?: string | null;
   phoneDisplay?: string | null;
 };
 
-export function SiteHeader({ navigation, siteName, phoneNumber, phoneDisplay }: SiteHeaderProps) {
+export function SiteHeader({ navigation, siteName, logo, phoneNumber, phoneDisplay }: SiteHeaderProps) {
   const initial = siteName.trim().charAt(0).toUpperCase();
+  const logoUrl = logo?.asset ? urlForImage(logo).width(68).height(68).fit('crop').url() : null;
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
   const { containerRef } = useDialogA11y<HTMLDivElement>({ isOpen: menuOpen, onClose: closeMenu });
@@ -50,9 +54,19 @@ export function SiteHeader({ navigation, siteName, phoneNumber, phoneDisplay }: 
           aria-label={siteName}
           className="flex items-center gap-[10px] no-underline shrink-0"
         >
-          <span className="w-[34px] h-[34px] flex items-center justify-center bg-elev-d border border-[rgba(255,255,255,0.12)] rounded-[9px] font-sans font-bold text-[16px] text-platinum shrink-0">
-            {initial}
-          </span>
+          {logoUrl ? (
+            <Image
+              src={logoUrl}
+              alt=""
+              width={34}
+              height={34}
+              className="rounded-[9px] shrink-0 object-cover"
+            />
+          ) : (
+            <span className="w-[34px] h-[34px] flex items-center justify-center bg-elev-d border border-[rgba(255,255,255,0.12)] rounded-[9px] font-sans font-bold text-[16px] text-platinum shrink-0">
+              {initial}
+            </span>
+          )}
           <span className="font-sans font-semibold text-[15px] tracking-[0.06em] text-platinum">
             {siteName}
           </span>

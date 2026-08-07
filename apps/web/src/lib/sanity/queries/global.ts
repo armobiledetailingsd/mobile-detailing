@@ -26,6 +26,7 @@ const siteSettingsQuery = groq`*[_id == $id && _type == "siteSettings"][0]{
   _id,
   _type,
   siteName,
+  logo,
   siteDescription,
   defaultOpenGraphImage,
   organizationLegalName,

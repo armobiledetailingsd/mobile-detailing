@@ -1,11 +1,14 @@
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
+import { urlForImage } from '@/lib/sanity/image';
 import { resolveNavHref } from '@/lib/nav';
 import { Icon } from '@/components/atoms/Icon';
-import type { FooterNavigationQueryResult } from '@/sanity.types';
+import type { FooterNavigationQueryResult, SiteSettingsQueryResult } from '@/sanity.types';
+import Image from 'next/image';
 
 type SiteFooterProps = {
   navigation: FooterNavigationQueryResult;
   siteName: string;
+  logo?: NonNullable<SiteSettingsQueryResult>['logo'];
   email?: string | null;
   hours?: string | null;
   facebookUrl?: string | null;
@@ -54,6 +57,7 @@ const FALLBACK_OTHER_COLUMNS = [
 export function SiteFooter({
   navigation,
   siteName,
+  logo,
   email,
   hours,
   facebookUrl,
@@ -61,6 +65,7 @@ export function SiteFooter({
   phoneNumber,
   phoneDisplay,
 }: SiteFooterProps) {
+  const logoUrl = logo?.asset ? urlForImage(logo).width(64).height(64).fit('crop').url() : null;
   const sanityColumns = navigation?.columns ?? [];
   const phoneHref = phoneNumber ? `tel:${phoneNumber}` : FALLBACK_PHONE_HREF;
   const smsHref = phoneNumber ? `sms:${phoneNumber}` : FALLBACK_SMS_HREF;
@@ -85,7 +90,16 @@ export function SiteFooter({
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand column */}
           <div>
-            <div className="mb-4">
+            <div className="mb-4 flex items-center gap-[10px]">
+              {logoUrl && (
+                <Image
+                  src={logoUrl}
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="rounded-[8px] shrink-0 object-cover"
+                />
+              )}
               <span className="font-sans font-bold text-[16px] text-platinum tracking-[0.06em]">
                 {siteName}
               </span>
