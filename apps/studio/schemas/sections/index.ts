@@ -10,6 +10,7 @@ import { depositCallout } from './depositCallout';
 import { smsBanner } from './smsBanner';
 import { finalCta } from './finalCta';
 import { gallery } from './gallery';
+import { faqSection } from './faqSection';
 
 export const sectionTypes = [
   richText,
@@ -24,4 +25,5 @@ export const sectionTypes = [
   smsBanner,
   finalCta,
   gallery,
+  faqSection,
 ];

@@ -11,6 +11,7 @@ import { DepositCallout } from './DepositCallout';
 import { SmsBanner } from './SmsBanner';
 import { FinalCTA } from './FinalCTA';
 import { Gallery } from './Gallery';
+import { Faq } from './Faq';
 
 type PageSection = NonNullable<NonNullable<HomepageQueryResult>['sections']>[number];
 
@@ -49,6 +50,8 @@ export function Sections({ sections }: SectionsProps) {
             return <FinalCTA key={section._key} {...section} />;
           case 'gallery':
             return <Gallery key={section._key} {...section} />;
+          case 'faqSection':
+            return <Faq key={section._key} {...section} />;
           default:
             if (process.env.NODE_ENV !== 'production') {
               const unknown = section as { _type: string; _key: string };

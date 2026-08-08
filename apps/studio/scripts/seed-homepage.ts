@@ -164,7 +164,7 @@ const homepage = {
         {
           _type: 'reviewQuote',
           _key: 'r3',
-          quote: "Best detail I've ever had. The ceramic coating looks amazing and the team was super professional.",
+          quote: "Best detail I've ever had. The paint correction looks amazing and the team was super professional.",
           name: 'Jordan K.',
           city: 'Vista, CA',
         },
@@ -231,11 +231,61 @@ const homepage = {
       heading: 'Results that speak for themselves',
       items: [
         { _type: 'galleryItem', _key: 'g1', label: 'Paint correction before/after', aspect: '4/3' },
-        { _type: 'galleryItem', _key: 'g2', label: 'Ceramic coating application', aspect: '16/9' },
+        { _type: 'galleryItem', _key: 'g2', label: 'Headlight restoration', aspect: '16/9' },
         { _type: 'galleryItem', _key: 'g3', label: 'Interior deep clean', aspect: '4/3' },
         { _type: 'galleryItem', _key: 'g4', label: 'Engine bay detail', aspect: '4/3' },
         { _type: 'galleryItem', _key: 'g5', label: 'Wheel & tire restoration', aspect: '4/3' },
         { _type: 'galleryItem', _key: 'g6', label: 'Signature Detail result', aspect: '16/9' },
+      ],
+    },
+    {
+      _type: 'faqSection',
+      _key: 'faq',
+      eyebrow: 'Questions',
+      heading: 'Frequently asked questions',
+      items: [
+        {
+          _type: 'faqItem',
+          _key: 'f1',
+          question: 'How much does mobile detailing cost?',
+          answer:
+            'Bronze starts at $99.99 for a sedan ($120 for a truck or SUV), Silver is $180/$249.99, and Gold is $275/$300. Pricing depends on vehicle size and package — see the Services section above for full details.',
+        },
+        {
+          _type: 'faqItem',
+          _key: 'f2',
+          question: 'How long does a detail take?',
+          answer:
+            'Bronze runs about 1.5 hours, Silver about 3 hours, and Gold about 4.5 hours, depending on your vehicle’s condition and size.',
+        },
+        {
+          _type: 'faqItem',
+          _key: 'f3',
+          question: 'Do I need to provide water or power?',
+          answer:
+            'No — we bring our own water and power, so we can detail your car anywhere: home, office, or anywhere in our North County San Diego service area.',
+        },
+        {
+          _type: 'faqItem',
+          _key: 'f4',
+          question: 'What happens if it rains on my appointment day?',
+          answer:
+            'We’ll reschedule your appointment for free — no cancellation fee for weather-related changes.',
+        },
+        {
+          _type: 'faqItem',
+          _key: 'f5',
+          question: 'What is your cancellation policy?',
+          answer:
+            'Give us at least 24 hours’ notice and we’ll reschedule or cancel your appointment free of charge.',
+        },
+        {
+          _type: 'faqItem',
+          _key: 'f6',
+          question: 'What areas do you service?',
+          answer:
+            'We serve North County San Diego, including Carlsbad, Oceanside, Vista, San Marcos, Escondido, Encinitas, Solana Beach, Del Mar, Rancho Santa Fe, and Fallbrook. Check your ZIP code on our homepage to confirm coverage.',
+        },
       ],
     },
   ],
