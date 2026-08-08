@@ -47,7 +47,8 @@ export const link = defineType({
       // site-relative paths (/blog) and anchors (#services), which the
       // frontend supports.
       type: 'string',
-      description: 'Full URL (https://…), site-relative path (/blog), or anchor (#services).',
+      description:
+        'Full URL (https://…), site-relative path (/blog), anchor (#services), or tel:/sms: link.',
       hidden: ({ parent }) => parent?.linkType !== 'external',
       validation: (Rule) =>
         Rule.custom((value, context) => {
@@ -59,9 +60,9 @@ export const link = defineType({
           if (value.startsWith('/') || value.startsWith('#')) return true;
           try {
             const protocol = new URL(value).protocol;
-            return ['http:', 'https:', 'mailto:', 'tel:'].includes(protocol)
+            return ['http:', 'https:', 'mailto:', 'tel:', 'sms:'].includes(protocol)
               ? true
-              : 'Only http(s), mailto: or tel: URLs are allowed.';
+              : 'Only http(s), mailto:, tel: or sms: URLs are allowed.';
           } catch {
             return 'Enter a full URL (https://…), a relative path (/page), or an anchor (#section).';
           }
