@@ -11,7 +11,8 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Blog',
   description:
-    'Tire care tips, maintenance guides, and mobile tire service advice from the pros.',
+    'Detailing tips, maintenance guides, and mobile auto detailing advice from the pros.',
+  alternates: { canonical: '/blog' },
 };
 
 export default async function BlogPage() {
@@ -25,7 +26,7 @@ export default async function BlogPage() {
     <main style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 20px' }}>
       <h1 style={{ margin: '0 0 8px', fontSize: 36, lineHeight: 1.2 }}>Blog</h1>
       <p style={{ margin: '0 0 36px', fontSize: 17, color: 'var(--text-muted, #9aa0a6)' }}>
-        Tire care tips, maintenance guides, and service updates.
+        Detailing tips, maintenance guides, and service updates.
       </p>
       {posts.length === 0 ? (
         <div
@@ -38,7 +39,7 @@ export default async function BlogPage() {
         >
           <p style={{ fontSize: 28, fontWeight: 700, margin: '0 0 12px' }}>Coming Soon</p>
           <p style={{ fontSize: 16, color: 'var(--text-muted, #9aa0a6)', margin: 0 }}>
-            We&apos;re working on something great. Check back soon for tire tips, maintenance guides, and service updates.
+            We&apos;re working on something great. Check back soon for detailing tips, maintenance guides, and service updates.
           </p>
         </div>
       ) : (

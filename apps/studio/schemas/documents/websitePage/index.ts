@@ -50,6 +50,7 @@ export const websitePage = defineType({
           defineArrayMember({ type: 'smsBanner' }),
           defineArrayMember({ type: 'finalCta' }),
           defineArrayMember({ type: 'gallery' }),
+          defineArrayMember({ type: 'faqSection' }),
         ],
       group: 'content',
     }),

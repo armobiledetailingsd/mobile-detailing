@@ -94,7 +94,12 @@ const pageProjection = groq`{
     _type == "gallery" => {
       eyebrow,
       heading,
-      items[]{ _key, image{ asset{ _ref }, hotspot, crop }, label, aspect }
+      items[]{ _key, image{ asset{ _ref }, hotspot, crop }, label, aspect, alt }
+    },
+    _type == "faqSection" => {
+      eyebrow,
+      heading,
+      items[]{ _key, question, answer }
     }
   }
 }`;

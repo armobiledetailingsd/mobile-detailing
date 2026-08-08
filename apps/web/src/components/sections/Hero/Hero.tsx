@@ -29,12 +29,12 @@ export function Hero({ eyebrow, headlineMain, headlineAccent, body, trustMarkers
             id="hero-heading"
             className="m-0 mb-5 font-sans font-bold text-[clamp(38px,5.5vw,64px)] leading-[1.05] tracking-[-0.03em] text-platinum"
           >
-            {headlineMain ?? 'Premium detailing,'}
+            {headlineMain ?? 'Mobile detailing,'}
             {(headlineMain || headlineAccent) && <br />}
             {headlineAccent ? (
               <span className="bg-metal bg-clip-text text-transparent">{headlineAccent}</span>
             ) : (
-              <span className="bg-metal bg-clip-text text-transparent">delivered to you.</span>
+              <span className="bg-metal bg-clip-text text-transparent">delivered to your driveway in North County San Diego.</span>
             )}
           </h1>
 

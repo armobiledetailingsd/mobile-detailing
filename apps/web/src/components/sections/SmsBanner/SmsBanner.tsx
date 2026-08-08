@@ -1,4 +1,5 @@
 import { Icon } from '@/components/atoms/Icon';
+import { TrackedLink } from '@/components/atoms/TrackedLink';
 import type { HomepageQueryResult } from '@/sanity.types';
 
 type PageSection = NonNullable<NonNullable<HomepageQueryResult>['sections']>[number];
@@ -23,13 +24,15 @@ export function SmsBanner({ headline, body, phoneNumber, phoneDisplay }: SmsBann
             </div>
           )}
         </div>
-        <a
+        <TrackedLink
           href={smsHref}
+          event="click_to_text"
+          eventParams={{ location: 'sms_banner' }}
           className="inline-flex items-center gap-[10px] h-[52px] px-[22px] bg-metal text-[#16181b] rounded-btn no-underline font-sans font-semibold text-base"
         >
           {phoneDisplay}
           <Icon name="arrow-right" size={18} className="text-[#16181b]" />
-        </a>
+        </TrackedLink>
       </div>
     </section>
   );

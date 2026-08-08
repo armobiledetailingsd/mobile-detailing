@@ -11,9 +11,9 @@ import {
   getSiteSettings,
 } from '@/lib/sanity/queries/global';
 import { urlForImage } from '@/lib/sanity/image';
+import { baseUrl } from '@/lib/seo/baseUrl';
 
 const DEFAULT_SITE_NAME = 'AR Mobile Detailing';
-const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 import { SiteHeader } from '@/components/organisms/SiteHeader';
 import { SiteFooter } from '@/components/organisms/SiteFooter';
 import './globals.css';

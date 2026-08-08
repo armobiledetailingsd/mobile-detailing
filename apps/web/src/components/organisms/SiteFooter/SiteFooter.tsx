@@ -2,6 +2,7 @@ import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { urlForImage } from '@/lib/sanity/image';
 import { resolveNavHref } from '@/lib/nav';
 import { Icon } from '@/components/atoms/Icon';
+import { TrackedLink } from '@/components/atoms/TrackedLink';
 import type { FooterNavigationQueryResult, SiteSettingsQueryResult } from '@/sanity.types';
 import Image from 'next/image';
 
@@ -39,8 +40,8 @@ const FALLBACK_OTHER_COLUMNS = [
     links: [
       { label: 'Express Refresh', href: '/#services', openInNewTab: false },
       { label: 'Signature Detail', href: '/#services', openInNewTab: false },
-      { label: 'Ceramic Coating', href: '/#services', openInNewTab: false },
       { label: 'Paint Correction', href: '/#services', openInNewTab: false },
+      { label: 'Headlight Restoration', href: '/#services', openInNewTab: false },
     ],
   },
   {
@@ -152,7 +153,19 @@ export function SiteFooter({
               </h3>
               <div className="flex flex-col gap-[10px]">
                 {(col.links ?? []).map((link) =>
-                  link.href ? (
+                  link.href?.startsWith('tel:') || link.href?.startsWith('sms:') ? (
+                    <TrackedLink
+                      key={link.label}
+                      href={link.href}
+                      event={link.href.startsWith('tel:') ? 'click_to_call' : 'click_to_text'}
+                      eventParams={{ location: 'footer' }}
+                      target={link.openInNewTab ? '_blank' : undefined}
+                      rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                      className="text-[14px] text-silver no-underline"
+                    >
+                      {link.label}
+                    </TrackedLink>
+                  ) : link.href ? (
                     <a
                       key={link.label}
                       href={resolveNavHref(link.href)}

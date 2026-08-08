@@ -32,6 +32,7 @@ const blogPostBySlugQuery = groq`
     excerpt,
     coverImage,
     publishedAt,
+    _updatedAt,
     body,
     seo
   }

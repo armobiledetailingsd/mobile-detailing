@@ -108,7 +108,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
                 >
                   <Image
                     src={imageUrl}
-                    alt={item.label ?? ''}
+                    alt={item.alt ?? item.label ?? ''}
                     fill
                     style={{ objectFit: 'cover' }}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -215,7 +215,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
             >
               <Image
                 src={openImageUrl}
-                alt={openItem.label ?? ''}
+                alt={openItem.alt ?? openItem.label ?? ''}
                 fill
                 style={{ objectFit: 'contain' }}
                 sizes="(max-width: 1100px) 100vw, 1100px"
