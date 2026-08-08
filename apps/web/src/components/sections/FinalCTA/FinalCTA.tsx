@@ -2,6 +2,7 @@ import type { HomepageQueryResult } from '@/sanity.types';
 import type { IconName } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { PhoneButton } from './PhoneButton';
 
 type PageSection = NonNullable<NonNullable<HomepageQueryResult>['sections']>[number];
 export type FinalCtaProps = Extract<PageSection, { _type: 'finalCta' }>;
@@ -42,18 +43,7 @@ export function FinalCTA({ eyebrow, heading, body, phoneNumber, phoneDisplay, tr
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginBottom: 40, flexWrap: 'wrap' }}>
           <Button href="/book" variant="metal" size="lg" iconRight="arrow-right">Book your detail</Button>
-          {phoneNumber && (
-            <Button
-              href={`tel:${phoneNumber}`}
-              variant="outline"
-              size="lg"
-              icon="phone"
-              aria-label={phoneDisplay || phoneNumber}
-              style={{ color: 'var(--color-silver)', borderColor: 'rgba(255,255,255,0.18)' }}
-            >
-              {phoneDisplay}
-            </Button>
-          )}
+          {phoneNumber && <PhoneButton phoneNumber={phoneNumber} phoneDisplay={phoneDisplay} />}
         </div>
 
         {trustItems && trustItems.length > 0 && (

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { isServiceableZip } from '@/lib/booking/packages';
+import { trackEvent } from '@/lib/analytics/events';
 
 export function BookingCTA() {
   const [zip, setZip] = useState('');
@@ -12,8 +13,10 @@ export function BookingCTA() {
 
   function checkZip() {
     const clean = zip.trim().slice(0, 5);
+    const isServiceable = isServiceableZip(clean);
     setChecked(true);
-    setServiceable(isServiceableZip(clean));
+    setServiceable(isServiceable);
+    trackEvent('check_service_area', { serviceable: isServiceable });
   }
 
   return (

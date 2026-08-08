@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { useDialogA11y } from '@/lib/useDialogA11y';
+import { trackEvent } from '@/lib/analytics/events';
 
 const FALLBACK_PHONE_HREF = 'tel:+14429991980';
 const FALLBACK_PHONE_LABEL = '(442) 999-1980';
@@ -159,7 +160,11 @@ export function SiteHeader({ navigation, siteName, logo, phoneNumber, phoneDispl
             )}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
-            <a href={phoneHref} className="text-[16px] text-silver no-underline">
+            <a
+              href={phoneHref}
+              className="text-[16px] text-silver no-underline"
+              onClick={() => trackEvent('click_to_call', { location: 'header' })}
+            >
               {phoneLabel}
             </a>
             <Button href="/book" variant="metal" size="lg" fullWidth onClick={closeMenu}>

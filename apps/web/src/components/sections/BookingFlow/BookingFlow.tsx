@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { PACKAGES, isServiceableZip, type PackageSlug } from '@/lib/booking/packages';
 import { buildCalendlyUrl, buildStripeUrl, isTrustedCalendlyUrl, isValidEmail } from '@/lib/booking/urls';
+import { trackEvent } from '@/lib/analytics/events';
 
 type Step = 'package' | 'contact' | 'schedule' | 'pay';
 
@@ -39,22 +40,30 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
     Math.ceil(AUTO_REDIRECT_DELAY_MS / 1000),
   );
   const errorId = 'contact-form-error';
+  const hasTrackedScheduleRef = useRef(false);
 
   const selectedPackage = PACKAGES.find((p) => p.slug === selected) ?? null;
   const calendlyUrl = selected ? (calendlyUrls[selected] ?? '') : '';
 
   useEffect(() => {
     if (step !== 'schedule') return;
+    hasTrackedScheduleRef.current = false;
     function onMessage(e: MessageEvent) {
       const fromCalendly =
         e.origin === 'https://calendly.com' || e.origin.endsWith('.calendly.com');
       if (fromCalendly && e.data?.event === 'calendly.event_scheduled') {
+        // Calendly can dispatch this message more than once for a single
+        // booking before the listener tears down; only count it once.
+        if (!hasTrackedScheduleRef.current) {
+          hasTrackedScheduleRef.current = true;
+          trackEvent('schedule_appointment', { package: selected ?? 'unknown' });
+        }
         setStep('pay');
       }
     }
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
-  }, [step]);
+  }, [step, selected]);
 
   useEffect(() => {
     if (step !== 'pay' || autoRedirectCancelled) return;
@@ -63,13 +72,19 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
       setRedirectSecondsLeft((s) => Math.max(0, s - 1));
     }, 1000);
     const timer = setTimeout(() => {
+      trackEvent('begin_checkout', {
+        package: selected ?? 'unknown',
+        value: selectedPackage?.priceSedan ?? 0,
+        currency: 'USD',
+        trigger: 'auto_redirect',
+      });
       window.location.href = buildStripeUrl(stripeDepositLink, email.trim());
     }, AUTO_REDIRECT_DELAY_MS);
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
     };
-  }, [step, stripeDepositLink, email, autoRedirectCancelled]);
+  }, [step, stripeDepositLink, email, autoRedirectCancelled, selected, selectedPackage]);
 
   function submitContact() {
     if (!isValidEmail(email.trim())) {
@@ -84,6 +99,7 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
     }
     setError(null);
     setErrorField(null);
+    trackEvent('generate_lead', { package: selected ?? 'unknown' });
     setStep('schedule');
   }
 
@@ -104,6 +120,7 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
                 key={pkg.slug}
                 type="button"
                 onClick={() => {
+                  trackEvent('select_package', { package: pkg.slug });
                   setSelected(pkg.slug);
                   setStep('contact');
                 }}
@@ -248,6 +265,14 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline text-platinum"
+                onClick={() =>
+                  trackEvent('begin_checkout', {
+                    package: selected ?? 'unknown',
+                    value: selectedPackage?.priceSedan ?? 0,
+                    currency: 'USD',
+                    trigger: 'calendly_fallback_link',
+                  })
+                }
               >
                 Pay your deposit here
               </a>
@@ -291,6 +316,14 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
             size="lg"
             fullWidth
             iconRight="arrow-right"
+            onClick={() =>
+              trackEvent('begin_checkout', {
+                package: selected ?? 'unknown',
+                value: selectedPackage?.priceSedan ?? 0,
+                currency: 'USD',
+                trigger: 'manual_button',
+              })
+            }
           >
             Pay your deposit
           </Button>
