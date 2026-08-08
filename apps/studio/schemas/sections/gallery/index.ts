@@ -39,7 +39,15 @@ export const gallery = defineType({
               type: 'image',
               options: { hotspot: true },
             }),
-            defineField({ name: 'label', title: 'Label', type: 'string' }),
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+              description:
+                'Describes the photo for screen readers and Google Images — be specific (e.g. "Black Tesla Model 3 interior after full detail in Carlsbad"), not "car".',
+              validation: (Rule) => Rule.warning('Add descriptive alt text so this photo is accessible and can rank in Google Images.'),
+            }),
+            defineField({ name: 'label', title: 'Label', type: 'string', description: 'Optional visible caption shown on the photo tile.' }),
             defineField({
               name: 'aspect',
               title: 'Aspect ratio',

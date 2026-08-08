@@ -7,6 +7,8 @@ import { formatDate } from '@/lib/formatDate';
 import { urlForImage } from '@/lib/sanity/image';
 import { getAllBlogPostSlugs, getBlogPostBySlug } from '@/lib/sanity/queries/blog';
 import { getSiteSettings } from '@/lib/sanity/queries/global';
+import { baseUrl } from '@/lib/seo/baseUrl';
+import { serializeJsonLd } from '@/lib/seo/jsonLd';
 
 type RouteParams = { slug: string };
 
@@ -28,14 +30,23 @@ export async function generateMetadata(props: {
   }
 
   const ogImage = post.seo?.openGraphImage ?? post.coverImage;
+  const ogImageUrl = ogImage ? urlForImage(ogImage).width(1200).height(630).url() : undefined;
 
   return {
     title: post.seo?.metaTitle ?? post.title,
     description: post.seo?.metaDescription ?? post.excerpt ?? undefined,
+    alternates: { canonical: `${baseUrl}/blog/${slug}` },
     robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
-    openGraph: ogImage
+    openGraph: ogImageUrl
       ? {
-          images: [{ url: urlForImage(ogImage).width(1200).height(630).url() }],
+          type: 'article',
+          images: [{ url: ogImageUrl }],
+        }
+      : undefined,
+    twitter: ogImageUrl
+      ? {
+          card: 'summary_large_image',
+          images: [ogImageUrl],
         }
       : undefined,
   };
@@ -76,13 +87,30 @@ export default async function BlogPostPage(props: { params: Promise<RouteParams>
   const post = await getBlogPostBySlug(slug);
   if (!post) notFound();
 
+  const postUrl = `${baseUrl}/blog/${slug}`;
+  const siteName = settings?.organizationLegalName ?? settings?.siteName;
+  const publisherLogoUrl = settings?.logo?.asset
+    ? urlForImage(settings.logo).width(600).url()
+    : undefined;
+
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt,
     image: post.coverImage ? [urlForImage(post.coverImage).width(1200).url()] : undefined,
     datePublished: post.publishedAt,
+    dateModified: post._updatedAt ?? post.publishedAt,
+    url: postUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    author: siteName ? { '@type': 'Organization', name: siteName } : undefined,
+    publisher: siteName
+      ? {
+          '@type': 'Organization',
+          name: siteName,
+          logo: publisherLogoUrl ? { '@type': 'ImageObject', url: publisherLogoUrl } : undefined,
+        }
+      : undefined,
   };
 
   const date = formatDate(post.publishedAt);
@@ -94,7 +122,7 @@ export default async function BlogPostPage(props: { params: Promise<RouteParams>
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <article aria-labelledby="post-title">
         <header style={{ marginBottom: 32 }}>

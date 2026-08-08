@@ -5,6 +5,8 @@ import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { getAllWebsitePageSlugs, getHomepage, getWebsitePageBySlug } from '@/lib/sanity/queries/page';
 import { getSiteSettings } from '@/lib/sanity/queries/global';
 import { buildLocalBusinessJsonLd } from '@/lib/seo/localBusiness';
+import { serializeJsonLd } from '@/lib/seo/jsonLd';
+import { baseUrl } from '@/lib/seo/baseUrl';
 import { urlForImage } from '@/lib/sanity/image';
 
 function ogImagesFor(openGraphImage: { asset?: { _ref: string } } | null | undefined) {
@@ -12,8 +14,6 @@ function ogImagesFor(openGraphImage: { asset?: { _ref: string } } | null | undef
   const url = urlForImage(openGraphImage).width(1200).height(630).url();
   return [{ url, width: 1200, height: 630 }];
 }
-
-const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 
 type RouteParams = { slug?: string[] };
 
@@ -34,7 +34,7 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
 
   if (isHomepageRoute(params.slug)) {
     const page = await getHomepage();
-    const title = page?.seo?.metaTitle ?? 'AR Mobile Detailing — Premium Mobile Detailing in North County San Diego';
+    const title = page?.seo?.metaTitle ?? 'Mobile Detailing North County San Diego | AR Mobile Detailing';
     const description = page?.seo?.metaDescription ?? 'Professional mobile auto detailing in North County San Diego and surrounding areas. We come to your home or office. Book in minutes.';
     const images = ogImagesFor(page?.seo?.openGraphImage);
     return {
@@ -43,6 +43,7 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
       // getting the site name appended a second time.
       title: { absolute: title },
       description,
+      alternates: { canonical: baseUrl },
       robots: page?.seo?.noIndex ? { index: false, follow: false } : undefined,
       ...(images && {
         openGraph: { title, description, images },
@@ -63,6 +64,7 @@ export async function generateMetadata(props: { params: Promise<RouteParams> }):
   return {
     title,
     description,
+    alternates: { canonical: `${baseUrl}/${params.slug!.join('/')}` },
     robots: page.seo?.noIndex ? { index: false, follow: false } : undefined,
     ...(images && {
       openGraph: { title, description, images },
@@ -83,7 +85,7 @@ export default async function Page(props: { params: Promise<RouteParams> }) {
         {jsonLd && (
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
           />
         )}
         <Sections sections={page.sections} />
