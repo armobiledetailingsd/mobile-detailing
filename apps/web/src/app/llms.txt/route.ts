@@ -15,10 +15,10 @@ export async function GET(): Promise<Response> {
     getBlogPostsForLlms(),
   ]);
 
-  const siteName = settings?.siteName ?? "Medina's Mobile Tire Service";
+  const siteName = settings?.siteName ?? 'AR Mobile Detailing';
   const siteDescription =
     settings?.siteDescription ??
-    'Mobile tire repair, replacement, and emergency roadside tire service across Los Angeles and Orange County.';
+    'Mobile car detailing across North County San Diego. We come to your home or office, no shop needed.';
 
   const lines: string[] = [`# ${siteName}`, '', `> ${siteDescription}`, ''];
 
