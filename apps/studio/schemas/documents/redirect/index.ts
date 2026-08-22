@@ -26,7 +26,19 @@ export const redirect = defineType({
       type: 'string',
       description:
         'Destination — either a path (starts with `/`) or a full URL (https://…). Wildcard captures from the source can be reused (e.g. `/articles/:slug`).',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required().custom((value) => {
+          if (!value) return true;
+          if (value.startsWith('/')) return true;
+          try {
+            const protocol = new URL(value).protocol;
+            return ['http:', 'https:', 'mailto:', 'tel:', 'sms:'].includes(protocol)
+              ? true
+              : 'Only http(s), mailto:, tel: or sms: URLs are allowed.';
+          } catch {
+            return 'Enter a site-relative path starting with / or a full URL (https://…).';
+          }
+        }),
     }),
     defineField({
       name: 'redirectType',

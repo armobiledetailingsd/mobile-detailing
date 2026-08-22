@@ -27,6 +27,11 @@ let pendingFetch: Promise<RedirectTable> | null = null;
 
 const isWildcard = (from: string) => /:[a-zA-Z]/.test(from);
 
+// Guards against malformed Sanity `to` values (e.g. a bare "$" or "&") ever
+// producing a redirect to a garbage destination like /$ or /&.
+const isSafeDestination = (destination: string) =>
+  destination.startsWith('/') || /^https?:\/\//i.test(destination);
+
 function parseWildcard(from: string, to: string, statusCode: RedirectType): WildcardRule {
   const captureNames: string[] = [];
 
@@ -106,7 +111,8 @@ function matchWildcard(pathname: string, wildcards: WildcardRule[]): ExactRule |
     let destination = w.destinationTemplate;
     w.captureNames.forEach((name, i) => {
       const placeholder = name.endsWith('*') ? `:${name.slice(0, -1)}*` : `:${name}`;
-      destination = destination.replace(placeholder, match[i + 1] ?? '');
+      // Function replacer avoids treating a `$`-containing capture as a replacement pattern.
+      destination = destination.replace(placeholder, () => match[i + 1] ?? '');
     });
 
     return { destination: destination || '/', statusCode: w.statusCode };
@@ -123,6 +129,10 @@ function resolveRedirect(pathname: string, table: RedirectTable): ExactRule | nu
     const exact = table.exact.get(current);
     const hit = exact ?? matchWildcard(current, table.wildcards);
     if (!hit) break;
+    if (!isSafeDestination(hit.destination)) {
+      console.error(`[middleware] Skipping redirect with unsafe destination: "${hit.destination}"`);
+      break;
+    }
 
     final = hit;
     // If the destination is absolute (http/https) or unchanged, stop chaining.
