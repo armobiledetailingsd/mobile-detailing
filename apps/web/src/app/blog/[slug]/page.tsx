@@ -75,6 +75,43 @@ const portableTextComponents: PortableTextComponents = {
       </div>
     ),
   },
+  block: {
+    h2: ({ children }) => (
+      <h2 style={{ fontSize: 24, fontWeight: 600, lineHeight: 1.3, margin: '40px 0 16px' }}>
+        {children}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3 style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.3, margin: '32px 0 12px' }}>
+        {children}
+      </h3>
+    ),
+    normal: ({ children }) => <p style={{ margin: '0 0 20px' }}>{children}</p>,
+    blockquote: ({ children }) => (
+      <blockquote
+        style={{
+          margin: '24px 0',
+          padding: '4px 20px',
+          borderLeft: '3px solid var(--text-muted, #9aa0a6)',
+          fontStyle: 'italic',
+        }}
+      >
+        {children}
+      </blockquote>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul style={{ margin: '0 0 20px', paddingLeft: 24, listStyleType: 'disc' }}>{children}</ul>
+    ),
+    number: ({ children }) => (
+      <ol style={{ margin: '0 0 20px', paddingLeft: 24, listStyleType: 'decimal' }}>{children}</ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li style={{ margin: '0 0 8px' }}>{children}</li>,
+    number: ({ children }) => <li style={{ margin: '0 0 8px' }}>{children}</li>,
+  },
 };
 
 export default async function BlogPostPage(props: { params: Promise<RouteParams> }) {
