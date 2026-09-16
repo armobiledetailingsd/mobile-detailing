@@ -3,12 +3,12 @@ import { getSiteSettings } from '@/lib/sanity/queries/global';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'How Alex Detailing collects, uses, and protects your information.',
+  description: 'How AR Mobile Detailing collects, uses, and protects your information.',
   alternates: { canonical: '/privacy' },
 };
 
 const EFFECTIVE_DATE = 'July 16, 2026';
-const FALLBACK_CONTACT_EMAIL = 'hello@example.com';
+const FALLBACK_CONTACT_EMAIL = 'armobiledetailingsd@gmail.com';
 const FALLBACK_PHONE_HREF = 'tel:+14429991980';
 const FALLBACK_PHONE_LABEL = '(442) 999-1980';
 
@@ -28,7 +28,7 @@ export default async function PrivacyPage() {
 
         <Section title="1. Who we are">
           <p>
-            Alex Detailing (&ldquo;Alex Detailing,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
+            AR Mobile Detailing (&ldquo;AR Mobile Detailing,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
             &ldquo;our&rdquo;) provides mobile vehicle detailing services throughout North County
             San Diego, California, including Carlsbad, Oceanside, Vista, San Marcos, Escondido,
             Encinitas, Solana Beach, Del Mar, Rancho Santa Fe, and Fallbrook. This Privacy Policy

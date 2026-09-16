@@ -3,12 +3,12 @@ import { getSiteSettings } from '@/lib/sanity/queries/global';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'The terms that govern booking and using mobile detailing services from Alex Detailing.',
+  description: 'The terms that govern booking and using mobile detailing services from AR Mobile Detailing.',
   alternates: { canonical: '/terms' },
 };
 
 const EFFECTIVE_DATE = 'July 16, 2026';
-const FALLBACK_CONTACT_EMAIL = 'hello@example.com';
+const FALLBACK_CONTACT_EMAIL = 'armobiledetailingsd@gmail.com';
 const FALLBACK_PHONE_HREF = 'tel:+14429991980';
 const FALLBACK_PHONE_LABEL = '(442) 999-1980';
 
@@ -28,8 +28,8 @@ export default async function TermsPage() {
 
         <Section title="1. Agreement to terms">
           <p>
-            These Terms of Service (&ldquo;Terms&rdquo;) govern your use of the Alex Detailing
-            website and your booking of mobile detailing services from Alex Detailing (&ldquo;we,&rdquo;
+            These Terms of Service (&ldquo;Terms&rdquo;) govern your use of the AR Mobile Detailing
+            website and your booking of mobile detailing services from AR Mobile Detailing (&ldquo;we,&rdquo;
             &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By booking a service or using our website, you
             agree to these Terms. If you don&rsquo;t agree, please don&rsquo;t use our site or book
             a service.
