@@ -23,9 +23,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
+  // Static App Router pages that don't come from Sanity.
+  const staticEntries: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/book`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/privacy`, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${baseUrl}/terms`, changeFrequency: 'yearly', priority: 0.2 },
+  ];
+
   // Disabled only when explicitly false; missing field counts as enabled.
   if (blogEnabled === false) {
-    return pageEntries;
+    return [...pageEntries, ...staticEntries];
   }
 
   const posts = await getBlogPostsForSitemap();
@@ -45,5 +52,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...pageEntries, ...blogEntries];
+  return [...pageEntries, ...staticEntries, ...blogEntries];
 }

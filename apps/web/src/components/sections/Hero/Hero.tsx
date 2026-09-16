@@ -46,7 +46,7 @@ export function Hero({ eyebrow, headlineMain, headlineAccent, body, trustMarkers
 
           {!body && (
             <p className="m-0 mb-8 max-w-[460px] text-[19px] font-normal text-silver leading-[1.55]">
-              Alex&apos;s mobile detail service. We come to your home or office, no shop needed.
+              AR Mobile Detailing brings the detail to you. We come to your home or office, no shop needed.
             </p>
           )}
 
