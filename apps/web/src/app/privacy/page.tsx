@@ -4,6 +4,7 @@ import { getSiteSettings } from '@/lib/sanity/queries/global';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'How Alex Detailing collects, uses, and protects your information.',
+  alternates: { canonical: '/privacy' },
 };
 
 const EFFECTIVE_DATE = 'July 16, 2026';

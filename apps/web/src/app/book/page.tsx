@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: 'Book Your Detail',
   description:
     'Pick a package, check your ZIP, choose a time, and reserve your mobile detail with a deposit.',
+  alternates: { canonical: '/book' },
 };
 
 type BookPageProps = {

@@ -4,6 +4,7 @@ import { getSiteSettings } from '@/lib/sanity/queries/global';
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'The terms that govern booking and using mobile detailing services from Alex Detailing.',
+  alternates: { canonical: '/terms' },
 };
 
 const EFFECTIVE_DATE = 'July 16, 2026';
