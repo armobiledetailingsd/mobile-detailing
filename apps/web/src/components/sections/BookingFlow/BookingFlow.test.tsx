@@ -1,8 +1,16 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CORE_ZIPS } from '@/lib/booking/packages';
 import { BookingFlow } from './BookingFlow';
+
+const PERSIST_DEBOUNCE_MS = 300;
+
+async function waitForPersist() {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, PERSIST_DEBOUNCE_MS + 50));
+  });
+}
 
 const PROPS = {
   calendlyUrls: {
@@ -158,49 +166,145 @@ describe('BookingFlow schedule step', () => {
   });
 });
 
-describe('auto-redirect on the pay step', () => {
-  let hrefSpy: ReturnType<typeof vi.fn<(value: string) => void>>;
-
-  beforeEach(() => {
-    hrefSpy = vi.fn();
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        get href() {
-          return 'https://example.com/book';
-        },
-        set href(value: string) {
-          hrefSpy(value);
-        },
-        hostname: 'example.com',
-      },
-    });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it('automatically navigates to the Stripe deposit link after reaching the pay step', async () => {
+describe('pay step', () => {
+  it('does not auto-navigate away from the pay step on its own', async () => {
     render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact();
-
-    // userEvent's internal delays rely on real timers, so fake timers are
-    // enabled only after all user interaction is done.
-    vi.useFakeTimers();
-
     scheduleViaCalendlyMessage();
     expect(screen.getByText(/step 4 of 4/i)).toBeInTheDocument();
-    expect(hrefSpy).not.toHaveBeenCalled();
 
-    act(() => {
-      vi.runAllTimers();
-    });
+    // Regression guard for the mobile bug: nothing should navigate or reset
+    // the step on a timer. If it did, this would no longer be step 4.
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(screen.getByText(/step 4 of 4/i)).toBeInTheDocument();
+    expect(screen.queryByText(/redirecting/i)).not.toBeInTheDocument();
+  });
 
-    expect(hrefSpy).toHaveBeenCalledTimes(1);
-    const [redirectUrl] = hrefSpy.mock.calls[0] as [string];
-    const url = new URL(redirectUrl);
-    expect(url.origin + url.pathname).toBe(PROPS.stripeDepositLink);
-    expect(url.searchParams.get('prefilled_email')).toBe('sam@example.com');
+  it('shows a redirecting state only after the deposit button is tapped', async () => {
+    render(<BookingFlow {...PROPS} initialPackage="silver" />);
+    await fillContact();
+    scheduleViaCalendlyMessage();
+
+    const user = userEvent.setup();
+    const payLink = screen.getByRole('link', { name: /pay your deposit/i });
+    await user.click(payLink);
+
+    expect(screen.getByRole('link', { name: /redirecting/i })).toBeInTheDocument();
+  });
+
+  it('ignores a second tap while already redirecting instead of firing twice', async () => {
+    render(<BookingFlow {...PROPS} initialPackage="silver" />);
+    await fillContact();
+    scheduleViaCalendlyMessage();
+
+    const user = userEvent.setup();
+    const payLink = screen.getByRole('link', { name: /pay your deposit/i });
+    await user.click(payLink);
+    // A second activation (e.g. a fast double-tap, or a keyboard Enter that
+    // lands before pointer-events-none takes visual effect) must be a no-op:
+    // the click guard is a ref, not just the disabled styling.
+    await user.click(screen.getByRole('link', { name: /redirecting/i }));
+
+    expect(screen.getByRole('link', { name: /redirecting/i })).toBeInTheDocument();
+  });
+
+  it('clears persisted progress once the deposit button is tapped', async () => {
+    render(<BookingFlow {...PROPS} initialPackage="silver" />);
+    await fillContact();
+    scheduleViaCalendlyMessage();
+    await waitForPersist();
+    expect(sessionStorage.getItem('booking-flow-state')).not.toBeNull();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('link', { name: /pay your deposit/i }));
+
+    expect(sessionStorage.getItem('booking-flow-state')).toBeNull();
+  });
+
+  it('resets to a tappable state if the redirect never actually navigates away', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      render(<BookingFlow {...PROPS} initialPackage="silver" />);
+      await fillContact();
+      scheduleViaCalendlyMessage();
+
+      const user = userEvent.setup({ delay: null });
+      await user.click(screen.getByRole('link', { name: /pay your deposit/i }));
+      expect(screen.getByRole('link', { name: /redirecting/i })).toBeInTheDocument();
+
+      await act(async () => {
+        vi.advanceTimersByTime(5100);
+      });
+
+      expect(screen.getByRole('link', { name: /pay your deposit/i })).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe('resuming an in-progress booking', () => {
+  it('restores step, package, and contact info after a remount', async () => {
+    const { unmount } = render(<BookingFlow {...PROPS} initialPackage="silver" />);
+    await fillContact();
+    expect(screen.getByText(/step 3 of 4/i)).toBeInTheDocument();
+    await waitForPersist();
+    unmount();
+
+    render(<BookingFlow {...PROPS} />);
+    expect(await screen.findByText(/step 3 of 4/i)).toBeInTheDocument();
+    expect(screen.getByTitle(/pick a time/i)).toBeInTheDocument();
+  });
+
+  it('ignores saved state older than the max age', async () => {
+    sessionStorage.setItem(
+      'booking-flow-state',
+      JSON.stringify({
+        step: 'pay',
+        selected: 'gold',
+        name: 'Stale Person',
+        email: 'stale@example.com',
+        zip: '00000',
+        savedAt: Date.now() - 3 * 60 * 60 * 1000,
+      }),
+    );
+
+    render(<BookingFlow {...PROPS} />);
+    expect(await screen.findByText(/step 1 of 4/i)).toBeInTheDocument();
+  });
+
+  it('ignores saved state with an unrecognized step', async () => {
+    sessionStorage.setItem(
+      'booking-flow-state',
+      JSON.stringify({
+        step: 'checkout', // not a real Step value
+        selected: 'gold',
+        name: 'Someone',
+        email: 'someone@example.com',
+        zip: GOOD_ZIP,
+        savedAt: Date.now(),
+      }),
+    );
+
+    render(<BookingFlow {...PROPS} />);
+    expect(await screen.findByText(/step 1 of 4/i)).toBeInTheDocument();
+  });
+
+  it('ignores restored progress that belongs to a different package than the page requested', async () => {
+    sessionStorage.setItem(
+      'booking-flow-state',
+      JSON.stringify({
+        step: 'contact',
+        selected: 'silver',
+        name: 'Sam Jones',
+        email: 'sam@example.com',
+        zip: GOOD_ZIP,
+        savedAt: Date.now(),
+      }),
+    );
+
+    render(<BookingFlow {...PROPS} initialPackage="gold" />);
+    expect(await screen.findByText(/step 2 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/gold/i)).toBeInTheDocument();
   });
 });
