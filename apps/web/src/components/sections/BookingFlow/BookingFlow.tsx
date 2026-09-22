@@ -22,6 +22,9 @@ const STEP_NUMBER: Record<Step, number> = { package: 1, contact: 2, schedule: 3,
 // isn't, so restored state older than this is discarded.
 const STORAGE_KEY = 'booking-flow-state';
 const STORAGE_MAX_AGE_MS = 2 * 60 * 60 * 1000;
+const PERSIST_DEBOUNCE_MS = 300;
+const REDIRECT_RESET_MS = 5000;
+const VALID_STEPS: readonly Step[] = ['package', 'contact', 'schedule', 'pay'];
 
 type PersistedState = {
   step: Step;
@@ -32,6 +35,40 @@ type PersistedState = {
   savedAt: number;
 };
 
+function clearPersistedState() {
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Best-effort cleanup; storage may be unavailable (private browsing, sandboxed iframe).
+  }
+}
+
+// Reads and validates saved progress. Returns null (rather than throwing) for
+// any shape that can't be trusted: missing storage, unparsable JSON, an
+// unrecognized step (stale schema), data older than the max age, or a
+// package that doesn't match what this page load was asked to preselect.
+function readPersistedState(initialPackage?: PackageSlug): PersistedState | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw) as PersistedState;
+    if (!VALID_STEPS.includes(saved.step)) {
+      clearPersistedState();
+      return null;
+    }
+    if (Date.now() - saved.savedAt > STORAGE_MAX_AGE_MS) {
+      clearPersistedState();
+      return null;
+    }
+    if (initialPackage && saved.selected !== initialPackage) return null;
+    return saved;
+  } catch {
+    clearPersistedState();
+    return null;
+  }
+}
+
 const INPUT_CLASSES =
   'w-full h-12 px-[14px] font-sans text-[15px] rounded-input text-platinum focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-d)] focus-visible:border-[var(--color-accent-d)]';
 
@@ -41,18 +78,29 @@ const INPUT_STYLE = {
 } as const;
 
 export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }: BookingFlowProps) {
-  const [step, setStep] = useState<Step>(initialPackage ? 'contact' : 'package');
-  const [selected, setSelected] = useState<PackageSlug | null>(initialPackage ?? null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [zip, setZip] = useState('');
+  // Read once, synchronously, before the first render — no restore effect,
+  // so there's no window where a later effect could clobber pending state.
+  const restoredRef = useRef<PersistedState | null | undefined>(undefined);
+  if (restoredRef.current === undefined) {
+    restoredRef.current = readPersistedState(initialPackage);
+  }
+  const restored = restoredRef.current;
+
+  const [step, setStep] = useState<Step>(restored?.step ?? (initialPackage ? 'contact' : 'package'));
+  const [selected, setSelected] = useState<PackageSlug | null>(
+    restored?.selected ?? initialPackage ?? null,
+  );
+  const [name, setName] = useState(restored?.name ?? '');
+  const [email, setEmail] = useState(restored?.email ?? '');
+  const [zip, setZip] = useState(restored?.zip ?? '');
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<'email' | 'zip' | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const errorId = 'contact-form-error';
   const hasTrackedScheduleRef = useRef(false);
-  const hasRestoredRef = useRef(false);
-  const hasPersistedOnceRef = useRef(false);
+  const persistTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isPayingRef = useRef(false);
+  const redirectResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const selectedPackage = PACKAGES.find((p) => p.slug === selected) ?? null;
   const calendlyUrl = selected ? (calendlyUrls[selected] ?? '') : '';
@@ -77,43 +125,31 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
     return () => window.removeEventListener('message', onMessage);
   }, [step, selected]);
 
-  // Restore an in-progress booking after a reload/backgrounding. Runs once on
-  // mount, after the initial (default) state has already rendered, so it
-  // can't cause a server/client hydration mismatch.
-  useEffect(() => {
-    if (hasRestoredRef.current) return;
-    hasRestoredRef.current = true;
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    try {
-      const saved = JSON.parse(raw) as PersistedState;
-      if (Date.now() - saved.savedAt > STORAGE_MAX_AGE_MS) {
-        sessionStorage.removeItem(STORAGE_KEY);
-        return;
-      }
-      setStep(saved.step);
-      setSelected(saved.selected);
-      setName(saved.name);
-      setEmail(saved.email);
-      setZip(saved.zip);
-    } catch {
-      sessionStorage.removeItem(STORAGE_KEY);
-    }
-  }, []);
-
   // Persist progress as she moves through the flow, so a reload or the app
-  // backgrounding on mobile doesn't silently drop her back to step 1. Skips
-  // its first run so it never overwrites the restore effect above with the
-  // pre-restore default state — that effect hasn't applied its setState
-  // calls yet in this same commit, so this would otherwise run first.
+  // backgrounding on mobile doesn't silently drop her back to step 1.
+  // Debounced so typing in the contact fields doesn't hit sessionStorage on
+  // every keystroke, and wrapped in try/catch since writes can throw
+  // (private browsing, sandboxed iframes, quota limits).
   useEffect(() => {
-    if (!hasPersistedOnceRef.current) {
-      hasPersistedOnceRef.current = true;
-      return;
-    }
-    const state: PersistedState = { step, selected, name, email, zip, savedAt: Date.now() };
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (persistTimeoutRef.current) clearTimeout(persistTimeoutRef.current);
+    persistTimeoutRef.current = setTimeout(() => {
+      try {
+        const state: PersistedState = { step, selected, name, email, zip, savedAt: Date.now() };
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        // Best-effort persistence; losing it just means no resume-on-reload.
+      }
+    }, PERSIST_DEBOUNCE_MS);
+    return () => {
+      if (persistTimeoutRef.current) clearTimeout(persistTimeoutRef.current);
+    };
   }, [step, selected, name, email, zip]);
+
+  useEffect(() => {
+    return () => {
+      if (redirectResetTimeoutRef.current) clearTimeout(redirectResetTimeoutRef.current);
+    };
+  }, []);
 
   function submitContact() {
     if (!isValidEmail(email.trim())) {
@@ -338,13 +374,25 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
             aria-disabled={isRedirecting}
             className={isRedirecting ? 'pointer-events-none opacity-70' : ''}
             onClick={() => {
+              // Guard with a ref, not just the isRedirecting state: aria-disabled
+              // and pointer-events-none don't stop a keyboard Enter or a fast
+              // double-tap from re-firing this handler before the re-render lands.
+              if (isPayingRef.current) return;
+              isPayingRef.current = true;
               setIsRedirecting(true);
+              clearPersistedState();
               trackEvent('begin_checkout', {
                 package: selected ?? 'unknown',
                 value: selectedPackage?.priceSedan ?? 0,
                 currency: 'USD',
                 trigger: 'manual_button',
               });
+              // If the navigation is silently blocked (the mobile-Safari failure
+              // this flow was built around), don't leave the button stuck forever.
+              redirectResetTimeoutRef.current = setTimeout(() => {
+                isPayingRef.current = false;
+                setIsRedirecting(false);
+              }, REDIRECT_RESET_MS);
             }}
           >
             {isRedirecting ? 'Redirecting…' : 'Pay your deposit'}
