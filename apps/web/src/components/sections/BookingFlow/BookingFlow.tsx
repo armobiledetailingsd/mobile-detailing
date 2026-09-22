@@ -17,7 +17,20 @@ type BookingFlowProps = {
 
 const STEP_NUMBER: Record<Step, number> = { package: 1, contact: 2, schedule: 3, pay: 4 };
 
-const AUTO_REDIRECT_DELAY_MS = 5000;
+// Resuming an in-progress booking (accidental reload, tab switch, backgrounding
+// on mobile) is fine; resuming one from days ago against a stale package/price
+// isn't, so restored state older than this is discarded.
+const STORAGE_KEY = 'booking-flow-state';
+const STORAGE_MAX_AGE_MS = 2 * 60 * 60 * 1000;
+
+type PersistedState = {
+  step: Step;
+  selected: PackageSlug | null;
+  name: string;
+  email: string;
+  zip: string;
+  savedAt: number;
+};
 
 const INPUT_CLASSES =
   'w-full h-12 px-[14px] font-sans text-[15px] rounded-input text-platinum focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-d)] focus-visible:border-[var(--color-accent-d)]';
@@ -35,12 +48,11 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
   const [zip, setZip] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<'email' | 'zip' | null>(null);
-  const [autoRedirectCancelled, setAutoRedirectCancelled] = useState(false);
-  const [redirectSecondsLeft, setRedirectSecondsLeft] = useState(
-    Math.ceil(AUTO_REDIRECT_DELAY_MS / 1000),
-  );
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const errorId = 'contact-form-error';
   const hasTrackedScheduleRef = useRef(false);
+  const hasRestoredRef = useRef(false);
+  const hasPersistedOnceRef = useRef(false);
 
   const selectedPackage = PACKAGES.find((p) => p.slug === selected) ?? null;
   const calendlyUrl = selected ? (calendlyUrls[selected] ?? '') : '';
@@ -65,26 +77,43 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
     return () => window.removeEventListener('message', onMessage);
   }, [step, selected]);
 
+  // Restore an in-progress booking after a reload/backgrounding. Runs once on
+  // mount, after the initial (default) state has already rendered, so it
+  // can't cause a server/client hydration mismatch.
   useEffect(() => {
-    if (step !== 'pay' || autoRedirectCancelled) return;
-    setRedirectSecondsLeft(Math.ceil(AUTO_REDIRECT_DELAY_MS / 1000));
-    const interval = setInterval(() => {
-      setRedirectSecondsLeft((s) => Math.max(0, s - 1));
-    }, 1000);
-    const timer = setTimeout(() => {
-      trackEvent('begin_checkout', {
-        package: selected ?? 'unknown',
-        value: selectedPackage?.priceSedan ?? 0,
-        currency: 'USD',
-        trigger: 'auto_redirect',
-      });
-      window.location.href = buildStripeUrl(stripeDepositLink, email.trim());
-    }, AUTO_REDIRECT_DELAY_MS);
-    return () => {
-      clearTimeout(timer);
-      clearInterval(interval);
-    };
-  }, [step, stripeDepositLink, email, autoRedirectCancelled, selected, selectedPackage]);
+    if (hasRestoredRef.current) return;
+    hasRestoredRef.current = true;
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw) as PersistedState;
+      if (Date.now() - saved.savedAt > STORAGE_MAX_AGE_MS) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      setStep(saved.step);
+      setSelected(saved.selected);
+      setName(saved.name);
+      setEmail(saved.email);
+      setZip(saved.zip);
+    } catch {
+      sessionStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
+
+  // Persist progress as she moves through the flow, so a reload or the app
+  // backgrounding on mobile doesn't silently drop her back to step 1. Skips
+  // its first run so it never overwrites the restore effect above with the
+  // pre-restore default state — that effect hasn't applied its setState
+  // calls yet in this same commit, so this would otherwise run first.
+  useEffect(() => {
+    if (!hasPersistedOnceRef.current) {
+      hasPersistedOnceRef.current = true;
+      return;
+    }
+    const state: PersistedState = { step, selected, name, email, zip, savedAt: Date.now() };
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [step, selected, name, email, zip]);
 
   function submitContact() {
     if (!isValidEmail(email.trim())) {
@@ -299,33 +328,26 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
           <p className="m-0 mb-5 text-[15px] text-steel">
             Use the same email (<span className="text-platinum">{email.trim()}</span>) so we can
             match your payment to your booking.
-            {autoRedirectCancelled ? null : ` Redirecting you to secure payment in ${redirectSecondsLeft}s.`}
           </p>
-          {!autoRedirectCancelled && (
-            <button
-              type="button"
-              onClick={() => setAutoRedirectCancelled(true)}
-              className="mb-4 underline text-platinum cursor-pointer bg-transparent border-0 p-0 text-[13px]"
-            >
-              Cancel auto-redirect
-            </button>
-          )}
           <Button
             href={buildStripeUrl(stripeDepositLink, email.trim())}
             variant="metal"
             size="lg"
             fullWidth
-            iconRight="arrow-right"
-            onClick={() =>
+            iconRight={isRedirecting ? undefined : 'arrow-right'}
+            aria-disabled={isRedirecting}
+            className={isRedirecting ? 'pointer-events-none opacity-70' : ''}
+            onClick={() => {
+              setIsRedirecting(true);
               trackEvent('begin_checkout', {
                 package: selected ?? 'unknown',
                 value: selectedPackage?.priceSedan ?? 0,
                 currency: 'USD',
                 trigger: 'manual_button',
-              })
-            }
+              });
+            }}
           >
-            Pay your deposit
+            {isRedirecting ? 'Redirecting…' : 'Pay your deposit'}
           </Button>
         </>
       )}
