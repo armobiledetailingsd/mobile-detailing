@@ -24,7 +24,7 @@ export default async function PrivacyPage() {
         <h1 className="m-0 mb-2 font-sans font-bold text-[clamp(28px,4vw,40px)] tracking-[-0.03em] text-platinum">
           Privacy Policy
         </h1>
-        <p className="m-0 mb-10 text-[14px] text-muted">Effective date: {EFFECTIVE_DATE}</p>
+        <p className="m-0 mb-10 text-[14px] text-steel">Effective date: {EFFECTIVE_DATE}</p>
 
         <Section title="1. Who we are">
           <p>

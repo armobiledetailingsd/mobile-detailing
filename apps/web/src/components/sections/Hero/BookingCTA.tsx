@@ -24,12 +24,14 @@ export function BookingCTA() {
       <p className="m-0 mb-[6px] text-[12px] font-semibold tracking-[0.12em] uppercase text-steel">
         Step 1 of 3
       </p>
-      <h3 className="m-0 mb-5 font-sans font-semibold text-[22px] text-platinum">
+      <h2 className="m-0 mb-5 font-sans font-semibold text-[22px] text-platinum">
         Do we cover your area?
-      </h3>
+      </h2>
 
       <div className="flex gap-2 mb-4">
         <input
+          id="hero-zip"
+          name="zip"
           type="text"
           inputMode="numeric"
           maxLength={5}

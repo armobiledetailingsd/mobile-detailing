@@ -6,7 +6,7 @@ export type ReviewsSectionProps = Extract<PageSection, { _type: 'reviewsSection'
 
 function Stars({ size = 16, label }: { size?: number; label?: string }) {
   return (
-    <div aria-label={label} className="flex gap-0.5">
+    <div role={label ? 'img' : undefined} aria-label={label} className="flex gap-0.5">
       {[0, 1, 2, 3, 4].map((i) => (
         <Icon key={i} name="star" size={size} className="text-warning fill-warning" />
       ))}
@@ -33,6 +33,7 @@ export function Reviews({ eyebrow, heading, rating, reviewCount, quotes }: Revie
             </h2>
           </div>
           <div
+            role="img"
             aria-label={`Rated ${rating} out of 5 stars · ${(reviewCount ?? 0).toLocaleString()} Google reviews`}
             className="flex items-center gap-[10px]"
           >

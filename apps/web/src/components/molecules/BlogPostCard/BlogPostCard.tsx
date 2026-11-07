@@ -32,7 +32,7 @@ export function BlogPostCard({
               alt={coverImageAlt || title}
               fill
               sizes="(max-width: 560px) 100vw, (max-width: 860px) 50vw, 33vw"
-              className="object-cover"
+              className="object-cover aspect-video"
             />
           </div>
         )}

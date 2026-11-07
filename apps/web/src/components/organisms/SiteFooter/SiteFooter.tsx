@@ -148,7 +148,7 @@ export function SiteFooter({
           {/* Nav columns */}
           {columns.map((col) => (
             <div key={col._key}>
-              <h3 className="font-sans font-semibold text-[11px] uppercase tracking-[0.1em] text-muted m-0 mb-[14px]">
+              <h3 className="font-sans font-semibold text-[11px] uppercase tracking-[0.1em] text-steel m-0 mb-[14px]">
                 {col.heading}
               </h3>
               <div className="flex flex-col gap-[10px]">
@@ -188,13 +188,13 @@ export function SiteFooter({
 
         {/* Bottom bar */}
         <div className="pt-5 border-t border-[rgba(255,255,255,0.08)] flex flex-wrap gap-3 justify-between items-center">
-          <span className="text-[13px] text-muted">{copyright}</span>
+          <span className="text-[13px] text-steel">{copyright}</span>
           <div className="flex gap-5">
             {[
               { label: 'Privacy', href: '/privacy' },
               { label: 'Terms', href: '/terms' },
             ].map((l) => (
-              <a key={l.label} href={l.href} className="text-[13px] text-muted no-underline">
+              <a key={l.label} href={l.href} className="text-[13px] text-steel no-underline">
                 {l.label}
               </a>
             ))}

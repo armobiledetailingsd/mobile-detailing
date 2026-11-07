@@ -48,7 +48,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
     <section id="gallery" aria-label="Work gallery" style={{ background: 'var(--color-charcoal)', padding: '80px 24px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {eyebrow && (
-          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-muted)' }}>
+          <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-steel)' }}>
             {eyebrow}
           </p>
         )}
@@ -110,7 +110,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
                     src={imageUrl}
                     alt={item.alt ?? item.label ?? ''}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: 'cover', aspectRatio }}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   {item.label && (
@@ -217,7 +217,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
                 src={openImageUrl}
                 alt={openItem.alt ?? openItem.label ?? ''}
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'contain', aspectRatio: '4 / 3' }}
                 sizes="(max-width: 1100px) 100vw, 1100px"
                 priority
               />
