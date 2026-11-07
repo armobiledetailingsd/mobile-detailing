@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { TrackedLink } from '@/components/atoms/TrackedLink';
 import { createDocDataAttribute } from '@/lib/sanity/dataAttribute';
 import { urlForImage } from '@/lib/sanity/image';
 import { resolveNavHref } from '@/lib/nav';
@@ -10,7 +11,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { useDialogA11y } from '@/lib/useDialogA11y';
-import { trackEvent } from '@/lib/analytics/events';
 
 const FALLBACK_PHONE_HREF = 'tel:+14429991980';
 const FALLBACK_PHONE_LABEL = '(442) 999-1980';
@@ -96,29 +96,31 @@ export function SiteHeader({ navigation, siteName, logo, phoneNumber, phoneDispl
 
         {/* Right side */}
         <div className="flex items-center gap-3 ml-auto">
-          <a
+          <TrackedLink
             href={phoneHref}
-            onClick={() => trackEvent('click_to_call', { location: 'header' })}
+            event="click_to_call"
+            eventParams={{ location: 'header' }}
             aria-label={`Call ${phoneLabel}`}
             className="hidden lg:flex items-center gap-[6px] font-sans text-[14px] text-platinum no-underline"
           >
             <Icon name="phone" size={15} />
             {phoneLabel}
-          </a>
+          </TrackedLink>
           <div className="hidden lg:block">
             <Button href="/book" variant="metal" size="sm">
               Book now
             </Button>
           </div>
           {/* Mobile tap-to-call */}
-          <a
+          <TrackedLink
             href={phoneHref}
-            onClick={() => trackEvent('click_to_call', { location: 'header' })}
+            event="click_to_call"
+            eventParams={{ location: 'header' }}
             aria-label={`Call ${phoneLabel}`}
             className="flex lg:hidden items-center justify-center text-platinum p-1"
           >
             <Icon name="phone" size={20} />
-          </a>
+          </TrackedLink>
           {/* Mobile hamburger */}
           <button
             aria-label="Open menu"
@@ -178,13 +180,14 @@ export function SiteHeader({ navigation, siteName, logo, phoneNumber, phoneDispl
             )}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
-            <a
+            <TrackedLink
               href={phoneHref}
+              event="click_to_call"
+              eventParams={{ location: 'header' }}
               className="text-[16px] text-silver no-underline"
-              onClick={() => trackEvent('click_to_call', { location: 'header' })}
             >
               {phoneLabel}
-            </a>
+            </TrackedLink>
             <Button href="/book" variant="metal" size="lg" fullWidth onClick={closeMenu}>
               Book now
             </Button>
