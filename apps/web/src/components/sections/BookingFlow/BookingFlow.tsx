@@ -15,7 +15,11 @@ type BookingFlowProps = {
   initialPackage?: PackageSlug;
 };
 
-const STEP_NUMBER: Record<Step, number> = { package: 1, contact: 2, schedule: 3, pay: 4 };
+// "schedule" and "pay" share a display number: picking a time and paying the
+// deposit read as one step to the user, even though pay is kept as a
+// separate internal state (see the mobile-Safari redirect guard below).
+const BASE_STEP_NUMBER: Record<Step, number> = { package: 1, contact: 2, schedule: 3, pay: 3 };
+const BASE_TOTAL_STEPS = 3;
 
 // Resuming an in-progress booking (accidental reload, tab switch, backgrounding
 // on mobile) is fine; resuming one from days ago against a stale package/price
@@ -105,6 +109,17 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
   const selectedPackage = PACKAGES.find((p) => p.slug === selected) ?? null;
   const calendlyUrl = selected ? (calendlyUrls[selected] ?? '') : '';
 
+  // initialPackage means the "package" step is skipped on entry (see the
+  // useState initializer above), so every step number shifts down by one and
+  // the visible total shrinks to match — until the "Change" affordance sends
+  // her back to the package step, at which point the flow is genuinely the
+  // full one and numbering should reflect that again.
+  const packageStepVisitedRef = useRef(!initialPackage || restored?.step === 'package');
+  if (step === 'package') packageStepVisitedRef.current = true;
+  const stepOffset = initialPackage && !packageStepVisitedRef.current ? 1 : 0;
+  const displayStep = BASE_STEP_NUMBER[step] - stepOffset;
+  const totalSteps = BASE_TOTAL_STEPS - stepOffset;
+
   useEffect(() => {
     if (step !== 'schedule') return;
     hasTrackedScheduleRef.current = false;
@@ -171,7 +186,7 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
   return (
     <div className="bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.1)] rounded-panel py-8 px-7 backdrop-blur-[8px]">
       <p className="m-0 mb-[6px] text-[12px] font-semibold tracking-[0.12em] uppercase text-steel">
-        Step {STEP_NUMBER[step]} of 4
+        Step {displayStep} of {totalSteps}
       </p>
 
       {step === 'package' && (

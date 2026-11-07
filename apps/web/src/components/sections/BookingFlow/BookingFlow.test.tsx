@@ -50,7 +50,7 @@ function scheduleViaCalendlyMessage() {
 describe('BookingFlow package step', () => {
   it('starts on the package step with all three options', () => {
     render(<BookingFlow {...PROPS} />);
-    expect(screen.getByText(/step 1 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 1 of 3/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /bronze/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /silver/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /gold/i })).toBeInTheDocument();
@@ -59,13 +59,13 @@ describe('BookingFlow package step', () => {
   it('advances to the contact step after picking a package', async () => {
     render(<BookingFlow {...PROPS} />);
     await pickPackage();
-    expect(screen.getByText(/step 2 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 3/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/zip/i)).toBeInTheDocument();
   });
 
   it('skips straight to contact when a package is preselected', () => {
     render(<BookingFlow {...PROPS} initialPackage="gold" />);
-    expect(screen.getByText(/step 2 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 1 of 2/i)).toBeInTheDocument();
     expect(screen.getByText(/gold/i)).toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe('BookingFlow package step', () => {
     render(<BookingFlow {...PROPS} initialPackage="gold" />);
     const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: /change/i }));
-    expect(screen.getByText(/step 1 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 1 of 3/i)).toBeInTheDocument();
   });
 });
 
@@ -82,14 +82,14 @@ describe('BookingFlow contact step', () => {
     render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact({ email: 'not-an-email' });
     expect(screen.getByText(/valid email/i)).toBeInTheDocument();
-    expect(screen.getByText(/step 2 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 1 of 2/i)).toBeInTheDocument();
   });
 
   it('blocks progress on an unserviceable ZIP', async () => {
     render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact({ zip: '00000' });
     expect(screen.getByText(/don't cover that zip/i)).toBeInTheDocument();
-    expect(screen.getByText(/step 2 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 1 of 2/i)).toBeInTheDocument();
   });
 
   it('marks the invalid field and announces the contact error to assistive tech', async () => {
@@ -111,7 +111,7 @@ describe('BookingFlow schedule step', () => {
     render(<BookingFlow {...PROPS} />);
     await pickPackage(/silver/i);
     await fillContact();
-    expect(screen.getByText(/step 3 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 3 of 3/i)).toBeInTheDocument();
     const iframe = screen.getByTitle(/pick a time/i) as HTMLIFrameElement;
     const src = new URL(iframe.src);
     expect(src.origin + src.pathname).toBe(PROPS.calendlyUrls.silver);
@@ -130,7 +130,7 @@ describe('BookingFlow schedule step', () => {
   it('offers a fallback Stripe deposit link alongside the Calendly fallback', async () => {
     render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact();
-    expect(screen.getByText(/step 3 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 2/i)).toBeInTheDocument();
     const calendlyLink = screen.getByRole('link', { name: /book directly on calendly/i });
     const calendlyHref = new URL((calendlyLink as HTMLAnchorElement).href);
     expect(calendlyHref.origin + calendlyHref.pathname).toBe(PROPS.calendlyUrls.silver);
@@ -144,7 +144,7 @@ describe('BookingFlow schedule step', () => {
     render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact();
     scheduleViaCalendlyMessage();
-    expect(screen.getByText(/step 4 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 2/i)).toBeInTheDocument();
     const payLink = screen.getByRole('link', { name: /pay .*deposit/i });
     const href = new URL((payLink as HTMLAnchorElement).href);
     expect(href.origin + href.pathname).toBe(PROPS.stripeDepositLink);
@@ -162,7 +162,7 @@ describe('BookingFlow schedule step', () => {
         }),
       );
     });
-    expect(screen.getByText(/step 3 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 2/i)).toBeInTheDocument();
   });
 });
 
@@ -171,12 +171,12 @@ describe('pay step', () => {
     render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact();
     scheduleViaCalendlyMessage();
-    expect(screen.getByText(/step 4 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 2/i)).toBeInTheDocument();
 
     // Regression guard for the mobile bug: nothing should navigate or reset
     // the step on a timer. If it did, this would no longer be step 4.
     await new Promise((resolve) => setTimeout(resolve, 50));
-    expect(screen.getByText(/step 4 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 2/i)).toBeInTheDocument();
     expect(screen.queryByText(/redirecting/i)).not.toBeInTheDocument();
   });
 
@@ -247,12 +247,12 @@ describe('resuming an in-progress booking', () => {
   it('restores step, package, and contact info after a remount', async () => {
     const { unmount } = render(<BookingFlow {...PROPS} initialPackage="silver" />);
     await fillContact();
-    expect(screen.getByText(/step 3 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/step 2 of 2/i)).toBeInTheDocument();
     await waitForPersist();
     unmount();
 
     render(<BookingFlow {...PROPS} />);
-    expect(await screen.findByText(/step 3 of 4/i)).toBeInTheDocument();
+    expect(await screen.findByText(/step 3 of 3/i)).toBeInTheDocument();
     expect(screen.getByTitle(/pick a time/i)).toBeInTheDocument();
   });
 
@@ -270,7 +270,7 @@ describe('resuming an in-progress booking', () => {
     );
 
     render(<BookingFlow {...PROPS} />);
-    expect(await screen.findByText(/step 1 of 4/i)).toBeInTheDocument();
+    expect(await screen.findByText(/step 1 of 3/i)).toBeInTheDocument();
   });
 
   it('ignores saved state with an unrecognized step', async () => {
@@ -287,7 +287,7 @@ describe('resuming an in-progress booking', () => {
     );
 
     render(<BookingFlow {...PROPS} />);
-    expect(await screen.findByText(/step 1 of 4/i)).toBeInTheDocument();
+    expect(await screen.findByText(/step 1 of 3/i)).toBeInTheDocument();
   });
 
   it('ignores restored progress that belongs to a different package than the page requested', async () => {
@@ -304,7 +304,7 @@ describe('resuming an in-progress booking', () => {
     );
 
     render(<BookingFlow {...PROPS} initialPackage="gold" />);
-    expect(await screen.findByText(/step 2 of 4/i)).toBeInTheDocument();
+    expect(await screen.findByText(/step 1 of 2/i)).toBeInTheDocument();
     expect(screen.getByText(/gold/i)).toBeInTheDocument();
   });
 });

@@ -35,7 +35,7 @@ export default async function BookPage({ searchParams }: BookPageProps) {
           Book your detail
         </h1>
         <p className="m-0 mb-8 text-[16px] text-steel">
-          Four quick steps: your package, your info, a time that works, and a deposit to lock it in.
+          Three quick steps: your package, your info, and a time that works — plus a small deposit to lock it in.
         </p>
         <BookingFlow
           calendlyUrls={{
