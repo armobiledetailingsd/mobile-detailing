@@ -30,6 +30,8 @@ export function BookingCTA() {
 
       <div className="flex gap-2 mb-4">
         <input
+          id="hero-zip"
+          name="zip"
           type="text"
           inputMode="numeric"
           maxLength={5}

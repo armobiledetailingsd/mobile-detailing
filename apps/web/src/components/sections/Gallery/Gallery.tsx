@@ -110,7 +110,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
                     src={imageUrl}
                     alt={item.alt ?? item.label ?? ''}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: 'cover', aspectRatio }}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   {item.label && (
@@ -217,7 +217,7 @@ export function Gallery({ eyebrow, heading, items }: GalleryProps) {
                 src={openImageUrl}
                 alt={openItem.alt ?? openItem.label ?? ''}
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'contain', aspectRatio: '4 / 3' }}
                 sizes="(max-width: 1100px) 100vw, 1100px"
                 priority
               />

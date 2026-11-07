@@ -250,6 +250,8 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
             <label className="flex flex-col gap-1 text-[13px] text-steel">
               Name
               <input
+                id="contact-name"
+                name="name"
                 type="text"
                 autoComplete="name"
                 value={name}
@@ -261,6 +263,8 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
             <label className="flex flex-col gap-1 text-[13px] text-steel">
               Email
               <input
+                id="contact-email"
+                name="email"
                 type="text"
                 inputMode="email"
                 autoComplete="email"
@@ -275,6 +279,8 @@ export function BookingFlow({ calendlyUrls, stripeDepositLink, initialPackage }:
             <label className="flex flex-col gap-1 text-[13px] text-steel">
               ZIP code
               <input
+                id="contact-zip"
+                name="zip"
                 type="text"
                 inputMode="numeric"
                 maxLength={5}
