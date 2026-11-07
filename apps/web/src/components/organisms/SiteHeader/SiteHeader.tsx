@@ -96,11 +96,29 @@ export function SiteHeader({ navigation, siteName, logo, phoneNumber, phoneDispl
 
         {/* Right side */}
         <div className="flex items-center gap-3 ml-auto">
+          <a
+            href={phoneHref}
+            onClick={() => trackEvent('click_to_call', { location: 'header' })}
+            aria-label={`Call ${phoneLabel}`}
+            className="hidden lg:flex items-center gap-[6px] font-sans text-[14px] text-platinum no-underline"
+          >
+            <Icon name="phone" size={15} />
+            {phoneLabel}
+          </a>
           <div className="hidden lg:block">
             <Button href="/book" variant="metal" size="sm">
               Book now
             </Button>
           </div>
+          {/* Mobile tap-to-call */}
+          <a
+            href={phoneHref}
+            onClick={() => trackEvent('click_to_call', { location: 'header' })}
+            aria-label={`Call ${phoneLabel}`}
+            className="flex lg:hidden items-center justify-center text-platinum p-1"
+          >
+            <Icon name="phone" size={20} />
+          </a>
           {/* Mobile hamburger */}
           <button
             aria-label="Open menu"
