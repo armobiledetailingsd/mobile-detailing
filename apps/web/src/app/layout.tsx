@@ -3,7 +3,7 @@ import { Outfit } from 'next/font/google';
 import { draftMode } from 'next/headers';
 import { VisualEditing } from 'next-sanity/visual-editing';
 import { Analytics } from '@vercel/analytics/next';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { SanityLive } from '@/lib/sanity/live';
 import {
   getFooterNavigation,
@@ -95,7 +95,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SanityLive />
         {isDraftMode && <VisualEditing />}
         <Analytics />
-        <GoogleAnalytics gaId="G-PDYF4134T0" />
+        {process.env.NEXT_PUBLIC_GTM_ID && (
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
+        )}
       </body>
     </html>
   );
