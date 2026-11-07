@@ -14,8 +14,8 @@ export type Package = {
 // nothing enforces this automatically. Calendly event durations are
 // configured per package in Calendly itself; these strings are display copy.
 export const PACKAGES: Package[] = [
-  { slug: 'bronze', name: 'Bronze', priceSedan: 99.99, priceTruckSuv: 120, duration: '~1.5 hr' },
-  { slug: 'silver', name: 'Silver', priceSedan: 180, priceTruckSuv: 249.99, duration: '~3 hr' },
+  { slug: 'bronze', name: 'Bronze', priceSedan: 120, priceTruckSuv: 150, duration: '~1.5 hr' },
+  { slug: 'silver', name: 'Silver', priceSedan: 220, priceTruckSuv: 269.99, duration: '~3 hr' },
   { slug: 'gold', name: 'Gold', priceSedan: 275, priceTruckSuv: 300, duration: '~4.5 hr' },
 ];
 

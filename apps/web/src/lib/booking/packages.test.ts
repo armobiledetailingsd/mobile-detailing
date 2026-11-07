@@ -30,8 +30,8 @@ describe('PACKAGES', () => {
     expect(bronze).toEqual({
       slug: 'bronze',
       name: 'Bronze',
-      priceSedan: 99.99,
-      priceTruckSuv: 120,
+      priceSedan: 120,
+      priceTruckSuv: 150,
       duration: '~1.5 hr',
     });
   });

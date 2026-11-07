@@ -67,8 +67,8 @@ const homepage = {
           _type: 'servicePackage',
           _key: 'pkg1',
           name: 'Bronze',
-          priceSedan: 99.99,
-          priceTruckSuv: 120,
+          priceSedan: 120,
+          priceTruckSuv: 150,
           duration: '~1.5 hr',
           description: 'A thorough wash and interior refresh to keep your car looking its best.',
           includes: [
@@ -85,8 +85,8 @@ const homepage = {
           _type: 'servicePackage',
           _key: 'pkg2',
           name: 'Silver',
-          priceSedan: 180,
-          priceTruckSuv: 249.99,
+          priceSedan: 220,
+          priceTruckSuv: 269.99,
           duration: '~3 hr',
           description: 'Deep interior detailing plus machine waxing or sealant for lasting protection.',
           includes: [
@@ -249,7 +249,7 @@ const homepage = {
           _key: 'f1',
           question: 'How much does mobile detailing cost?',
           answer:
-            'Bronze starts at $99.99 for a sedan ($120 for a truck or SUV), Silver is $180/$249.99, and Gold is $275/$300. Pricing depends on vehicle size and package — see the Services section above for full details.',
+            'Bronze starts at $120 for a sedan ($150 for a truck or SUV), Silver is $220/$269.99, and Gold is $275/$300. Pricing depends on vehicle size and package — see the Services section above for full details.',
         },
         {
           _type: 'faqItem',

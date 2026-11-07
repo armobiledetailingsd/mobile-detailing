@@ -33,8 +33,8 @@ const packages = [
     _type: 'servicePackage',
     _key: 'pkg1',
     name: 'Bronze',
-    priceSedan: 99.99,
-    priceTruckSuv: 120,
+    priceSedan: 120,
+    priceTruckSuv: 150,
     duration: '~1.5 hr',
     description: 'A thorough wash and interior refresh to keep your car looking its best.',
     includes: [
@@ -51,8 +51,8 @@ const packages = [
     _type: 'servicePackage',
     _key: 'pkg2',
     name: 'Silver',
-    priceSedan: 180,
-    priceTruckSuv: 249.99,
+    priceSedan: 220,
+    priceTruckSuv: 269.99,
     duration: '~3 hr',
     description: 'Deep interior detailing plus machine waxing or sealant for lasting protection.',
     includes: [
